@@ -6,7 +6,7 @@
  * (src/tokens.ts): Gunmetal lists only what differs from Silver and is written to both of its
  * selectors from that one list.
  */
-import type { ChildNode, Declaration, Node, Root } from 'postcss'
+import type { ChildNode, Container, Declaration, Node, Root } from 'postcss'
 import postcss from 'postcss'
 
 export interface Tokens {
@@ -32,15 +32,16 @@ export class GenerateError extends Error {
 
 export function generate(sources: Sources): Outputs {
   const utilities = parseUtilities(sources.utilities)
+  const shared = parseShared(sources.shared)
   return {
     'tokens.css': tokensCss(sources),
-    'components.css': componentsCss(utilities.clone(), sources),
-    'tailwind.css': tailwindCss(utilities.clone(), sources),
+    'components.css': componentsCss(utilities.clone(), shared.clone()),
+    'tailwind.css': tailwindCss(utilities, shared, sources),
   }
 }
 
 /** Tailwind-only syntax, which a plain `.fp-*` class could not express. */
-const tailwindOnlyAtRules = ['apply', 'variant']
+const tailwindOnlyAtRules = ['apply', 'variant', 'utility', 'theme', 'custom-variant', 'reference', 'plugin', 'config', 'source']
 const tailwindOnlyFunctions = ['--value', '--modifier', '--alpha', '--spacing', '--theme', 'theme']
 
 function parseUtilities(source: string): Root {
@@ -56,9 +57,6 @@ function parseUtilities(source: string): Root {
     if (utility.type !== 'atrule')
       return
     const name = utility.params
-    const fail = (construct: string): never => {
-      throw new GenerateError(`${name}: ${construct} has no plain-CSS form`)
-    }
     if (!name.startsWith('fp-'))
       throw new GenerateError(`${name}: utility names start with fp-`)
     if (name.endsWith('-*'))
@@ -69,19 +67,49 @@ function parseUtilities(source: string): Root {
     if (names.has(name))
       throw new GenerateError(`${name}: defined twice`)
     names.add(name)
-    utility.walk((node) => {
-      if (node.type === 'atrule' && node.name === 'utility')
-        throw new GenerateError(`${name}: a nested @utility is not allowed; declare ${node.params} at the top level`)
-      if (node.type === 'atrule' && tailwindOnlyAtRules.includes(node.name))
-        fail(`@${node.name}`)
-      const text = node.type === 'decl' ? node.value : node.type === 'atrule' ? node.params : ''
-      for (const fn of tailwindOnlyFunctions) {
-        if (new RegExp(`(^|[^\\w-])${fn}\\(`).test(text))
-          fail(`${fn}()`)
-      }
+    utility.walkAtRules('utility', (nested) => {
+      throw new GenerateError(`${name}: a nested @utility is not allowed; declare ${nested.params} at the top level`)
     })
+    rejectTailwindOnly(utility, name)
   })
   return root
+}
+
+/**
+ * Shared rules are copied into both outputs as they are, so they must be plain CSS that styles
+ * nothing outside `.fp-*`: no Tailwind syntax, no global selectors, `fp-` keyframe names.
+ */
+function parseShared(source: string): Root {
+  const root = postcss.parse(source)
+  rejectTailwindOnly(root, 'shared.css')
+  root.walkRules((rule) => {
+    if (rule.parent?.type === 'atrule' && rule.parent.name.endsWith('keyframes'))
+      return
+    for (const selector of rule.selectors) {
+      if (!selector.startsWith('.fp-') || /\.(?!fp-)[a-z_-]/i.test(selector))
+        throw new GenerateError(`shared.css: ${selector} is not scoped to fp- classes`)
+    }
+  })
+  root.walkAtRules(/keyframes$/, (keyframes) => {
+    if (!keyframes.params.startsWith('fp-'))
+      throw new GenerateError(`shared.css: keyframes ${keyframes.params} is not fp- prefixed`)
+  })
+  return root
+}
+
+function rejectTailwindOnly(container: Container, label: string): void {
+  container.walk((node) => {
+    const fail = (construct: string): never => {
+      throw new GenerateError(`${label}: ${construct} has no plain-CSS form`)
+    }
+    if (node.type === 'atrule' && tailwindOnlyAtRules.includes(node.name))
+      fail(`@${node.name}`)
+    const text = node.type === 'decl' ? node.value : node.type === 'atrule' ? node.params : ''
+    for (const fn of tailwindOnlyFunctions) {
+      if (new RegExp(`(^|[^\\w-])${fn}\\(`).test(text))
+        fail(`${fn}()`)
+    }
+  })
 }
 
 /**
@@ -107,11 +135,11 @@ function declarations(values: Record<string, string>): Declaration[] {
   return Object.entries(values).map(([name, value]) => postcss.decl({ prop: `--fp-${name}`, value }))
 }
 
-function componentsCss(root: Root, { shared }: Sources): string {
+function componentsCss(root: Root, shared: Root): string {
   root.walkAtRules('utility', (utility) => {
     utility.replaceWith(postcss.rule({ selector: `.${utility.params}`, nodes: utility.nodes ?? [] }))
   })
-  const layer = postcss.atRule({ name: 'layer', params: 'frontpanel', nodes: [...postcss.parse(shared).nodes, ...root.nodes] })
+  const layer = postcss.atRule({ name: 'layer', params: 'frontpanel', nodes: [...shared.nodes, ...root.nodes] })
   return format(postcss.root({ nodes: [layer] }))
 }
 
@@ -120,7 +148,7 @@ function componentsCss(root: Root, { shared }: Sources): string {
  * utilities outrank both. `@theme inline` maps each colour and font to a var() of the token, so
  * `bg-fp-shell` changes with the skin.
  */
-function tailwindCss(utilities: Root, { shared, tokens }: Sources): string {
+function tailwindCss(utilities: Root, shared: Root, { tokens }: Sources): string {
   const theme = postcss.atRule({ name: 'theme', params: 'inline' })
   for (const name of Object.keys(tokens.silver)) {
     const [, namespace, rest] = /^(color|font)-(.+)$/.exec(name) ?? []
@@ -131,7 +159,7 @@ function tailwindCss(utilities: Root, { shared, tokens }: Sources): string {
     nodes: [
       postcss.atRule({ name: 'import', params: '"./tokens.css" layer(theme)' }),
       theme,
-      postcss.atRule({ name: 'layer', params: 'components', nodes: postcss.parse(shared).nodes }),
+      postcss.atRule({ name: 'layer', params: 'components', nodes: shared.nodes }),
       ...utilities.nodes,
     ],
   }))

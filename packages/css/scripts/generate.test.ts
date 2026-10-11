@@ -143,6 +143,23 @@ describe('rejected source', () => {
     expect(() => generate(sources({ utilities }))).toThrow(`utilities.css holds only @utility blocks and comments, found ${found}`)
   })
 
+  it.each([
+    ['Tailwind-only syntax', '.fp-x { @apply flex; }', 'shared.css: @apply has no plain-CSS form'],
+    ['a Tailwind function', '.fp-x { width: --value(integer); }', 'shared.css: --value() has no plain-CSS form'],
+    ['a Tailwind directive', '@utility fp-x { color: red; }', 'shared.css: @utility has no plain-CSS form'],
+    ['a class without the prefix', '.btn { color: red; }', 'shared.css: .btn is not scoped to fp- classes'],
+    ['an element selector, a global side effect', 'html { color: red; }', 'shared.css: html is not scoped to fp- classes'],
+    ['a stray class inside an fp- selector', '.fp-a .btn { color: red; }', 'shared.css: .fp-a .btn is not scoped to fp- classes'],
+    ['a rule inside @media', '@media (width >= 64rem) { .btn { color: red; } }', 'shared.css: .btn is not scoped to fp- classes'],
+    ['keyframes without the prefix', '@keyframes blink { to { opacity: 0; } }', 'shared.css: keyframes blink is not fp- prefixed'],
+  ])('fails on %s in shared.css', (_case, shared, message) => {
+    expect(() => generate(sources({ shared }))).toThrow(message)
+  })
+
+  it('accepts shared rules scoped to fp- classes, with keyframe steps and @media', () => {
+    expect(() => generate(sources({ shared: `${shared} @media (width >= 64rem) { .fp-sheet-enter-from:hover, .fp-a > .fp-b { translate: 6px 0; } }` }))).not.toThrow()
+  })
+
   it('fails on a gunmetal token that silver does not define, since silver is the full set', () => {
     const tokens = { silver: { 'color-ink': '#1a1f29' }, gunmetal: { 'color-ink': '#e7eaf0', 'color-inc': '#e7eaf0' } }
 
