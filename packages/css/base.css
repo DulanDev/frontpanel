@@ -1,4 +1,45 @@
 /*
- * Opt-in page defaults: html/body colours and font, focus ring, selection, thin scrollbars.
- * Nothing in the other entries styles elements outside .fp-* classes. Filled in Phase 1.
+ * Page defaults, part of the opt-in page extra: for a page that is mostly a device, or a website
+ * around one. They style elements outside .fp-* classes, so nothing else in the package does this.
+ *
+ * Plain CSS: `@import "@frontpanel/css/base.css";` after index.css.
+ * Tailwind: `@import "@frontpanel/css/base.css" layer(base);`, so Tailwind's utilities still win.
  */
+@layer frontpanel {
+  /* The page wears the skin. Native controls and scrollbars follow it, forced or not. */
+  :root {
+    color-scheme: light dark;
+    background-color: var(--fp-color-backdrop);
+    color: var(--fp-color-ink);
+    font-family: var(--fp-font-ui);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  :root[data-fp-skin="silver"] {
+    color-scheme: light;
+  }
+
+  :root[data-fp-skin="gunmetal"] {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  /*
+   * Everything else that takes focus gets the controls' ring: solid, with a glow outside it, since
+   * the glow alone fails non-text contrast on light chrome.
+   */
+  :focus-visible {
+    outline: 2px solid var(--fp-color-focus-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
+  ::selection {
+    background: var(--fp-color-gel);
+    color: var(--fp-color-gel-ink);
+  }
+}
