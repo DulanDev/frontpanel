@@ -129,6 +129,7 @@ describe('rejected source', () => {
     ['a functional name', '@utility fp-gap-* { gap: 1px; }', 'fp-gap-*: functional utilities have no plain-CSS form'],
     ['a name used twice', '@utility fp-x { color: red; } @utility fp-x { color: blue; }', 'fp-x: defined twice'],
     ['a name that is a selector list', '@utility fp-x, .evil { color: red; }', 'fp-x, .evil: utility names are fp- then lowercase letters, digits and dashes'],
+    ['a utility nested in another', '@utility fp-a { color: red; @utility fp-b { color: blue; } }', 'fp-a: a nested @utility is not allowed; declare fp-b at the top level'],
     ['a name with a pseudo-class', '@utility fp-x:hover { color: red; }', 'fp-x:hover: utility names are fp- then lowercase letters, digits and dashes'],
   ])('fails on %s', (_case, utilities, message) => {
     expect(() => generate(sources({ utilities }))).toThrow(message)

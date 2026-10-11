@@ -52,7 +52,9 @@ function parseUtilities(source: string): Root {
       throw new GenerateError(`utilities.css holds only @utility blocks and comments, found @${node.name} ${node.params}`)
   }
   const names = new Set<string>()
-  root.walkAtRules('utility', (utility) => {
+  root.each((utility) => {
+    if (utility.type !== 'atrule')
+      return
     const name = utility.params
     const fail = (construct: string): never => {
       throw new GenerateError(`${name}: ${construct} has no plain-CSS form`)
@@ -68,6 +70,8 @@ function parseUtilities(source: string): Root {
       throw new GenerateError(`${name}: defined twice`)
     names.add(name)
     utility.walk((node) => {
+      if (node.type === 'atrule' && node.name === 'utility')
+        throw new GenerateError(`${name}: a nested @utility is not allowed; declare ${node.params} at the top level`)
       if (node.type === 'atrule' && tailwindOnlyAtRules.includes(node.name))
         fail(`@${node.name}`)
       const text = node.type === 'decl' ? node.value : node.type === 'atrule' ? node.params : ''
