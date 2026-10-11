@@ -10,5 +10,4 @@ Thumbs.db
 test-results/
 playwright-report/
 
-# Owner-only notes for Claude Code
-CLAUDE.local.md
+*.local.md
