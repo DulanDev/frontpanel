@@ -121,6 +121,12 @@ function tokensCss({ tokens }: Sources): string {
     if (!(name in tokens.silver))
       throw new GenerateError(`${name}: gunmetal sets a token silver does not define`)
   }
+  // A var() resolves where it is declared, so a token built on another would keep the root's
+  // skin inside a nested [data-fp-skin] element.
+  for (const [name, value] of [...Object.entries(tokens.silver), ...Object.entries(tokens.gunmetal)]) {
+    if (/\bvar\(/.test(value))
+      throw new GenerateError(`${name}: token values are literals, not var()`)
+  }
   const silver = postcss.rule({ selector: ':root, [data-fp-skin="silver"]', nodes: declarations(tokens.silver) })
   const dark = postcss.atRule({
     name: 'media',

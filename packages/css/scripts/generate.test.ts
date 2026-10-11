@@ -160,6 +160,13 @@ describe('rejected source', () => {
     expect(() => generate(sources({ shared: `${shared} @media (width >= 64rem) { .fp-sheet-enter-from:hover, .fp-a > .fp-b { translate: 6px 0; } }` }))).not.toThrow()
   })
 
+  it.each([
+    ['silver', { silver: { 'color-ink': '#1a1f29', 'color-label': 'var(--fp-color-ink)' }, gunmetal: {} }],
+    ['gunmetal', { silver: { 'color-ink': '#1a1f29', 'color-label': '#1a1f29' }, gunmetal: { 'color-label': 'var(--fp-color-ink)' } }],
+  ])('fails on a %s token that reads another with var(), which resolves where declared and so ignores a nested skin', (_skin, tokens) => {
+    expect(() => generate(sources({ tokens }))).toThrow('color-label: token values are literals, not var()')
+  })
+
   it('fails on a gunmetal token that silver does not define, since silver is the full set', () => {
     const tokens = { silver: { 'color-ink': '#1a1f29' }, gunmetal: { 'color-ink': '#e7eaf0', 'color-inc': '#e7eaf0' } }
 
