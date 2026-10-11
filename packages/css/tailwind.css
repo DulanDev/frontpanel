@@ -140,8 +140,9 @@
     0 4px 0 var(--fp-color-cast),
     0 14px 18px -10px var(--fp-color-cast);
 
-  /* A body set in the rim follows its curve: the rim's radius less its padding. */
+  /* A body set in the rim follows its curve (the rim's radius less its padding) and clips to it. */
   & > .fp-device-body {
+    overflow: clip;
     border-radius: 26px;
   }
 }
@@ -483,6 +484,7 @@
 /** One line of LCD text. Cells of fp-lcd-ghost stacked behind it show the unlit segments, as on real glass. */
 @utility fp-lcd-line {
   display: grid;
+  margin: 0;
   font-family: var(--fp-font-lcd);
   white-space: pre;
 

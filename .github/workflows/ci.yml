@@ -17,9 +17,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      # Build first: the showcase typechecks against the built @frontpanel/vue, as a consumer would.
+      - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm build
       # The generated CSS is committed; a hand edit, or a source change without a rebuild, fails here.
       - name: Generated CSS matches its source
         run: git diff --exit-code -- packages/css
