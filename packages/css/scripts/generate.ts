@@ -45,6 +45,8 @@ export function generate(sources: Sources): Outputs {
   const shared = parseShared(sources.shared, 'shared.css')
   const pageUtilities = parseUtilities(sources.page.utilities, 'page/utilities.css', names)
   const pageShared = parseShared(sources.page.shared, 'page/shared.css')
+  utilities.walkAtRules('utility', utility => rejectViewportQueries(utility, utility.params))
+  rejectViewportQueries(shared, 'shared.css')
   checkTokens(sources.tokens)
   return {
     'tokens.css': tokensCss(sources),
@@ -110,6 +112,20 @@ function parseShared(source: string, file: string): Root {
       throw new GenerateError(`${file}: keyframes ${keyframes.params} is not fp- prefixed`)
   })
   return root
+}
+
+/**
+ * Layout is the developer's: a device may scale as a whole or reflow at their breakpoints, so core
+ * classes never react to the viewport. Container and input queries are fine; the page extra may
+ * use breakpoints.
+ */
+const viewportFeature = /\b(?:(?:min|max)-)?(?:device-)?(?:width|height|aspect-ratio)\b|\borientation\b/
+
+function rejectViewportQueries(container: Container, label: string): void {
+  container.walkAtRules('media', (media) => {
+    if (viewportFeature.test(media.params))
+      throw new GenerateError(`${label}: core classes carry no viewport breakpoints, found @media ${media.params}; use @container, or move it to the page extra`)
+  })
 }
 
 function rejectTailwindOnly(container: Container, label: string): void {

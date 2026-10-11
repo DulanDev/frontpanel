@@ -22,7 +22,7 @@ const button = `
 @utility fp-btn {
   color: var(--fp-color-ink);
 
-  @media (width >= 64rem) {
+  @media (pointer: fine) {
     min-height: 2.25rem;
   }
 
@@ -68,7 +68,7 @@ describe('components.css', () => {
         /** A push button. */
         .fp-btn {
           color: var(--fp-color-ink);
-          @media (width >= 64rem) { min-height: 2.25rem; }
+          @media (pointer: fine) { min-height: 2.25rem; }
           &:hover:not(:disabled) { filter: brightness(1.05); }
           &[aria-pressed="true"] { translate: 0 1px; }
         }
@@ -220,14 +220,14 @@ describe('rejected source', () => {
     ['a class without the prefix', '.btn { color: red; }', 'shared.css: .btn is not scoped to fp- classes'],
     ['an element selector, a global side effect', 'html { color: red; }', 'shared.css: html is not scoped to fp- classes'],
     ['a stray class inside an fp- selector', '.fp-a .btn { color: red; }', 'shared.css: .fp-a .btn is not scoped to fp- classes'],
-    ['a rule inside @media', '@media (width >= 64rem) { .btn { color: red; } }', 'shared.css: .btn is not scoped to fp- classes'],
+    ['a rule inside @media', '@media (prefers-reduced-motion: reduce) { .btn { color: red; } }', 'shared.css: .btn is not scoped to fp- classes'],
     ['keyframes without the prefix', '@keyframes blink { to { opacity: 0; } }', 'shared.css: keyframes blink is not fp- prefixed'],
   ])('fails on %s in shared.css', (_case, shared, message) => {
     expect(() => generate(sources({ shared }))).toThrow(message)
   })
 
   it('accepts shared rules scoped to fp- classes, with keyframe steps and @media', () => {
-    expect(() => generate(sources({ shared: `${shared} @media (width >= 64rem) { .fp-sheet-enter-from:hover, .fp-a > .fp-b { translate: 6px 0; } }` }))).not.toThrow()
+    expect(() => generate(sources({ shared: `${shared} @media (pointer: fine) { .fp-sheet-enter-from:hover, .fp-a > .fp-b { translate: 6px 0; } }` }))).not.toThrow()
   })
 
   it.each([
@@ -243,6 +243,24 @@ describe('rejected source', () => {
     ['font-weight-bold', 'font-weight-bold: font- tokens name font families, not sizes or weights'],
   ])('fails on the token name %s, which has no Tailwind mapping', (name, message) => {
     expect(() => generate(sources({ tokens: { silver: { [name]: '1px' }, gunmetal: {} } }))).toThrow(message)
+  })
+
+  it.each([
+    ['a range width query', { utilities: '@utility fp-x { @media (width >= 64rem) { color: red; } }' }, 'fp-x'],
+    ['a min-width query', { utilities: '@utility fp-x { @media (min-width: 600px) { color: red; } }' }, 'fp-x'],
+    ['a height query', { utilities: '@utility fp-x { @media (max-height: 500px) { color: red; } }' }, 'fp-x'],
+    ['an orientation query', { utilities: '@utility fp-x { @media (orientation: portrait) { color: red; } }' }, 'fp-x'],
+    ['an aspect-ratio query', { utilities: '@utility fp-x { @media (min-aspect-ratio: 16/9) { color: red; } }' }, 'fp-x'],
+    ['a breakpoint in the core shared rules', { shared: '@media (width >= 64rem) { .fp-x { color: red; } }' }, 'shared.css'],
+  ])('fails on %s in the core, which would tie the device to a page layout', (_case, core, label) => {
+    expect(() => generate(sources(core))).toThrow(`${label}: core classes carry no viewport breakpoints, found @media`)
+  })
+
+  it('allows viewport breakpoints in the page extra, and container and input queries in the core', () => {
+    const page = { utilities: '@utility fp-p { @media (width >= 64rem) { color: red; } }', shared: '@media (width >= 64rem) { .fp-q { color: red; } }' }
+    const utilities = '@utility fp-x { @container (width >= 20rem) { color: red; } @media (pointer: fine) { color: blue; } @media (prefers-reduced-motion: reduce) { color: green; } }'
+
+    expect(() => generate(sources({ utilities, page }))).not.toThrow()
   })
 
   it('fails on a name used in both the core and the page extra', () => {
@@ -319,7 +337,7 @@ describe('tailwind.css', () => {
       /** A push button. */
       @utility fp-btn {
         color: var(--fp-color-ink);
-        @media (width >= 64rem) { min-height: 2.25rem; }
+        @media (pointer: fine) { min-height: 2.25rem; }
         &:hover:not(:disabled) { filter: brightness(1.05); }
         &[aria-pressed="true"] { translate: 0 1px; }
       }
