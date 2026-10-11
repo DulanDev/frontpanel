@@ -3,6 +3,12 @@
 Frontpanel is an early-2000s hardware UI kit: liquid-chrome bezels, gel buttons, LCD readouts and
 LEDs, as plain CSS with Vue 3 components on top. MIT licence.
 
+It is for building device front panels in the style of early-2000s media players and hardware,
+not a general UI framework or a theme for ordinary websites. The device is the unit: a chassis of
+modules and display windows with physical controls (knobs, faders, switches, buttons with LEDs,
+readouts, meters); state shows physically (a pressed bevel, a lit LED); text is silkscreened
+labels and readouts. Overlays are device parts (a window, a faceplate menu, an LCD tag).
+
 ## Layout
 
 pnpm workspace: `packages/css` (`@frontpanel/css`), `packages/vue` (`@frontpanel/vue`),
@@ -15,6 +21,11 @@ classic compiler API, which TypeScript 7 does not ship. Never fix a type error b
 - Every class is `.fp-*` and every token `--fp-*`. In the plain CSS, classes and tokens sit in
   `@layer frontpanel`; the Tailwind entry puts them in Tailwind's own layers (tokens in `theme`,
   classes as `@utility`) so its utilities still win.
+- Layout is the developer's choice: a device may scale as a whole or reflow its modules at their
+  own breakpoints, and Frontpanel must allow both. Core classes carry no viewport breakpoints;
+  control sizes follow the input (`pointer: coarse`), and modules size to their container.
+- Website-only pieces (the text field, the phone bottom sheet, page defaults) live in the opt-in
+  page extra (`page.css`, `tailwind-page.css`, `base.css`), never in the core entries.
 - No global side effects outside `base.css` and `fonts.css`, both opt-in. Reduced motion is handled
   per component, not by a global `*` reset.
 - `components.css` and `tailwind.css` are generated from one source so they cannot drift; never

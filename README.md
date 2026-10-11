@@ -1,8 +1,8 @@
 # Frontpanel
 
-An early-2000s hardware UI kit: liquid-chrome bezels, glossy gel buttons, LCD readouts and LEDs,
-in plain CSS with Vue 3 components on top. Two skins, Chrome Silver and Gunmetal Night, follow the
-system setting.
+An early-2000s hardware UI kit for building device front panels in the browser: liquid-chrome
+bezels, glossy gel buttons, knobs, LCD readouts and LEDs, in plain CSS with Vue 3 components on
+top. Two skins, Chrome Silver and Gunmetal Night, follow the system setting.
 
 The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 
