@@ -8,7 +8,10 @@ export interface FpWindowProps {
   title: string
   /** The title's heading level. */
   level?: 2 | 3 | 4 | 5 | 6
-  /** Adds a close button to the title bar, which emits `close`. */
+  /**
+   * Adds a close button to the title bar, which emits `close`. Closing removes the focused button, so
+   * move focus back to the control that opened the window.
+   */
   closable?: boolean
   /** The close button's accessible name. Defaults to "Close" and the title. */
   closeLabel?: string

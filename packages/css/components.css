@@ -364,10 +364,13 @@
    * while its body scrolls under it.
    */
   .fp-window {
+    /* Its top corners follow the window's, which differ between a module and a sheet. */
     & > .fp-module-title {
       position: sticky;
       top: 0;
       z-index: 1;
+      border-start-start-radius: inherit;
+      border-start-end-radius: inherit;
     }
 
     /* Title-bar buttons stay small with a precise pointer; touch keeps the 44 px target. */
