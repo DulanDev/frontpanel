@@ -12,8 +12,8 @@ const tailwindDir = dirname(createRequire(import.meta.url).resolve('tailwindcss/
  * Compiles `@import "tailwindcss"` plus the generated entry with Tailwind's own compiler: the
  * generated files are served from memory, Tailwind's from its package.
  */
-async function build(outputs: Outputs, candidates: string[]): Promise<string> {
-  const entry = '@import "tailwindcss";\n@import "./tailwind.css";\n'
+async function build(outputs: Outputs, candidates: string[], entries = ['tailwind.css']): Promise<string> {
+  const entry = ['tailwindcss', ...entries.map(file => `./${file}`)].map(id => `@import "${id}";\n`).join('')
   const compiler = await compile(entry, {
     base: '/fp',
     async loadStylesheet(id, base) {
@@ -37,6 +37,14 @@ const outputs = generate({
   `,
   shared: '',
   tokens: { silver: { 'color-shell': '#bcc5d1' }, gunmetal: { 'color-shell': '#22262e' } },
+  page: {
+    utilities: `
+      @utility fp-field {
+        border: 1px solid var(--fp-color-shell);
+      }
+    `,
+    shared: '',
+  },
 })
 
 describe('tailwind.css compiled by Tailwind', () => {
@@ -57,5 +65,12 @@ describe('tailwind.css compiled by Tailwind', () => {
 
     expect(css).toContain('@layer theme, base, components, utilities;')
     expect(css).toContain('@layer theme { @layer frontpanel { :root, [data-fp-skin="silver"] { --fp-color-shell: #bcc5d1; }')
+  })
+
+  it('builds a page extra class beside the core entry, reading a core token', async () => {
+    const css = await build(outputs, ['fp-field', 'lg:fp-field'], ['tailwind.css', 'tailwind-page.css'])
+
+    expect(css).toContain('.fp-field { border: 1px solid var(--fp-color-shell); }')
+    expect(css).toContain('@media (width >= 64rem) { .lg\\:fp-field {')
   })
 })

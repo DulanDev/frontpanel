@@ -1,6 +1,6 @@
 /*
- * Writes tokens.css, components.css and tailwind.css from src/ (see generate.ts). Run with
- * `pnpm build`; `--watch` rebuilds on every change to src/ and keeps going after an error.
+ * Writes the generated entries from src/ (see generate.ts). Run with `pnpm build`; `--watch`
+ * rebuilds on every change to src/ and keeps going after an error.
  */
 import type { Sources, Tokens } from './generate.ts'
 import { watch } from 'node:fs'
@@ -18,6 +18,10 @@ async function readSources(): Promise<Sources> {
     utilities: await readFile(new URL('utilities.css', src), 'utf8'),
     shared: await readFile(new URL('shared.css', src), 'utf8'),
     tokens,
+    page: {
+      utilities: await readFile(new URL('page/utilities.css', src), 'utf8'),
+      shared: await readFile(new URL('page/shared.css', src), 'utf8'),
+    },
   }
 }
 

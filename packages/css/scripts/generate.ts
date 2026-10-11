@@ -5,6 +5,10 @@
  * Tailwind-only, which a plain class could not express, is rejected. The tokens are data
  * (src/tokens.ts): Gunmetal lists only what differs from Silver and is written to both of its
  * selectors from that one list.
+ *
+ * The page extra (src/page/) goes through the same transform into page.css and
+ * tailwind-page.css: website pieces, such as a text field or a phone bottom sheet, that the device
+ * kit's core entries leave out.
  */
 import type { ChildNode, Container, Declaration, Node, Root } from 'postcss'
 import postcss from 'postcss'
@@ -18,12 +22,16 @@ export interface Sources {
   utilities: string
   shared: string
   tokens: Tokens
+  /** The opt-in page extra: website pieces kept out of the device kit's core entries. */
+  page: { utilities: string, shared: string }
 }
 
 export interface Outputs {
   'tokens.css': string
   'components.css': string
   'tailwind.css': string
+  'page.css': string
+  'tailwind-page.css': string
 }
 
 export class GenerateError extends Error {
@@ -31,13 +39,19 @@ export class GenerateError extends Error {
 }
 
 export function generate(sources: Sources): Outputs {
-  const utilities = parseUtilities(sources.utilities)
-  const shared = parseShared(sources.shared)
+  // One set of names across both sources: page.css and components.css must not fight over a class.
+  const names = new Set<string>()
+  const utilities = parseUtilities(sources.utilities, 'utilities.css', names)
+  const shared = parseShared(sources.shared, 'shared.css')
+  const pageUtilities = parseUtilities(sources.page.utilities, 'page/utilities.css', names)
+  const pageShared = parseShared(sources.page.shared, 'page/shared.css')
   checkTokens(sources.tokens)
   return {
     'tokens.css': tokensCss(sources),
     'components.css': componentsCss(utilities.clone(), shared.clone()),
     'tailwind.css': tailwindCss(utilities, shared, sources),
+    'page.css': componentsCss(pageUtilities.clone(), pageShared.clone()),
+    'tailwind-page.css': format(postcss.root({ nodes: tailwindClasses(pageUtilities, pageShared) })),
   }
 }
 
@@ -46,15 +60,14 @@ const tailwindOnlyAtRules = ['apply', 'variant', 'utility', 'theme', 'custom-var
 // The lookbehind keeps `theme(` from matching inside `--theme(` or a longer name.
 const tailwindOnlyFunction = /(?<![\w-])(--value|--modifier|--alpha|--spacing|--theme|theme)\(/
 
-function parseUtilities(source: string): Root {
+function parseUtilities(source: string, file: string, names: Set<string>): Root {
   const root = postcss.parse(source)
   for (const node of root.nodes) {
     if (node.type === 'rule')
-      throw new GenerateError(`utilities.css holds only @utility blocks and comments, found ${node.selector}`)
+      throw new GenerateError(`${file} holds only @utility blocks and comments, found ${node.selector}`)
     if (node.type === 'atrule' && node.name !== 'utility')
-      throw new GenerateError(`utilities.css holds only @utility blocks and comments, found @${node.name} ${node.params}`)
+      throw new GenerateError(`${file} holds only @utility blocks and comments, found @${node.name} ${node.params}`)
   }
-  const names = new Set<string>()
   root.each((utility) => {
     if (utility.type !== 'atrule')
       return
@@ -81,20 +94,20 @@ function parseUtilities(source: string): Root {
  * Shared rules are copied into both outputs as they are, so they must be plain CSS that styles
  * nothing outside `.fp-*`: no Tailwind syntax, no global selectors, `fp-` keyframe names.
  */
-function parseShared(source: string): Root {
+function parseShared(source: string, file: string): Root {
   const root = postcss.parse(source)
-  rejectTailwindOnly(root, 'shared.css')
+  rejectTailwindOnly(root, file)
   root.walkRules((rule) => {
     if (rule.parent?.type === 'atrule' && rule.parent.name.endsWith('keyframes'))
       return
     for (const selector of rule.selectors) {
       if (!selector.startsWith('.fp-') || /\.(?!fp-)[a-z_-]/i.test(selector))
-        throw new GenerateError(`shared.css: ${selector} is not scoped to fp- classes`)
+        throw new GenerateError(`${file}: ${selector} is not scoped to fp- classes`)
     }
   })
   root.walkAtRules(/keyframes$/, (keyframes) => {
     if (!keyframes.params.startsWith('fp-'))
-      throw new GenerateError(`shared.css: keyframes ${keyframes.params} is not fp- prefixed`)
+      throw new GenerateError(`${file}: keyframes ${keyframes.params} is not fp- prefixed`)
   })
   return root
 }
@@ -172,10 +185,14 @@ function tailwindCss(utilities: Root, shared: Root, { tokens }: Sources): string
     nodes: [
       postcss.atRule({ name: 'import', params: '"./tokens.css" layer(theme)' }),
       theme,
-      postcss.atRule({ name: 'layer', params: 'components', nodes: shared.nodes }),
-      ...utilities.nodes,
+      ...tailwindClasses(utilities, shared),
     ],
   }))
+}
+
+/** The shared rules in Tailwind's components layer, then the utilities as written. */
+function tailwindClasses(utilities: Root, shared: Root): ChildNode[] {
+  return [postcss.atRule({ name: 'layer', params: 'components', nodes: shared.nodes }), ...utilities.nodes]
 }
 
 const banner = '/* Generated by scripts/build.ts from src/. Do not edit; edit the source and run `pnpm build`. */'

@@ -12,6 +12,7 @@ function sources(overrides: Partial<Sources> = {}): Sources {
     utilities: '',
     shared: '',
     tokens: { silver: {}, gunmetal: {} },
+    page: { utilities: '', shared: '' },
     ...overrides,
   }
 }
@@ -148,6 +149,36 @@ describe('components.css', () => {
   })
 })
 
+const field = `
+/** A text field. */
+@utility fp-field {
+  min-height: 2.75rem;
+}
+`
+
+describe('page.css', () => {
+  it('turns the page utilities into .fp-* classes in @layer frontpanel, after the page shared rules, and keeps them out of components.css', () => {
+    const outputs = generate(sources({ utilities: button, page: { utilities: field, shared } }))
+
+    expect(squish(outputs['page.css'])).toMatch(/@layer frontpanel \{ @keyframes fp-blink \{ .*? \} \.fp-sheet-enter-from \{ opacity: 0; \} \/\*\* A text field\. \*\/ \.fp-field \{ min-height: 2\.75rem; \} \}/)
+    expect(outputs['components.css']).not.toContain('fp-field')
+    expect(outputs['components.css']).not.toContain('fp-sheet')
+  })
+})
+
+describe('tailwind-page.css', () => {
+  it('holds the page shared rules in Tailwind\'s components layer and the page utilities, and leaves the tokens to tailwind.css', () => {
+    const outputs = generate(sources({ utilities: button, tokens, page: { utilities: field, shared } }))
+    const css = squish(outputs['tailwind-page.css'])
+
+    expect(css).toContain('@layer components { @keyframes fp-blink { 50% { opacity: 0; } } .fp-sheet-enter-from { opacity: 0; } }')
+    expect(css).toContain('/** A text field. */ @utility fp-field { min-height: 2.75rem; }')
+    expect(css).not.toContain('@import')
+    expect(css).not.toContain('@theme')
+    expect(outputs['tailwind.css']).not.toContain('fp-field')
+  })
+})
+
 describe('rejected source', () => {
   it.each([
     ['@apply', '@apply flex;'],
@@ -212,6 +243,19 @@ describe('rejected source', () => {
     ['font-weight-bold', 'font-weight-bold: font- tokens name font families, not sizes or weights'],
   ])('fails on the token name %s, which has no Tailwind mapping', (name, message) => {
     expect(() => generate(sources({ tokens: { silver: { [name]: '1px' }, gunmetal: {} } }))).toThrow(message)
+  })
+
+  it('fails on a name used in both the core and the page extra', () => {
+    const page = { utilities: '@utility fp-x { color: blue; }', shared: '' }
+
+    expect(() => generate(sources({ utilities: '@utility fp-x { color: red; }', page }))).toThrow('fp-x: defined twice')
+  })
+
+  it('names the page file in a page error', () => {
+    const page = { utilities: '.fp-x { color: red; }', shared: 'html { color: red; }' }
+
+    expect(() => generate(sources({ page: { ...page, shared: '' } }))).toThrow('page/utilities.css holds only @utility blocks and comments, found .fp-x')
+    expect(() => generate(sources({ page: { ...page, utilities: '' } }))).toThrow('page/shared.css: html is not scoped to fp- classes')
   })
 
   it('fails on a gunmetal token that silver does not define, since silver is the full set', () => {
