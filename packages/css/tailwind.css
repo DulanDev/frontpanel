@@ -139,3 +139,430 @@
     }
   }
 }
+
+/** Redraws an LCD line left to right in four steps, as when its value changes. */
+@utility fp-lcd-redraw {
+  animation: fp-lcd-redraw 160ms steps(4, end);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/** Blinks twice, then holds: an LED confirming an action. */
+@utility fp-blink-twice {
+  animation: fp-blink-twice 1.6s steps(1, end) 1;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/** The page behind the device: quiet blue-grey with a faint Y2K grid. */
+@utility fp-device-backdrop {
+  background-color: var(--fp-color-backdrop);
+  background-image:
+    linear-gradient(var(--fp-color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fp-color-grid) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 60% at 20% 0%, var(--fp-color-backdrop-hi), transparent 70%),
+    linear-gradient(180deg, var(--fp-color-backdrop-hi), var(--fp-color-backdrop));
+  background-size:
+    32px 32px,
+    32px 32px,
+    auto,
+    auto;
+}
+
+/** Liquid-chrome ring around the device body. Diagonal so the reflection band crosses the corners. */
+@utility fp-device-rim {
+  border-radius: 36px;
+  padding: 10px;
+  background-image: linear-gradient(
+    160deg,
+    var(--fp-color-chrome-hi) 0%,
+    var(--fp-color-chrome-100) 14%,
+    var(--fp-color-chrome-tint) 38%,
+    var(--fp-color-chrome-500) 50%,
+    var(--fp-color-chrome-300) 70%,
+    var(--fp-color-chrome-100) 100%
+  );
+  box-shadow:
+    0 0 0 1px var(--fp-color-chrome-800),
+    inset 0 1px 0 var(--fp-color-chrome-hi),
+    0 4px 0 var(--fp-color-cast),
+    0 14px 18px -10px var(--fp-color-cast);
+}
+
+/** Molded body plastic the modules sit on. */
+@utility fp-device-body {
+  background-image: linear-gradient(180deg, var(--fp-color-shell-hi), var(--fp-color-shell) 240px);
+  box-shadow:
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    inset -1px -1px 0 var(--fp-color-bevel-lo);
+}
+
+/** Liquid chrome with a hard horizon, for title bars and other frames. Never behind text. */
+@utility fp-chrome {
+  background-image: linear-gradient(
+    180deg,
+    var(--fp-color-chrome-hi) 0%,
+    var(--fp-color-chrome-100) 18%,
+    var(--fp-color-chrome-tint) 45%,
+    var(--fp-color-chrome-500) 52%,
+    var(--fp-color-chrome-300) 75%,
+    var(--fp-color-chrome-100) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 var(--fp-color-chrome-hi),
+    inset 0 -1px 0 var(--fp-color-edge);
+}
+
+/** Brushed chrome without the horizon, calm enough to print a label in the middle of it. */
+@utility fp-chrome-soft {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--fp-color-chrome-hi) 60%, var(--fp-color-chrome-100)) 0%,
+    var(--fp-color-chrome-100) 40%,
+    var(--fp-color-chrome-300) 100%
+  );
+}
+
+/** Small hardware push button in brushed chrome. 44 px tall for touch, 36 px from 64rem. */
+@utility fp-chrome-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding-inline: 0.625rem;
+  border-radius: 6px;
+  color: var(--fp-color-ink);
+  font-size: 13px;
+  font-weight: 700;
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--fp-color-chrome-hi) 60%, var(--fp-color-chrome-100)) 0%,
+    var(--fp-color-chrome-100) 40%,
+    var(--fp-color-chrome-300) 100%
+  );
+  box-shadow:
+    0 0 0 1px var(--fp-color-edge),
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    inset -1px -1px 0 var(--fp-color-bevel-lo),
+    1px 2px 0 var(--fp-color-cast);
+  transition-property: translate, box-shadow, filter;
+  transition-duration: 70ms;
+  transition-timing-function: linear;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+  }
+
+  @media (width >= 64rem) {
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+
+  &:active:not(:disabled),
+  &[aria-pressed="true"],
+  &[aria-expanded="true"],
+  &[aria-current="page"] {
+    translate: 0 1px;
+    box-shadow:
+      0 0 0 1px var(--fp-color-edge),
+      inset 1px 1px 3px var(--fp-color-bevel-lo),
+      inset -1px -1px 0 var(--fp-color-bevel-hi);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+  }
+}
+
+/**
+ * Glossy gel pill for primary actions. Its white label sits on the base colour at mid-height,
+ * where the highlight ellipse has already faded out (7:1).
+ */
+@utility fp-gel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border-radius: 9999px;
+  color: var(--fp-color-gel-ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 0.35);
+  background-image:
+    radial-gradient(ellipse 80% 45% at 50% 0%, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.08) 90%, transparent 100%),
+    linear-gradient(180deg, var(--fp-color-gel-hi) 0%, var(--fp-color-gel) 48%, var(--fp-color-gel-lo) 100%);
+  box-shadow:
+    0 0 0 1px var(--fp-color-gel-lo),
+    inset 0 -3px 5px rgb(140 200 255 / 0.4),
+    1px 2px 0 var(--fp-color-cast);
+  transition-property: translate, box-shadow, filter;
+  transition-duration: 70ms;
+  transition-timing-function: linear;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+  }
+
+  @media (width >= 64rem) {
+    min-height: 2.5rem;
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+
+  &:active:not(:disabled) {
+    translate: 0 1px;
+    box-shadow:
+      0 0 0 1px var(--fp-color-gel-lo),
+      inset 0 2px 4px rgb(0 0 0 / 0.35);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+  }
+}
+
+/**
+ * Molded-plastic cap. The cap colour and its label colour come from the fp-cap-* classes
+ * (`--fp-cap`, `--fp-cap-ink`); a bare `fp-cap` is white plastic with a dark label. Selected caps
+ * stay pressed in and get a ring, so selection never depends on colour.
+ */
+@utility fp-cap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding-inline: 0.5rem;
+  border-radius: 6px;
+  color: var(--fp-cap-ink, var(--fp-color-cap-ink));
+  font-weight: 700;
+  background-color: var(--fp-cap, var(--fp-color-cap));
+  background-image: radial-gradient(ellipse 110% 80% at 30% 10%, rgb(255 255 255 / 0.28), transparent 65%);
+  box-shadow:
+    0 0 0 1px var(--fp-color-edge),
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    inset 0 -2px 0 rgb(0 0 0 / 0.25),
+    1px 2px 1px var(--fp-color-cast);
+  transition-property: translate, box-shadow, filter;
+  transition-duration: 70ms;
+  transition-timing-function: linear;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+  }
+
+  @media (width >= 64rem) {
+    min-height: 2.25rem;
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+
+  &:active:not(:disabled) {
+    translate: 0 1px;
+    box-shadow:
+      0 0 0 1px var(--fp-color-edge),
+      inset 0 2px 3px rgb(0 0 0 / 0.35),
+      inset 0 -1px 0 rgb(255 255 255 / 0.3);
+  }
+
+  &[aria-pressed="true"],
+  &[aria-checked="true"] {
+    translate: 0 1px;
+    box-shadow:
+      0 0 0 2px var(--fp-color-select),
+      inset 0 2px 3px rgb(0 0 0 / 0.35),
+      inset 0 -1px 0 rgb(255 255 255 / 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@utility fp-cap-blue {
+  --fp-cap: var(--fp-color-cap-blue);
+  --fp-cap-ink: var(--fp-color-cap-blue-ink);
+}
+
+@utility fp-cap-amber {
+  --fp-cap: var(--fp-color-cap-amber);
+  --fp-cap-ink: var(--fp-color-cap-amber-ink);
+}
+
+@utility fp-cap-graphite {
+  --fp-cap: var(--fp-color-cap-graphite);
+  --fp-cap-ink: var(--fp-color-cap-graphite-ink);
+}
+
+@utility fp-cap-berry {
+  --fp-cap: var(--fp-color-cap-berry);
+  --fp-cap-ink: var(--fp-color-cap-berry-ink);
+}
+
+/** Matte content panel. This is where reading happens: no gloss, a 1 px bevel and a short hard shadow. */
+@utility fp-module {
+  border-radius: 10px;
+  background-color: var(--fp-color-shell-matte);
+  box-shadow:
+    0 0 0 1px var(--fp-color-edge),
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    inset -1px -1px 0 var(--fp-color-bevel-lo),
+    2px 3px 0 var(--fp-color-cast);
+}
+
+/** A matte panel lifted over the device as a bottom sheet on phones; dock it as an fp-module on wide screens. */
+@utility fp-sheet-panel {
+  border-radius: 14px 14px 0 0;
+  background-color: var(--fp-color-shell-matte);
+  box-shadow:
+    0 0 0 1px var(--fp-color-edge),
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    0 -10px 28px var(--fp-color-cast);
+}
+
+/** A module's own little title bar, in brushed chrome. */
+@utility fp-module-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.875rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid var(--fp-color-edge);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--fp-color-chrome-hi) 60%, var(--fp-color-chrome-100)) 0%,
+    var(--fp-color-chrome-100) 40%,
+    var(--fp-color-chrome-300) 100%
+  );
+}
+
+/** Recessed well inside a matte panel, for secondary content or an empty slot. */
+@utility fp-well {
+  border-radius: 6px;
+  background-color: var(--fp-color-well);
+  box-shadow:
+    inset 1px 1px 2px var(--fp-color-bevel-lo),
+    inset -1px -1px 0 var(--fp-color-bevel-hi);
+}
+
+/** Silkscreened hardware label. */
+@utility fp-silk {
+  font-family: var(--fp-font-display);
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fp-color-ink-soft);
+}
+
+/** LCD glass, recessed into the chrome. Text on it uses `--fp-font-lcd`; drawings use `--fp-color-lcd-ink`. */
+@utility fp-lcd {
+  border-radius: 8px;
+  color: var(--fp-color-lcd-ink);
+  background-color: var(--fp-color-lcd-bg);
+  background-image: repeating-linear-gradient(0deg, rgb(0 0 0 / 0.04) 0 1px, transparent 1px 3px);
+  box-shadow:
+    0 0 0 2px var(--fp-color-chrome-800),
+    inset 2px 2px 4px rgb(0 0 0 / 0.35),
+    inset -1px -1px 0 rgb(255 255 255 / 0.2);
+}
+
+/** Dark housing that LEDs and small readouts sit in. */
+@utility fp-housing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding: 0.125rem 0.5rem;
+  color: var(--fp-color-housing-ink);
+  font-size: 12px;
+  font-weight: 700;
+  background-color: var(--fp-color-housing);
+  box-shadow:
+    inset 1px 1px 2px rgb(0 0 0 / 0.5),
+    0 1px 0 var(--fp-color-bevel-hi);
+}
+
+/** An LED with its own dark bezel ring, so a lit one reads on light chrome too. Unlit by default. */
+@utility fp-led {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--fp-color-led-off);
+  box-shadow:
+    0 0 0 2px var(--fp-color-housing),
+    inset 0 -1px 1px rgb(0 0 0 / 0.45);
+}
+
+@utility fp-led-green {
+  --fp-led: var(--fp-color-led-on);
+}
+
+@utility fp-led-amber {
+  --fp-led: var(--fp-color-led-amber);
+}
+
+@utility fp-led-red {
+  --fp-led: var(--fp-color-led-red);
+}
+
+@utility fp-led-lit {
+  background-color: var(--fp-led, var(--fp-color-led-on));
+  box-shadow:
+    0 0 0 2px var(--fp-color-housing),
+    0 0 7px 2px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, transparent),
+    inset 0 -1px 1px rgb(0 0 0 / 0.2);
+}
+
+/** Inset text field or select on a matte panel. Its border keeps 3:1 against the panel in both skins. */
+@utility fp-field {
+  min-height: 2.75rem;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--fp-color-edge-strong);
+  padding-inline: 0.625rem;
+  color: var(--fp-color-ink);
+  font-size: 14px;
+  background-color: var(--fp-color-field);
+  box-shadow: inset 1px 1px 2px var(--fp-color-bevel-lo);
+
+  @media (width >= 64rem) {
+    min-height: 2.25rem;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+  }
+}
+
+/** Decorative screw head. Give it aria-hidden="true". */
+@utility fp-screw {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background-image:
+    linear-gradient(135deg, transparent 44%, var(--fp-color-chrome-800) 44% 56%, transparent 56%),
+    radial-gradient(circle at 35% 30%, var(--fp-color-chrome-hi), var(--fp-color-chrome-300) 60%, var(--fp-color-chrome-500));
+  box-shadow: 0 0 0 1px var(--fp-color-edge);
+}
