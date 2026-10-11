@@ -85,59 +85,6 @@
       opacity: 1;
     }
   }
-
-  /*
-   * Panels and sheets, for <Transition name="fp-sheet">. Enter is 200 ms, exit 150 ms and smaller:
-   * the eye is already moving on. Transitions (not keyframes) so a panel toggled mid-flight
-   * retargets instead of restarting.
-   */
-  .fp-sheet-enter-active,
-  .fp-sheet-leave-active {
-    transition-property: opacity, translate;
-    transition-timing-function: ease-out;
-    will-change: translate;
-  }
-
-  .fp-sheet-enter-active {
-    transition-duration: 200ms;
-  }
-
-  .fp-sheet-leave-active {
-    transition-duration: 150ms;
-  }
-
-  .fp-sheet-enter-from {
-    opacity: 0;
-    translate: 0 12px;
-  }
-
-  .fp-sheet-leave-to {
-    opacity: 0;
-    translate: 0 8px;
-  }
-
-  /* Docked columns slide in from their own edge rather than up off the bottom. */
-  @media (width >= 64rem) {
-    .fp-sheet-enter-from {
-      translate: 6px 0;
-    }
-
-    .fp-sheet-leave-to {
-      translate: 4px 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fp-sheet-enter-active,
-    .fp-sheet-leave-active {
-      transition-duration: 1ms;
-    }
-
-    .fp-sheet-enter-from,
-    .fp-sheet-leave-to {
-      translate: none;
-    }
-  }
 }
 
 /** Redraws an LCD line left to right in four steps, as when its value changes. */
@@ -426,16 +373,6 @@
     2px 3px 0 var(--fp-color-cast);
 }
 
-/** A matte panel lifted over the device as a bottom sheet on phones; dock it as an fp-module on wide screens. */
-@utility fp-sheet-panel {
-  border-radius: 14px 14px 0 0;
-  background-color: var(--fp-color-shell-matte);
-  box-shadow:
-    0 0 0 1px var(--fp-color-edge),
-    inset 1px 1px 0 var(--fp-color-bevel-hi),
-    0 -10px 28px var(--fp-color-cast);
-}
-
 /** A module's own little title bar, in brushed chrome. */
 @utility fp-module-title {
   display: flex;
@@ -531,27 +468,6 @@
     0 0 0 2px var(--fp-color-housing),
     0 0 7px 2px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, transparent),
     inset 0 -1px 1px rgb(0 0 0 / 0.2);
-}
-
-/** Inset text field or select on a matte panel. Its border keeps 3:1 against the panel in both skins. */
-@utility fp-field {
-  min-height: 2.75rem;
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid var(--fp-color-edge-strong);
-  padding-inline: 0.625rem;
-  color: var(--fp-color-ink);
-  font-size: 14px;
-  background-color: var(--fp-color-field);
-  box-shadow: inset 1px 1px 2px var(--fp-color-bevel-lo);
-
-  @media (width >= 64rem) {
-    min-height: 2.25rem;
-  }
-
-  &:disabled {
-    opacity: 0.55;
-  }
 }
 
 /** Decorative screw head. Give it aria-hidden="true". */

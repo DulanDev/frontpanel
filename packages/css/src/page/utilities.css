@@ -1,0 +1,35 @@
+/*
+ * The page extra: pieces for a website around a device, not the device itself. They ship in the
+ * opt-in page.css and tailwind-page.css, never in the core entries.
+ */
+
+/** A matte panel lifted over the device as a bottom sheet on phones; dock it as an fp-module on wide screens. */
+@utility fp-sheet-panel {
+  border-radius: 14px 14px 0 0;
+  background-color: var(--fp-color-shell-matte);
+  box-shadow:
+    0 0 0 1px var(--fp-color-edge),
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    0 -10px 28px var(--fp-color-cast);
+}
+
+/** Inset text field or select on a matte panel. Its border keeps 3:1 against the panel in both skins. */
+@utility fp-field {
+  min-height: 2.75rem;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--fp-color-edge-strong);
+  padding-inline: 0.625rem;
+  color: var(--fp-color-ink);
+  font-size: 14px;
+  background-color: var(--fp-color-field);
+  box-shadow: inset 1px 1px 2px var(--fp-color-bevel-lo);
+
+  @media (width >= 64rem) {
+    min-height: 2.25rem;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+  }
+}

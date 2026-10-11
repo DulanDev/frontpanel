@@ -1,0 +1,52 @@
+/*
+ * Panels and sheets, for <Transition name="fp-sheet">. Enter is 200 ms, exit 150 ms and smaller:
+ * the eye is already moving on. Transitions (not keyframes) so a panel toggled mid-flight
+ * retargets instead of restarting.
+ */
+.fp-sheet-enter-active,
+.fp-sheet-leave-active {
+  transition-property: opacity, translate;
+  transition-timing-function: ease-out;
+  will-change: translate;
+}
+
+.fp-sheet-enter-active {
+  transition-duration: 200ms;
+}
+
+.fp-sheet-leave-active {
+  transition-duration: 150ms;
+}
+
+.fp-sheet-enter-from {
+  opacity: 0;
+  translate: 0 12px;
+}
+
+.fp-sheet-leave-to {
+  opacity: 0;
+  translate: 0 8px;
+}
+
+/* Docked columns slide in from their own edge rather than up off the bottom. */
+@media (width >= 64rem) {
+  .fp-sheet-enter-from {
+    translate: 6px 0;
+  }
+
+  .fp-sheet-leave-to {
+    translate: 4px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-sheet-enter-active,
+  .fp-sheet-leave-active {
+    transition-duration: 1ms;
+  }
+
+  .fp-sheet-enter-from,
+  .fp-sheet-leave-to {
+    translate: none;
+  }
+}
