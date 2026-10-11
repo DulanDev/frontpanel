@@ -43,7 +43,8 @@ export function generate(sources: Sources): Outputs {
 
 /** Tailwind-only syntax, which a plain `.fp-*` class could not express. */
 const tailwindOnlyAtRules = ['apply', 'variant', 'utility', 'theme', 'custom-variant', 'reference', 'plugin', 'config', 'source']
-const tailwindOnlyFunctions = ['--value', '--modifier', '--alpha', '--spacing', '--theme', 'theme']
+// The lookbehind keeps `theme(` from matching inside `--theme(` or a longer name.
+const tailwindOnlyFunction = /(?<![\w-])(--value|--modifier|--alpha|--spacing|--theme|theme)\(/
 
 function parseUtilities(source: string): Root {
   const root = postcss.parse(source)
@@ -100,16 +101,11 @@ function parseShared(source: string): Root {
 
 function rejectTailwindOnly(container: Container, label: string): void {
   container.walk((node) => {
-    const fail = (construct: string): never => {
+    const atRule = node.type === 'atrule' && tailwindOnlyAtRules.includes(node.name) ? `@${node.name}` : undefined
+    const fn = tailwindOnlyFunction.exec(node.type === 'decl' ? node.value : node.type === 'atrule' ? node.params : '')?.[1]
+    const construct = atRule ?? (fn && `${fn}()`)
+    if (construct)
       throw new GenerateError(`${label}: ${construct} has no plain-CSS form`)
-    }
-    if (node.type === 'atrule' && tailwindOnlyAtRules.includes(node.name))
-      fail(`@${node.name}`)
-    const text = node.type === 'decl' ? node.value : node.type === 'atrule' ? node.params : ''
-    for (const fn of tailwindOnlyFunctions) {
-      if (new RegExp(`(^|[^\\w-])${fn}\\(`).test(text))
-        fail(`${fn}()`)
-    }
   })
 }
 
