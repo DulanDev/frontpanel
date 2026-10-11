@@ -7,6 +7,7 @@
     --fp-color-chrome-500: #7d8898;
     --fp-color-chrome-800: #3a4250;
     --fp-color-chrome-tint: #9fc6f0;
+    --fp-color-scroll-thumb: #5d6776;
     --fp-color-shell: #bcc5d1;
     --fp-color-shell-hi: #d3dae3;
     --fp-color-shell-matte: #d6dae0;
@@ -63,6 +64,7 @@
       --fp-color-chrome-500: #22262e;
       --fp-color-chrome-800: #0e1115;
       --fp-color-chrome-tint: #36506c;
+      --fp-color-scroll-thumb: #7a8491;
       --fp-color-shell: #22262e;
       --fp-color-shell-hi: #2a2f38;
       --fp-color-shell-matte: #2c313a;
@@ -99,6 +101,7 @@
     --fp-color-chrome-500: #22262e;
     --fp-color-chrome-800: #0e1115;
     --fp-color-chrome-tint: #36506c;
+    --fp-color-scroll-thumb: #7a8491;
     --fp-color-shell: #22262e;
     --fp-color-shell-hi: #2a2f38;
     --fp-color-shell-matte: #2c313a;

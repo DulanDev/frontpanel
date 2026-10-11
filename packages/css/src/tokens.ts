@@ -16,6 +16,8 @@ export const tokens: Tokens = {
     'color-chrome-500': '#7d8898',
     'color-chrome-800': '#3a4250',
     'color-chrome-tint': '#9fc6f0',
+    // A scrollbar thumb, 3:1 against the wells and panels it scrolls over.
+    'color-scroll-thumb': '#5d6776',
 
     // Device body, the matte panels that sit on it, recessed wells, and the text that reads off them.
     'color-shell': '#bcc5d1',
@@ -85,6 +87,7 @@ export const tokens: Tokens = {
     'color-chrome-500': '#22262e',
     'color-chrome-800': '#0e1115',
     'color-chrome-tint': '#36506c',
+    'color-scroll-thumb': '#7a8491',
 
     'color-shell': '#22262e',
     'color-shell-hi': '#2a2f38',

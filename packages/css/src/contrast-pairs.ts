@@ -50,4 +50,7 @@ export const contrastPairs: ContrastPair[] = [
   { fg: 'led-on', bg: 'housing', kind: 'ui', where: 'lit green LED in its bezel' },
   { fg: 'led-amber', bg: 'housing', kind: 'ui', where: 'lit amber LED in its bezel' },
   { fg: 'led-red', bg: 'housing', kind: 'ui', where: 'lit red LED in its bezel' },
+  { fg: 'scroll-thumb', bg: 'well', kind: 'ui', where: 'scrollbar thumb in a well' },
+  { fg: 'scroll-thumb', bg: 'shell-matte', kind: 'ui', where: 'scrollbar thumb in a module' },
+  { fg: 'scroll-thumb', bg: 'shell', kind: 'ui', where: 'scrollbar thumb on the device body' },
 ]

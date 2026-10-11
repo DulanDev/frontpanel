@@ -449,6 +449,6 @@
   /** A scrolling panel, such as a list window, with a thin scrollbar that never pushes the layout. */
   .fp-scroll-thin {
     scrollbar-width: thin;
-    scrollbar-color: var(--fp-color-chrome-500) transparent;
+    scrollbar-color: var(--fp-color-scroll-thumb) transparent;
   }
 }
