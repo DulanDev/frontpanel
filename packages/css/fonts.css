@@ -1,4 +1,24 @@
 /*
- * Opt-in @font-face for Michroma (display) and VT323 (LCD), self-hosted woff2 with their OFL
- * texts in fonts/. Without it the tokens fall back to Arial Black and Courier New. Filled in Phase 1.
+ * Opt-in @font-face for the two device faces, self-hosted woff2 (latin subsets) with their SIL Open
+ * Font License texts beside them in fonts/. Michroma prints the silkscreened labels
+ * (--fp-font-display) and VT323 the LCD text (--fp-font-lcd). Without this file the tokens fall
+ * back to Arial Black and Courier New.
+ *
+ * `@import "@frontpanel/css/fonts.css";` Bundlers rewrite the URLs below; to preload the faces,
+ * serve the files at a fixed path and point a <link rel="preload"> at them.
  */
+@font-face {
+  font-family: "Michroma";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/michroma-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "VT323";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/vt323-latin-400.woff2") format("woff2");
+}
