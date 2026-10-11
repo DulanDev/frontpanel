@@ -20,3 +20,6 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      # The generated CSS is committed; a hand edit, or a source change without a rebuild, fails here.
+      - name: Generated CSS matches its source
+        run: git diff --exit-code -- packages/css
