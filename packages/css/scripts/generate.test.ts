@@ -118,6 +118,7 @@ describe('rejected source', () => {
     ['--alpha()', 'color: --alpha(var(--fp-color-ink) / 50%);'],
     ['--spacing()', 'padding: --spacing(2);'],
     ['theme()', '@media (width >= theme(--breakpoint-lg)) { color: red; }'],
+    ['--theme()', 'width: --theme(--breakpoint-lg);'],
   ])('fails on %s, which has no plain-CSS form', (construct, body) => {
     expect(() => generate(sources({ utilities: `@utility fp-x { ${body} }` })))
       .toThrow(`fp-x: ${construct} has no plain-CSS form`)

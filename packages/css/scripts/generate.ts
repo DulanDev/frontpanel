@@ -41,7 +41,7 @@ export function generate(sources: Sources): Outputs {
 
 /** Tailwind-only syntax, which a plain `.fp-*` class could not express. */
 const tailwindOnlyAtRules = ['apply', 'variant']
-const tailwindOnlyFunctions = ['--value', '--modifier', '--alpha', '--spacing', 'theme']
+const tailwindOnlyFunctions = ['--value', '--modifier', '--alpha', '--spacing', '--theme', 'theme']
 
 function parseUtilities(source: string): Root {
   const root = postcss.parse(source)
