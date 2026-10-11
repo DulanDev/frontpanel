@@ -219,6 +219,10 @@ describe('tailwind.css', () => {
     `))
   })
 
+  it('keeps @theme a block when there are no tokens', () => {
+    expect(squish(generate(sources())['tailwind.css'])).toContain('@theme inline { }')
+  })
+
   it('puts the shared rules in Tailwind\'s components layer, below its utilities', () => {
     const css = squish(generate(sources({ shared }))['tailwind.css'])
 

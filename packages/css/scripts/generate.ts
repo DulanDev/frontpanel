@@ -165,7 +165,7 @@ function componentsCss(root: Root, shared: Root): string {
  * `bg-fp-shell` changes with the skin.
  */
 function tailwindCss(utilities: Root, shared: Root, { tokens }: Sources): string {
-  const theme = postcss.atRule({ name: 'theme', params: 'inline' })
+  const theme = postcss.atRule({ name: 'theme', params: 'inline', nodes: [] })
   for (const name of Object.keys(tokens.silver))
     theme.append(postcss.decl({ prop: `--${name.replace(/^(color|font)-/, '$1-fp-')}`, value: `var(--fp-${name})` }))
   return format(postcss.root({
