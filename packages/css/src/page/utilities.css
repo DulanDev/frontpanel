@@ -29,6 +29,13 @@
     min-height: 2.25rem;
   }
 
+  /* A solid ring with a glow outside it: the glow alone fails non-text contrast on light chrome. */
+  &:focus-visible {
+    outline: 2px solid var(--fp-color-focus-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
   &:disabled {
     opacity: 0.55;
   }

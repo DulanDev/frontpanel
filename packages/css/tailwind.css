@@ -226,6 +226,13 @@
       inset -1px -1px 0 var(--fp-color-bevel-hi);
   }
 
+  /* A solid ring with a glow outside it: the glow alone fails non-text contrast on light chrome. */
+  &:focus-visible {
+    outline: 2px solid var(--fp-color-focus-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
   &:disabled {
     opacity: 0.45;
   }
@@ -275,6 +282,13 @@
     box-shadow:
       0 0 0 1px var(--fp-color-gel-lo),
       inset 0 2px 4px rgb(0 0 0 / 0.35);
+  }
+
+  /* A solid ring with a glow outside it: the glow alone fails non-text contrast on light chrome. */
+  &:focus-visible {
+    outline: 2px solid var(--fp-color-focus-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
   }
 
   &:disabled {
@@ -335,6 +349,13 @@
       0 0 0 2px var(--fp-color-select),
       inset 0 2px 3px rgb(0 0 0 / 0.35),
       inset 0 -1px 0 rgb(255 255 255 / 0.3);
+  }
+
+  /* A solid ring with a glow outside it: the glow alone fails non-text contrast on light chrome. */
+  &:focus-visible {
+    outline: 2px solid var(--fp-color-focus-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
   }
 
   &:disabled {
