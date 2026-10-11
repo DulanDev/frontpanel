@@ -16,7 +16,7 @@ export interface FpDeviceProps {
    * has; `contain` scales it to fit both sides, which needs a box with a height of its own.
    */
   fit?: FpDeviceFit
-  /** The design width in px, which scale-to-fit needs. */
+  /** The design width in px, rim included, which scale-to-fit needs. */
   width?: number
   /** A fixed design height in px. Without it the device is as tall as its contents. */
   height?: number
@@ -77,6 +77,13 @@ watch([fitting, stage, device], ([on, stageElement, deviceElement], _, onCleanup
   onCleanup(() => observer.disconnect())
 }, { flush: 'post', immediate: true })
 
+/**
+ * The stage takes its width from the page alone. Without inline-size containment the reserved box
+ * would count towards the page's min-content width and hold a grid or flex column open at the
+ * current scale, so the device could never shrink.
+ */
+const stageStyle = computed<CSSProperties | undefined>(() => fitting.value ? { contain: 'inline-size' } : undefined)
+
 /** Reserves the scaled size, so the page flows around the device as it looks. */
 const boxStyle = computed<CSSProperties | undefined>(() => {
   if (!fitting.value)
@@ -94,6 +101,7 @@ const deviceStyle = computed<CSSProperties | undefined>(() => {
   if (!fitting.value)
     return undefined
   return {
+    boxSizing: 'border-box',
     width: `${props.width}px`,
     height: props.height === undefined ? undefined : `${props.height}px`,
     scale: scale.value ?? undefined,
@@ -105,7 +113,7 @@ const deviceStyle = computed<CSSProperties | undefined>(() => {
 </script>
 
 <template>
-  <div ref="stage" :class="{ 'fp-device-backdrop': props.backdrop }">
+  <div ref="stage" :class="{ 'fp-device-backdrop': props.backdrop }" :style="stageStyle">
     <div :style="boxStyle">
       <div v-if="props.rim" ref="device" class="fp-device-rim" :style="deviceStyle">
         <div class="fp-device-body">

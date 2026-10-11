@@ -78,6 +78,13 @@ describe('fpDevice', () => {
     expect(FakeResizeObserver.instances).toHaveLength(0)
   })
 
+  it('takes its width from the page, never from the device it scales', async () => {
+    // Otherwise a scaled device holds its column open at its current size and never shrinks.
+    const wrapper = await mountDevice({ fit: 'width', width: 1000 })
+    expect(wrapper.attributes('style')).toContain('contain: inline-size')
+    expect(mount(FpDevice).attributes('style')).toBeUndefined()
+  })
+
   it('stays hidden until it has measured its room', async () => {
     const wrapper = await mountDevice({ fit: 'width', width: 1000 })
     expect(wrapper.get('.fp-device-rim').attributes('style')).toContain('visibility: hidden')
@@ -89,6 +96,8 @@ describe('fpDevice', () => {
 
     const device = wrapper.get('.fp-device-rim').attributes('style')
     expect(device).toContain('width: 1000px')
+    // The design width includes the rim, so the box reserved for it holds all of it.
+    expect(device).toContain('box-sizing: border-box')
     expect(device).toContain('scale: 0.5')
     expect(device).toContain('transform-origin: 0 0')
     expect(device).not.toContain('visibility')

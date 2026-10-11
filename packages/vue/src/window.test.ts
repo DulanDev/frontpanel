@@ -7,7 +7,7 @@ describe('fpWindow', () => {
   it('is a module region named by its title bar', () => {
     const wrapper = mount(FpWindow, { props: { title: 'Settings' }, slots: { default: '<p>Body</p>' } })
     const section = wrapper.get('section')
-    expect(section.classes()).toEqual(['fp-module', 'fp-window'])
+    expect(section.classes().sort()).toEqual(['fp-module', 'fp-window'])
 
     const heading = wrapper.get('.fp-module-title h2')
     expect(heading.classes()).toEqual(['fp-silk', 'fp-window-title'])
@@ -57,6 +57,6 @@ describe('fpWindow', () => {
 
   it('wears the sheet panel instead of the module as a sheet', () => {
     const section = mount(FpWindow, { props: { title: 'Settings', sheet: true } }).get('section')
-    expect(section.classes()).toEqual(['fp-sheet-panel', 'fp-window'])
+    expect(section.classes().sort()).toEqual(['fp-sheet-panel', 'fp-window'])
   })
 })
