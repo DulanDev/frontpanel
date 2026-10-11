@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+test-results/
+playwright-report/
+
+# Owner-only notes for Claude Code
+CLAUDE.local.md

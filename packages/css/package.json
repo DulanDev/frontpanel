@@ -1,0 +1,26 @@
+{
+  "name": "@frontpanel/css",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Early-2000s hardware skin as plain CSS: liquid-chrome bezels, gel buttons, LCDs and LEDs. Tokens, classes and an optional Tailwind 4 entry.",
+  "author": "Dulan Hewage",
+  "license": "MIT",
+  "homepage": "https://dulandev.github.io/frontpanel/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DulanDev/frontpanel.git",
+    "directory": "packages/css"
+  },
+  "keywords": ["css", "y2k", "skeuomorphic", "chrome", "ui-kit", "design-system", "tailwindcss"],
+  "sideEffects": ["*.css"],
+  "exports": {
+    ".": "./index.css",
+    "./index.css": "./index.css",
+    "./tokens.css": "./tokens.css",
+    "./base.css": "./base.css",
+    "./components.css": "./components.css",
+    "./fonts.css": "./fonts.css",
+    "./tailwind.css": "./tailwind.css"
+  },
+  "files": ["*.css", "fonts", "icons"]
+}

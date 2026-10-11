@@ -1,0 +1,4 @@
+/*
+ * Tailwind 4 entry: maps the --fp-* tokens into @theme and declares every class as @utility fp-*,
+ * so variants work (hover:, lg:). Generated in Phase 1 from the same source as components.css.
+ */

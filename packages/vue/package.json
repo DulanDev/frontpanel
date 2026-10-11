@@ -1,0 +1,44 @@
+{
+  "name": "@frontpanel/vue",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Vue 3 components for the Frontpanel early-2000s hardware skin: windows, gel buttons, LCDs, LEDs, knobs, faders and dialogs, built on Reka UI.",
+  "author": "Dulan Hewage",
+  "license": "MIT",
+  "homepage": "https://dulandev.github.io/frontpanel/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DulanDev/frontpanel.git",
+    "directory": "packages/vue"
+  },
+  "keywords": ["vue", "vue3", "components", "y2k", "skeuomorphic", "ui-kit", "design-system", "reka-ui"],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "vite build && vue-tsc -p tsconfig.build.json",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@frontpanel/css": "workspace:^",
+    "reka-ui": "^2.11.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/test-utils": "^2.5.0",
+    "happy-dom": "^20.14.3",
+    "vite": "^8.3.0",
+    "vue": "^3.5.42",
+    "vue-tsc": "^3.3.11"
+  }
+}

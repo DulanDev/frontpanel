@@ -1,0 +1,13 @@
+minimumReleaseAgeExcludePrune: true
+
+trustPolicy: no-downgrade
+# Pulled in by @types/node 22; published without provenance after earlier versions had it, which
+# trips the downgrade check.
+trustPolicyExclude:
+  - undici-types@6.21.0
+
+shellEmulator: true
+
+packages:
+  - apps/*
+  - packages/*

@@ -1,0 +1,5 @@
+/*
+ * Skin tokens as --fp-* custom properties. Chrome Silver by default; Gunmetal Night under
+ * prefers-color-scheme: dark unless [data-fp-skin="silver"], and always under
+ * [data-fp-skin="gunmetal"]. Filled in Phase 1.
+ */
