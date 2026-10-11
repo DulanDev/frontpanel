@@ -414,3 +414,9 @@
     radial-gradient(circle at 35% 30%, var(--fp-color-chrome-hi), var(--fp-color-chrome-300) 60%, var(--fp-color-chrome-500));
   box-shadow: 0 0 0 1px var(--fp-color-edge);
 }
+
+/** A scrolling panel, such as a list window, with a thin scrollbar that never pushes the layout. */
+@utility fp-scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--fp-color-chrome-500) transparent;
+}
