@@ -12,7 +12,9 @@ classic compiler API, which TypeScript 7 does not ship. Never fix a type error b
 
 ## Rules
 
-- Every class is `.fp-*` and every token `--fp-*`; classes sit in `@layer frontpanel`.
+- Every class is `.fp-*` and every token `--fp-*`. In the plain CSS, classes and tokens sit in
+  `@layer frontpanel`; the Tailwind entry puts them in Tailwind's own layers (tokens in `theme`,
+  classes as `@utility`) so its utilities still win.
 - No global side effects outside `base.css` and `fonts.css`, both opt-in. Reduced motion is handled
   per component, not by a global `*` reset.
 - `components.css` and `tailwind.css` are generated from one source so they cannot drift; never
