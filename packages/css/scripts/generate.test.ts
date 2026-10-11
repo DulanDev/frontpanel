@@ -167,6 +167,14 @@ describe('rejected source', () => {
     expect(() => generate(sources({ tokens }))).toThrow('color-label: token values are literals, not var()')
   })
 
+  it.each([
+    ['radius-btn', 'radius-btn: token names start with color- or font-'],
+    ['font-size-lcd', 'font-size-lcd: font- tokens name font families, not sizes or weights'],
+    ['font-weight-bold', 'font-weight-bold: font- tokens name font families, not sizes or weights'],
+  ])('fails on the token name %s, which has no Tailwind mapping', (name, message) => {
+    expect(() => generate(sources({ tokens: { silver: { [name]: '1px' }, gunmetal: {} } }))).toThrow(message)
+  })
+
   it('fails on a gunmetal token that silver does not define, since silver is the full set', () => {
     const tokens = { silver: { 'color-ink': '#1a1f29' }, gunmetal: { 'color-ink': '#e7eaf0', 'color-inc': '#e7eaf0' } }
 

@@ -33,6 +33,7 @@ export class GenerateError extends Error {
 export function generate(sources: Sources): Outputs {
   const utilities = parseUtilities(sources.utilities)
   const shared = parseShared(sources.shared)
+  checkTokens(sources.tokens)
   return {
     'tokens.css': tokensCss(sources),
     'components.css': componentsCss(utilities.clone(), shared.clone()),
@@ -113,10 +114,16 @@ function rejectTailwindOnly(container: Container, label: string): void {
 }
 
 /**
- * Silver is the full set. Gunmetal lists only what differs and is written twice from that one
- * list: for a dark system unless the root is forced silver, and on any element forced gunmetal.
+ * Every token maps into Tailwind's theme by its namespace, so only colours and font families are
+ * named; a new kind of token needs its mapping decided here first.
  */
-function tokensCss({ tokens }: Sources): string {
+function checkTokens(tokens: Tokens): void {
+  for (const name of Object.keys(tokens.silver)) {
+    if (/^font-(?:size|weight)-/.test(name))
+      throw new GenerateError(`${name}: font- tokens name font families, not sizes or weights`)
+    if (!/^(?:color|font)-[a-z0-9-]+$/.test(name))
+      throw new GenerateError(`${name}: token names start with color- or font-`)
+  }
   for (const name of Object.keys(tokens.gunmetal)) {
     if (!(name in tokens.silver))
       throw new GenerateError(`${name}: gunmetal sets a token silver does not define`)
@@ -127,6 +134,13 @@ function tokensCss({ tokens }: Sources): string {
     if (/\bvar\(/.test(value))
       throw new GenerateError(`${name}: token values are literals, not var()`)
   }
+}
+
+/**
+ * Silver is the full set. Gunmetal lists only what differs and is written twice from that one
+ * list: for a dark system unless the root is forced silver, and on any element forced gunmetal.
+ */
+function tokensCss({ tokens }: Sources): string {
   const silver = postcss.rule({ selector: ':root, [data-fp-skin="silver"]', nodes: declarations(tokens.silver) })
   const dark = postcss.atRule({
     name: 'media',
@@ -156,11 +170,8 @@ function componentsCss(root: Root, shared: Root): string {
  */
 function tailwindCss(utilities: Root, shared: Root, { tokens }: Sources): string {
   const theme = postcss.atRule({ name: 'theme', params: 'inline' })
-  for (const name of Object.keys(tokens.silver)) {
-    const [, namespace, rest] = /^(color|font)-(.+)$/.exec(name) ?? []
-    if (namespace)
-      theme.append(postcss.decl({ prop: `--${namespace}-fp-${rest}`, value: `var(--fp-${name})` }))
-  }
+  for (const name of Object.keys(tokens.silver))
+    theme.append(postcss.decl({ prop: `--${name.replace(/^(color|font)-/, '$1-fp-')}`, value: `var(--fp-${name})` }))
   return format(postcss.root({
     nodes: [
       postcss.atRule({ name: 'import', params: '"./tokens.css" layer(theme)' }),
