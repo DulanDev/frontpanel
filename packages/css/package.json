@@ -22,5 +22,5 @@
     "./fonts.css": "./fonts.css",
     "./tailwind.css": "./tailwind.css"
   },
-  "files": ["*.css", "fonts", "icons"]
+  "files": ["base.css", "components.css", "fonts", "fonts.css", "icons", "index.css", "tailwind.css", "tokens.css"]
 }
