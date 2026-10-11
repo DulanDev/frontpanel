@@ -139,6 +139,11 @@
     inset 0 1px 0 var(--fp-color-chrome-hi),
     0 4px 0 var(--fp-color-cast),
     0 14px 18px -10px var(--fp-color-cast);
+
+  /* A body set in the rim follows its curve: the rim's radius less its padding. */
+  & > .fp-device-body {
+    border-radius: 26px;
+  }
 }
 
 /** Molded body plastic the modules sit on. */
@@ -412,6 +417,38 @@
   );
 }
 
+/**
+ * A window: a module (or, in the page extra, a sheet panel) whose fp-module-title stays in view
+ * while its body scrolls under it.
+ */
+@utility fp-window {
+  & > .fp-module-title {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  /* Title-bar buttons stay small with a precise pointer; touch keeps the 44 px target. */
+  @media (pointer: fine) {
+    & > .fp-module-title .fp-chrome-btn {
+      min-height: 1.75rem;
+      min-width: 1.75rem;
+    }
+  }
+}
+
+/** A window's name in its title bar. Pair it with fp-silk; it pushes the title-bar buttons to the far end. */
+@utility fp-window-title {
+  margin: 0;
+  margin-inline-end: auto;
+  font-weight: 400;
+}
+
+/** The padded body under a window's title bar. */
+@utility fp-window-body {
+  padding: 0.75rem;
+}
+
 /** Recessed well inside a matte panel, for secondary content or an empty slot. */
 @utility fp-well {
   border-radius: 6px;
@@ -441,6 +478,22 @@
     0 0 0 2px var(--fp-color-chrome-800),
     inset 2px 2px 4px rgb(0 0 0 / 0.35),
     inset -1px -1px 0 rgb(255 255 255 / 0.2);
+}
+
+/** One line of LCD text. Cells of fp-lcd-ghost stacked behind it show the unlit segments, as on real glass. */
+@utility fp-lcd-line {
+  display: grid;
+  font-family: var(--fp-font-lcd);
+  white-space: pre;
+
+  & > * {
+    grid-area: 1 / 1;
+  }
+}
+
+/** The unlit segments behind an LCD line. Decorative: give it aria-hidden="true". */
+@utility fp-lcd-ghost {
+  color: var(--fp-color-lcd-ghost);
 }
 
 /** Dark housing that LEDs and small readouts sit in. */
@@ -509,4 +562,13 @@
 @utility fp-scroll-thin {
   scrollbar-width: thin;
   scrollbar-color: var(--fp-color-scroll-thumb) transparent;
+}
+
+/** A 16 px pixel icon. Size it in whole multiples of 16 px so its pixels stay crisp. */
+@utility fp-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  shape-rendering: crispEdges;
 }
