@@ -23,7 +23,8 @@ classic compiler API, which TypeScript 7 does not ship. Never fix a type error b
   classes as `@utility`) so its utilities still win.
 - Layout is the developer's choice: a device may scale as a whole or reflow its modules at their
   own breakpoints, and Frontpanel must allow both. Core classes carry no viewport breakpoints;
-  control sizes follow the input (`pointer: coarse`), and modules size to their container.
+  control sizes follow the input (44 px by default, 36 px under `pointer: fine`), and modules
+  size to their container.
 - Website-only pieces (the text field, the phone bottom sheet, page defaults) live in the opt-in
   page extra (`page.css`, `tailwind-page.css`, `base.css`), never in the core entries.
 - No global side effects outside `base.css` and `fonts.css`, both opt-in. Reduced motion is handled

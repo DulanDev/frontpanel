@@ -85,7 +85,7 @@
   );
 }
 
-/** Small hardware push button in brushed chrome. 44 px tall for touch, 36 px from 64rem. */
+/** Small hardware push button in brushed chrome. 44 px tall, 36 px with a mouse, trackpad or pen. */
 @utility fp-chrome-btn {
   display: inline-flex;
   align-items: center;
@@ -117,7 +117,7 @@
     transition-duration: 0ms;
   }
 
-  @media (width >= 64rem) {
+  @media (pointer: fine) {
     min-height: 2.25rem;
     min-width: 2.25rem;
   }
@@ -173,7 +173,7 @@
     transition-duration: 0ms;
   }
 
-  @media (width >= 64rem) {
+  @media (pointer: fine) {
     min-height: 2.5rem;
   }
 
@@ -223,7 +223,7 @@
     transition-duration: 0ms;
   }
 
-  @media (width >= 64rem) {
+  @media (pointer: fine) {
     min-height: 2.25rem;
   }
 
