@@ -81,6 +81,45 @@ describe('components.css', () => {
     expect(css).toMatch(/@layer frontpanel \{ @keyframes fp-blink \{ .*? \} \.fp-sheet-enter-from \{ opacity: 0; \} \/\*\* A push button\. \*\/ \.fp-btn \{/)
   })
 
+  it('indents multi-line selectors and block comments to their new depth', () => {
+    const shared = [
+      '/*',
+      ' * Two steps.',
+      ' */',
+      '@keyframes fp-x {',
+      '  0%,',
+      '  100% {',
+      '    opacity: 1;',
+      '  }',
+      '}',
+      '',
+      '.fp-a,',
+      '.fp-b {',
+      '  opacity: 0;',
+      '}',
+    ].join('\n')
+
+    expect(generate(sources({ shared }))['components.css'].split('\n').slice(1)).toEqual([
+      '@layer frontpanel {',
+      '  /*',
+      '   * Two steps.',
+      '   */',
+      '  @keyframes fp-x {',
+      '    0%,',
+      '    100% {',
+      '      opacity: 1;',
+      '    }',
+      '  }',
+      '',
+      '  .fp-a,',
+      '  .fp-b {',
+      '    opacity: 0;',
+      '  }',
+      '}',
+      '',
+    ])
+  })
+
   it('indents multi-line values and doc comments to their new depth, so the file reads as written', () => {
     const utilities = [
       '/**',
