@@ -61,6 +61,9 @@ function parseUtilities(source: string): Root {
       throw new GenerateError(`${name}: utility names start with fp-`)
     if (name.endsWith('-*'))
       throw new GenerateError(`${name}: functional utilities have no plain-CSS form`)
+    // The name becomes a selector in components.css, so it must be one plain class name.
+    if (!/^fp-[a-z0-9-]+$/.test(name))
+      throw new GenerateError(`${name}: utility names are fp- then lowercase letters, digits and dashes`)
     if (names.has(name))
       throw new GenerateError(`${name}: defined twice`)
     names.add(name)
