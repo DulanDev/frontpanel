@@ -298,21 +298,25 @@
   }
 }
 
+/** Blue plastic for an fp-cap, with its own label colour. */
 @utility fp-cap-blue {
   --fp-cap: var(--fp-color-cap-blue);
   --fp-cap-ink: var(--fp-color-cap-blue-ink);
 }
 
+/** Amber plastic for an fp-cap, with its own label colour. */
 @utility fp-cap-amber {
   --fp-cap: var(--fp-color-cap-amber);
   --fp-cap-ink: var(--fp-color-cap-amber-ink);
 }
 
+/** Graphite plastic for an fp-cap, with its own label colour. */
 @utility fp-cap-graphite {
   --fp-cap: var(--fp-color-cap-graphite);
   --fp-cap-ink: var(--fp-color-cap-graphite-ink);
 }
 
+/** Berry plastic for an fp-cap, with its own label colour. */
 @utility fp-cap-berry {
   --fp-cap: var(--fp-color-cap-berry);
   --fp-cap-ink: var(--fp-color-cap-berry-ink);
@@ -458,18 +462,22 @@
     inset 0 -1px 1px rgb(0 0 0 / 0.45);
 }
 
+/** Green for an fp-led, the default. */
 @utility fp-led-green {
   --fp-led: var(--fp-color-led-on);
 }
 
+/** Amber for an fp-led. */
 @utility fp-led-amber {
   --fp-led: var(--fp-color-led-amber);
 }
 
+/** Red for an fp-led. */
 @utility fp-led-red {
   --fp-led: var(--fp-color-led-red);
 }
 
+/** Lights an fp-led in its colour, with a glow. Say what it means in text nearby, never by colour alone. */
 @utility fp-led-lit {
   background-color: var(--fp-led, var(--fp-color-led-on));
   box-shadow:
