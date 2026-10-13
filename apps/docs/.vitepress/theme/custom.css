@@ -1,0 +1,80 @@
+/*
+ * VitePress's default theme in Frontpanel's colours and type. Every colour is a Frontpanel token,
+ * so both skins follow the appearance toggle (the theme sets data-fp-skin to match). Text pairings
+ * are ones that pass WCAG AA in both skins: ink and ink-soft on the matte panel and the well,
+ * ink-dim only on those two, focus-ring as the link colour (7.2:1 or more), gel-ink on the gel.
+ */
+:root,
+.dark {
+  /* Surfaces: the matte module panel, with the sidebar recessed like a well. */
+  --vp-c-bg: var(--fp-color-shell-matte);
+  --vp-c-bg-alt: var(--fp-color-well);
+  --vp-c-bg-elv: var(--fp-color-shell-matte);
+  --vp-c-bg-soft: var(--fp-color-well);
+  --vp-nav-bg-color: var(--fp-color-shell-matte);
+  --vp-sidebar-bg-color: var(--fp-color-well);
+  --vp-local-search-bg: var(--fp-color-shell-matte);
+
+  --vp-c-text-1: var(--fp-color-ink);
+  --vp-c-text-2: var(--fp-color-ink-soft);
+  --vp-c-text-3: var(--fp-color-ink-dim);
+
+  --vp-c-divider: var(--fp-color-edge);
+  --vp-c-border: var(--fp-color-edge-strong);
+  --vp-c-gutter: var(--fp-color-edge);
+
+  /* The accent: navy in Silver, the cyan glow in Gunmetal. */
+  --vp-c-brand-1: var(--fp-color-focus-ring);
+  --vp-c-brand-2: var(--fp-color-ink);
+  --vp-c-brand-3: var(--fp-color-gel);
+  --vp-c-brand-soft: var(--fp-color-well);
+  --vp-c-tip-1: var(--fp-color-focus-ring);
+  --vp-c-tip-2: var(--fp-color-ink);
+  --vp-c-tip-3: var(--fp-color-gel);
+  --vp-c-tip-soft: var(--fp-color-well);
+
+  /* The gel pill is the primary action, as on a device. */
+  --vp-button-brand-bg: var(--fp-color-gel);
+  --vp-button-brand-border: var(--fp-color-gel-lo);
+  --vp-button-brand-text: var(--fp-color-gel-ink);
+  --vp-button-brand-hover-bg: var(--fp-color-gel-lo);
+  --vp-button-brand-hover-border: var(--fp-color-gel-lo);
+  --vp-button-brand-hover-text: var(--fp-color-gel-ink);
+  --vp-button-brand-active-bg: var(--fp-color-gel-lo);
+  --vp-button-brand-active-border: var(--fp-color-gel-lo);
+  --vp-button-brand-active-text: var(--fp-color-gel-ink);
+
+  /* Code on the lightest (or darkest) field, where the highlighter's colours are made to sit. */
+  --vp-code-block-bg: var(--fp-color-field);
+  --vp-code-bg: var(--fp-color-well);
+  --vp-code-color: var(--fp-color-ink);
+  --vp-code-link-color: var(--fp-color-focus-ring);
+
+  --vp-home-hero-name-color: var(--fp-color-ink);
+
+  --vp-font-family-base: var(--fp-font-ui);
+}
+
+/* Silkscreen type for the big headings and the site title, as on a faceplate. */
+.VPNavBarTitle .title,
+.VPHero .name,
+.vp-doc h1,
+.vp-doc h2 {
+  font-family: var(--fp-font-display);
+  letter-spacing: 0.02em;
+}
+
+/* A live demo: Frontpanel on its own backdrop, out of reach of the prose styles. */
+.vp-doc .demo {
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: clip;
+}
+
+/* The home page's live device, under the features. */
+.home-demo {
+  max-width: 1152px;
+  margin: 48px auto 64px;
+  padding: 0 24px;
+}
+

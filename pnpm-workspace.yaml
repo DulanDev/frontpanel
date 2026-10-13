@@ -5,6 +5,10 @@ trustPolicy: no-downgrade
 # trips the downgrade check.
 trustPolicyExclude:
   - undici-types@6.21.0
+  # VitePress 1.6.4 (apps/docs) runs on Vite 5. This backport to the 5.x line was published after
+  # Vite 7 moved to trusted publishing, so the date-ordered check reads it as a downgrade. It was
+  # published by vitebot with SLSA provenance from Vite's own CI.
+  - vite@5.4.21
 
 shellEmulator: true
 

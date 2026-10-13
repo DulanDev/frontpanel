@@ -11,3 +11,6 @@ test-results/
 playwright-report/
 
 *.local.md
+
+# VitePress dev cache
+**/.vitepress/cache/

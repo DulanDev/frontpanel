@@ -1,0 +1,20 @@
+{
+  "name": "@frontpanel/docs",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "dependencies": {
+    "@frontpanel/css": "workspace:^",
+    "@frontpanel/vue": "workspace:^",
+    "vue": "^3.5.42"
+  },
+  "devDependencies": {
+    "postcss": "^8.5.29",
+    "vitepress": "1.6.4"
+  }
+}
