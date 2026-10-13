@@ -106,7 +106,6 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
   display: grid;
   gap: 0.75rem;
   padding: 1rem;
-  border-radius: 28px;
 }
 
 .push {
