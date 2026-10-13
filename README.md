@@ -6,6 +6,9 @@ components on top. Two skins, Chrome Silver and Gunmetal Night, follow the syste
 
 The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 
+**[Documentation](https://dulandev.github.io/frontpanel/)**: guides, live demos, and every
+component, class and token.
+
 > `0.x`, before 1.0: class names, tokens and props may still change between minor versions.
 
 | Package | What it is |
@@ -15,6 +18,11 @@ The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 | `@frontpanel/music` | Coming: chord diagram, chord matrix, chord-type caps |
 
 ## Usage
+
+```bash
+npm install @frontpanel/css          # the skin, for any framework or none
+npm install @frontpanel/vue          # Vue 3 components, which bring the css package
+```
 
 Plain CSS, everything in `@layer frontpanel`:
 
@@ -40,8 +48,10 @@ with `layer(base)` would nest them in a layer of their own, where preflight beat
 `@source` line is needed with `@frontpanel/vue`, because Tailwind doesn't scan `node_modules` and
 would skip the classes the components use; give the path from your CSS file.
 
-Each package's README covers the rest: the entries, fonts and preloading, motion, accessibility
-and browser support ([css](packages/css/README.md), [vue](packages/vue/README.md)).
+The [documentation](https://dulandev.github.io/frontpanel/) covers the rest: skins, layout,
+fonts and preloading, motion, accessibility, browser support, and a reference for every
+component, class and token. Each package's README has the essentials
+([css](packages/css/README.md), [vue](packages/vue/README.md)).
 
 ## Development
 

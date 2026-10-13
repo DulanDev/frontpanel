@@ -7,6 +7,9 @@ optional Tailwind 4 entry.
 
 The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 
+**[Documentation](https://dulandev.github.io/frontpanel/)**: guides, live demos, and every
+component, class and token.
+
 > `0.x`: the class and token names may still change between minor versions. Pin the version.
 
 ## Install

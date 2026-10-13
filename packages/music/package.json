@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Optional Frontpanel add-on: chord diagram, chord matrix and chord-type caps for music apps. Presentational only; you supply the chord data.",
-  "author": "Dulan Hewage",
+  "author": "Dulan Katukurundage",
   "license": "MIT",
   "homepage": "https://dulandev.github.io/frontpanel/",
   "repository": {

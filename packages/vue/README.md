@@ -7,6 +7,9 @@ and ARIA come from [Reka UI](https://reka-ui.com); the look comes from
 
 The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 
+**[Documentation](https://dulandev.github.io/frontpanel/)**: guides, live demos, and every
+component, class and token.
+
 > `0.x`: props may still change between minor versions. Pin the version.
 
 ## Install
