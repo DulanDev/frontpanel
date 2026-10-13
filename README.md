@@ -14,6 +14,32 @@ The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 | `@frontpanel/vue` | Vue 3 components built on [Reka UI](https://reka-ui.com) |
 | `@frontpanel/music` | Optional add-on: chord diagram, chord matrix, chord-type caps |
 
+## Usage
+
+Plain CSS, everything in `@layer frontpanel`:
+
+```css
+@import "@frontpanel/css/index.css";  /* tokens and .fp-* classes */
+@import "@frontpanel/css/fonts.css";  /* optional: the bundled fonts */
+@import "@frontpanel/css/page.css";   /* optional: website pieces around a device */
+@import "@frontpanel/css/base.css";   /* optional: page defaults */
+```
+
+Tailwind 4, where the tokens join the theme and the classes become utilities:
+
+```css
+@import "tailwindcss";
+@import "@frontpanel/css/tailwind.css";
+@import "@frontpanel/css/tailwind-page.css";  /* optional */
+@import "@frontpanel/css/tailwind-base.css";  /* optional, and with no layer() */
+@source "../node_modules/@frontpanel/vue/dist";
+```
+
+`tailwind-base.css` puts the page defaults in Tailwind's `base` layer itself; importing `base.css`
+with `layer(base)` would nest them in a layer of their own, where preflight beats them. The
+`@source` line is needed with `@frontpanel/vue`, because Tailwind doesn't scan `node_modules` and
+would skip the classes the components use; give the path from your CSS file.
+
 ## Development
 
 ```bash
