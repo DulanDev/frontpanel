@@ -15,7 +15,10 @@ export default defineConfig({
   description: 'An early-2000s hardware UI kit for building device front panels: liquid-chrome bezels, gel buttons, LCD readouts and LEDs, in plain CSS with Vue 3 components on top.',
   cleanUrls: true,
   lastUpdated: true,
-  head: [['script', {}, skinScript]],
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/frontpanel/favicon.svg' }],
+    ['script', {}, skinScript],
+  ],
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },

@@ -23,7 +23,7 @@ const sources = [
 const files = sources.map(({ file }) => new URL(file, import.meta.url))
 
 export default defineLoader({
-  watchFiles: ['../../packages/css/src/utilities.css', '../../packages/css/src/page/utilities.css'],
+  watch: sources.map(({ file }) => file),
   load(): ClassDoc[] {
     return sources.flatMap(({ entry }, index) => {
       const root = postcss.parse(readFileSync(files[index]!, 'utf8'))

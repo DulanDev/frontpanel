@@ -133,3 +133,9 @@
   gap: 8px;
   font-size: 12px;
 }
+
+/* The two skins side by side. */
+.skins {
+  display: grid;
+  gap: 0;
+}

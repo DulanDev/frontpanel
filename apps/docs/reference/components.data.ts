@@ -25,7 +25,8 @@ const src = fileURLToPath(new URL('../../../packages/vue/src/', import.meta.url)
 const tsconfig = fileURLToPath(new URL('../../../packages/vue/tsconfig.json', import.meta.url))
 
 export default defineLoader({
-  watchFiles: ['../../packages/vue/src/*.vue'],
+  // Relative to this file.
+  watch: ['../../../packages/vue/src/*.vue'],
   load(): Record<string, ComponentDoc> {
     const checker = createChecker(tsconfig, { schema: false, printer: { newLine: 1 } })
     const files = readdirSync(src).filter(file => /^Fp\w+\.vue$/.test(file))
