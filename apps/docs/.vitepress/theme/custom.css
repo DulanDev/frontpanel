@@ -78,3 +78,58 @@
   padding: 0 24px;
 }
 
+
+/* A small demo surface: the device body's plastic, with the controls set on it. */
+.demo-surface {
+  padding: 20px;
+  background-color: var(--fp-color-shell);
+  color: var(--fp-color-ink);
+  font-family: var(--fp-font-ui);
+  font-size: 14px;
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.demo-window {
+  max-width: 320px;
+}
+
+.demo-list {
+  margin: 0;
+  padding: 6px 8px 6px 28px;
+}
+
+.demo-cap {
+  min-width: 44px;
+}
+
+.demo-lcd {
+  padding: 6px 12px;
+}
+
+.demo-lcd-line {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.demo-well {
+  padding: 8px 12px;
+}
+
+.demo-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 12px;
+}
+
+.demo-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}

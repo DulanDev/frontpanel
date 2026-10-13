@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "postcss": "^8.5.29",
-    "vitepress": "1.6.4"
+    "vitepress": "1.6.4",
+    "vue-component-meta": "^3.3.13"
   }
 }
