@@ -49,6 +49,7 @@ and browser support ([css](packages/css/README.md), [vue](packages/vue/README.md
 pnpm install                              # Node >= 22, pnpm 10
 pnpm lint / pnpm typecheck / pnpm test
 pnpm build                                # every package and the showcase
+pnpm --filter @frontpanel/docs dev        # docs site dev server
 pnpm --filter @frontpanel/showcase dev    # showcase dev server
 pnpm changeset                            # record a user-facing change
 ```
