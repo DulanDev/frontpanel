@@ -5,6 +5,7 @@ import FpButton from './FpButton.vue'
 import FpIcon from './FpIcon.vue'
 
 export interface FpWindowProps {
+  /** The window's name, shown in the title bar; it also names the window for assistive tech. */
   title: string
   /** The title's heading level. */
   level?: 2 | 3 | 4 | 5 | 6

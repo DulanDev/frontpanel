@@ -5,6 +5,7 @@ import { Primitive } from 'reka-ui'
 import { computed } from 'vue'
 
 export interface FpLcdLineProps extends PrimitiveProps {
+  /** The text on the glass. Readouts read best in capitals. */
   text: string
   /** Shows the unlit segments behind the text, as on real glass. */
   ghost?: boolean

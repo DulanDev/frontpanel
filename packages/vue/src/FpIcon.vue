@@ -5,6 +5,7 @@ import { computed } from 'vue'
 import { fpIconPaths } from './icons'
 
 export interface FpIconProps {
+  /** Which glyph, one of `fpIconNames`. */
   name: FpIconName
   /** Announces the icon as an image with this name, for an icon that stands alone. */
   label?: string

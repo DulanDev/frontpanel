@@ -2,7 +2,9 @@
 export type FpLedColor = 'green' | 'amber' | 'red'
 
 export interface FpLedProps {
+  /** The colour it lights in. */
   color?: FpLedColor
+  /** Lights the LED, with a glow. */
   lit?: boolean
   /** Blinks twice when it lights, then holds, to confirm an action. Re-key the LED to blink again. */
   blink?: boolean
