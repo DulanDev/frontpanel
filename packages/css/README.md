@@ -65,7 +65,32 @@ text pairing passes WCAG AA in both.
 
 A device can scale as a whole or reflow its modules at your breakpoints: the classes carry no
 viewport breakpoints. Controls are 44 px by default and 36 px under a precise pointer
-(`pointer: fine`). Each interactive class has its own focus ring and handles reduced motion.
+(`pointer: fine`). Each interactive class has its own focus ring.
+
+## Motion
+
+Nothing resets motion globally. Each class that moves (the LCD redraw, the LED's double blink,
+the press of a button) handles `prefers-reduced-motion` itself. Under reduced motion the phone
+sheet (`fp-sheet-*`) doesn't slide and its transition lasts 1 ms rather than 0, so a
+`transitionend` listener still hears it finish.
+
+## Fonts
+
+`fonts.css` loads Michroma (silkscreen labels and titles) and VT323 (LCD text) from its own
+`fonts/` folder, and your bundler serves them from wherever it puts them. Without it, the tokens
+fall back to Arial Black and Courier New. Tahoma is the UI face, from the system.
+
+To preload the fonts, they need URLs that don't change between builds. Copy `fonts/` into your
+public folder at build time and write the two `@font-face` rules yourself, pointing at those
+URLs, in place of `fonts.css`. The file names (`michroma-latin-400.woff2`,
+`vt323-latin-400.woff2`) stay the same across releases; a rename would be a breaking change.
+
+## Browser support
+
+The plain CSS uses native CSS nesting, so it needs Chrome and Edge 112, Firefox 117 or Safari
+16.5 (Baseline 2023) or later. Everything else it uses is older: cascade layers, `:where()`,
+`color-mix()`, `dvh` and the `translate` property. The Tailwind entry follows Tailwind 4's own
+support, since Tailwind compiles the nesting away.
 
 ## Licence
 

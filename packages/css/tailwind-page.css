@@ -41,6 +41,10 @@
     }
   }
 
+  /*
+   * Reduced motion: no slide, and 1 ms rather than 0, which reads as instant. A 0 ms transition fires
+   * no transitionend, so code waiting for the sheet to finish would wait forever.
+   */
   @media (prefers-reduced-motion: reduce) {
     .fp-sheet-enter-active,
     .fp-sheet-leave-active {
