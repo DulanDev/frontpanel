@@ -1,18 +1,18 @@
 # Frontpanel
 
 An early-2000s hardware UI kit for building device front panels in the browser: liquid-chrome
-bezels, glossy gel buttons, knobs, LCD readouts and LEDs, in plain CSS with Vue 3 components on
-top. Two skins, Chrome Silver and Gunmetal Night, follow the system setting.
+bezels, glossy gel buttons, molded caps, LCD readouts and LEDs, in plain CSS with Vue 3
+components on top. Two skins, Chrome Silver and Gunmetal Night, follow the system setting.
 
 The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 
-> Pre-release. Nothing is published yet; the packages below are placeholders until v1.
+> `0.x`, before 1.0: class names, tokens and props may still change between minor versions.
 
 | Package | What it is |
 | --- | --- |
 | `@frontpanel/css` | Tokens, `.fp-*` classes, optional base styles, fonts and a Tailwind 4 entry |
 | `@frontpanel/vue` | Vue 3 components built on [Reka UI](https://reka-ui.com) |
-| `@frontpanel/music` | Optional add-on: chord diagram, chord matrix, chord-type caps |
+| `@frontpanel/music` | Coming: chord diagram, chord matrix, chord-type caps |
 
 ## Usage
 
@@ -39,6 +39,9 @@ Tailwind 4, where the tokens join the theme and the classes become utilities:
 with `layer(base)` would nest them in a layer of their own, where preflight beats them. The
 `@source` line is needed with `@frontpanel/vue`, because Tailwind doesn't scan `node_modules` and
 would skip the classes the components use; give the path from your CSS file.
+
+Each package's README covers the rest: the entries, fonts and preloading, motion, accessibility
+and browser support ([css](packages/css/README.md), [vue](packages/vue/README.md)).
 
 ## Development
 

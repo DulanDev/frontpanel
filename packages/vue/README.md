@@ -71,8 +71,23 @@ const playing = ref(false)
 | `FpHousing`, `FpWell`, `FpSilk`, `FpScrew` | A dark housing for LEDs, a recessed well, a silkscreened label, a screw head |
 | `FpIcon` | An 18-glyph 16 px pixel icon set (`fpIconNames`) |
 
-Element components take Reka's `as` and `asChild`. LEDs and icons are decorative unless given a
-`label`.
+Element components take Reka's `as` and `asChild`.
+
+## Accessibility
+
+- **LEDs and icons are decorative** (`aria-hidden`) unless you give them a `label`, which makes
+  them an image with that name. Say an LED's state in text nearby, or label it; colour alone
+  never carries meaning.
+- **An icon-only button needs a name.** Put `aria-label` on the `FpButton` and leave the
+  `FpIcon` inside it decorative.
+- **`pressed` makes a toggle.** On `FpButton` and `FpCap` it sets `aria-pressed` and holds the
+  control down; leave it unset for an ordinary button, which then gets no `aria-pressed`.
+- **Closing an `FpWindow` removes the focused close button.** Move focus back to the control
+  that opened the window.
+- **`FpSilk` is a span.** Render it as a heading or `label` (`as="h3"`, `as="label"`) where it
+  names something.
+- Every control shows a focus ring, every text colour pairing passes WCAG AA in both skins, and
+  each moving part respects `prefers-reduced-motion`.
 
 ## Licence
 
