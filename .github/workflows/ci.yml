@@ -18,7 +18,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      # Build first: the showcase typechecks against the built @frontpanel/vue, as a consumer would.
+      # Build first: the docs typecheck against the built @frontpanel/vue, as a consumer would.
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test

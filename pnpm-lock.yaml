@@ -55,31 +55,6 @@ importers:
         specifier: ^3.3.11
         version: 3.3.13(typescript@6.0.3)
 
-  apps/showcase:
-    dependencies:
-      '@frontpanel/css':
-        specifier: workspace:^
-        version: link:../../packages/css
-      '@frontpanel/music':
-        specifier: workspace:^
-        version: link:../../packages/music
-      '@frontpanel/vue':
-        specifier: workspace:^
-        version: link:../../packages/vue
-      vue:
-        specifier: ^3.5.42
-        version: 3.5.43(typescript@6.0.3)
-    devDependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^6.0.8
-        version: 6.0.10(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))
-      vite:
-        specifier: ^8.3.0
-        version: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)
-      vue-tsc:
-        specifier: ^3.3.11
-        version: 3.3.13(typescript@6.0.3)
-
   packages/css:
     devDependencies:
       postcss:

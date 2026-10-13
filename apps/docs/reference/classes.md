@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import ClassSheet from '../.vitepress/theme/demos/ClassSheet.vue'
 import { data as classes } from './classes.data'
+
+const skins = [
+  { id: 'silver', name: 'Chrome Silver' },
+  { id: 'gunmetal', name: 'Gunmetal Night' },
+] as const
 
 // Backticks in a doc comment become inline code; everything else is plain text.
 function render(doc: string): string {
@@ -23,6 +29,12 @@ reduced motion.
 
 "Responds to" lists the states a class styles: `aria-pressed`, hover and focus, and the input and
 motion queries. Use the ARIA attributes the class expects, and the right look follows.
+
+Every core class on one device, built from plain classes alone, in both skins:
+
+<div class="vp-raw demo class-sheets">
+  <ClassSheet v-for="skin in skins" :key="skin.id" :skin="skin" />
+</div>
 
 ## Core
 
@@ -59,6 +71,11 @@ motion queries. Use the ARIA attributes the class expects, and the right look fo
 </div>
 
 <style>
+.class-sheets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
+
 .class-item h3 {
   margin-top: 32px;
 }

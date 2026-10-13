@@ -13,7 +13,7 @@ labels and readouts. Overlays are device parts (a window, a faceplate menu, an L
 
 pnpm workspace: `packages/css` (`@frontpanel/css`), `packages/vue` (`@frontpanel/vue`),
 `packages/music` (`@frontpanel/music`), `apps/docs` (private, the VitePress docs site, GitHub Pages
-at `/frontpanel/`), `apps/showcase` (private, every class in both skins).
+at `/frontpanel/`).
 Commands are in `README.md`. TypeScript stays on 6.x: `vue-tsc` and typescript-eslint need the
 classic compiler API, which TypeScript 7 does not ship. Never fix a type error by bumping it.
 
