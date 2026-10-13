@@ -13,6 +13,15 @@ export interface FpCapProps extends PrimitiveProps {
 }
 
 const props = withDefaults(defineProps<FpCapProps>(), { as: 'button', color: 'white', pressed: undefined })
+
+// Written out in full: Tailwind generates only the class names it finds in the source it scans.
+const colorClass: Record<FpCapColor, string | undefined> = {
+  white: undefined,
+  blue: 'fp-cap-blue',
+  amber: 'fp-cap-amber',
+  graphite: 'fp-cap-graphite',
+  berry: 'fp-cap-berry',
+}
 </script>
 
 <template>
@@ -20,7 +29,7 @@ const props = withDefaults(defineProps<FpCapProps>(), { as: 'button', color: 'wh
     :as="props.as"
     :as-child="props.asChild"
     class="fp-cap"
-    :class="props.color === 'white' ? undefined : `fp-cap-${props.color}`"
+    :class="colorClass[props.color]"
     :type="props.as === 'button' && !props.asChild ? 'button' : undefined"
     :aria-pressed="props.pressed"
   >

@@ -11,7 +11,16 @@
     "url": "git+https://github.com/DulanDev/frontpanel.git",
     "directory": "packages/vue"
   },
-  "keywords": ["vue", "vue3", "components", "y2k", "skeuomorphic", "ui-kit", "design-system", "reka-ui"],
+  "keywords": [
+    "vue",
+    "vue3",
+    "components",
+    "y2k",
+    "skeuomorphic",
+    "ui-kit",
+    "design-system",
+    "reka-ui"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
@@ -19,7 +28,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build && vue-tsc -p tsconfig.build.json",
     "typecheck": "vue-tsc --noEmit",
@@ -34,9 +45,11 @@
     "reka-ui": "^2.11.0"
   },
   "devDependencies": {
+    "@tailwindcss/oxide": "^4.3.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.5.0",
     "happy-dom": "^20.14.3",
+    "tailwindcss": "^4.3.3",
     "vite": "^8.3.0",
     "vue": "^3.5.42",
     "vue-tsc": "^3.3.11"
