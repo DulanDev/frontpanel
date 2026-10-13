@@ -87,4 +87,14 @@ describe('tailwind.css compiled by Tailwind', () => {
     expect(preflight).toBeGreaterThan(-1)
     expect(defaults).toBeGreaterThan(preflight)
   })
+
+  it('lets a radius utility on a body in the rim beat the rim\'s own, as the app sizes its rim', async () => {
+    const shipped = { 'tailwind.css': await readFile(new URL('../tailwind.css', import.meta.url), 'utf8'), 'tokens.css': await readFile(new URL('../tokens.css', import.meta.url), 'utf8') } as Outputs
+    const css = await build(shipped, ['sm:fp-device-rim', 'fp-device-body', 'sm:rounded-[22px]'])
+    const rimBody = /([^{}]+)\{ overflow: clip; border-radius: 26px; \}/.exec(css)?.[1]?.trim()
+
+    expect(css).toContain('border-radius: 22px')
+    // A body utility has one class's specificity, so the rim's rule for the body must have none.
+    expect(rimBody).toBe(':where(.sm\\:fp-device-rim > .fp-device-body)')
+  })
 })

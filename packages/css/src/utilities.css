@@ -50,8 +50,11 @@
     0 4px 0 var(--fp-color-cast),
     0 14px 18px -10px var(--fp-color-cast);
 
-  /* A body set in the rim follows its curve (the rim's radius less its padding) and clips to it. */
-  & > .fp-device-body {
+  /*
+   * A body set in the rim follows its curve (the rim's radius less its padding) and clips to it.
+   * No specificity, so a rim sized another way can give its body a matching radius with a class.
+   */
+  :where(& > .fp-device-body) {
     overflow: clip;
     border-radius: 26px;
   }
