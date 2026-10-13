@@ -184,6 +184,11 @@
       filter: drop-shadow(0 0 3px var(--fp-color-focus));
     }
 
+    /* The hover filter outranks the focus rule, so a hovered control keeps its glow here. */
+    &:focus-visible:hover:not(:disabled) {
+      filter: brightness(1.05) drop-shadow(0 0 3px var(--fp-color-focus));
+    }
+
     &:disabled {
       opacity: 0.45;
     }
@@ -240,6 +245,11 @@
       outline: 2px solid var(--fp-color-focus-ring);
       outline-offset: 2px;
       filter: drop-shadow(0 0 3px var(--fp-color-focus));
+    }
+
+    /* The hover filter outranks the focus rule, so a hovered control keeps its glow here. */
+    &:focus-visible:hover:not(:disabled) {
+      filter: brightness(1.08) drop-shadow(0 0 3px var(--fp-color-focus));
     }
 
     &:disabled {
@@ -307,6 +317,11 @@
       outline: 2px solid var(--fp-color-focus-ring);
       outline-offset: 2px;
       filter: drop-shadow(0 0 3px var(--fp-color-focus));
+    }
+
+    /* The hover filter outranks the focus rule, so a hovered control keeps its glow here. */
+    &:focus-visible:hover:not(:disabled) {
+      filter: brightness(1.05) drop-shadow(0 0 3px var(--fp-color-focus));
     }
 
     &:disabled {
