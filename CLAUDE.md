@@ -26,11 +26,13 @@ classic compiler API, which TypeScript 7 does not ship. Never fix a type error b
   control sizes follow the input (44 px by default, 36 px under `pointer: fine`), and modules
   size to their container.
 - Website-only pieces (the text field, the phone bottom sheet, page defaults) live in the opt-in
-  page extra (`page.css`, `tailwind-page.css`, `base.css`), never in the core entries.
-- No global side effects outside `base.css` and `fonts.css`, both opt-in. Reduced motion is handled
-  per component, not by a global `*` reset.
-- `tokens.css`, `components.css`, `tailwind.css`, `page.css` and `tailwind-page.css` are generated
-  from `packages/css/src/` by `pnpm build` so they cannot drift; never edit one by hand.
+  page extra (`page.css`, `tailwind-page.css`, `base.css`, `tailwind-base.css`), never in the
+  core entries.
+- No global side effects outside `base.css` (and its Tailwind twin) and `fonts.css`, all opt-in.
+  Reduced motion is handled per component, not by a global `*` reset.
+- `tokens.css`, `components.css`, `tailwind.css`, `page.css`, `tailwind-page.css`, `base.css` and
+  `tailwind-base.css` are generated from `packages/css/src/` by `pnpm build` so they cannot drift;
+  never edit one by hand.
 - One light source, top-left: bevels are light on top and left, and invert when pressed. Every text
   pairing must pass WCAG AA in both skins.
 - Behaviour and ARIA come from Reka UI; Frontpanel supplies the skin. Hand-roll only what Reka lacks

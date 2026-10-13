@@ -22,9 +22,10 @@
     "./fonts.css": "./fonts.css",
     "./tailwind.css": "./tailwind.css",
     "./page.css": "./page.css",
-    "./tailwind-page.css": "./tailwind-page.css"
+    "./tailwind-page.css": "./tailwind-page.css",
+    "./tailwind-base.css": "./tailwind-base.css"
   },
-  "files": ["base.css", "components.css", "fonts", "fonts.css", "icons", "index.css", "page.css", "tailwind-page.css", "tailwind.css", "tokens.css"],
+  "files": ["base.css", "components.css", "fonts", "fonts.css", "icons", "index.css", "page.css", "tailwind-base.css", "tailwind-page.css", "tailwind.css", "tokens.css"],
   "scripts": {
     "build": "node scripts/build.ts",
     "build:watch": "node scripts/build.ts --watch",

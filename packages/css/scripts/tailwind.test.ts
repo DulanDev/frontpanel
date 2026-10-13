@@ -44,6 +44,11 @@ const outputs = generate({
       }
     `,
     shared: '',
+    base: `
+      :root {
+        font-family: var(--fp-font-ui);
+      }
+    `,
   },
 })
 
@@ -72,5 +77,14 @@ describe('tailwind.css compiled by Tailwind', () => {
 
     expect(css).toContain('.fp-field { border: 1px solid var(--fp-color-shell); }')
     expect(css).toContain('@media (width >= 64rem) { .lg\\:fp-field {')
+  })
+
+  it('puts the page defaults straight in Tailwind\'s base layer after preflight, so they win over its font, as the app imports them', async () => {
+    const css = await build(outputs, [], ['tailwind.css', 'tailwind-page.css', 'tailwind-base.css'])
+    const preflight = css.indexOf('html, :host {')
+    const defaults = css.indexOf('@layer base { :root { font-family: var(--fp-font-ui); } }')
+
+    expect(preflight).toBeGreaterThan(-1)
+    expect(defaults).toBeGreaterThan(preflight)
   })
 })

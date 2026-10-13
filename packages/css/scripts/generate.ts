@@ -8,7 +8,9 @@
  *
  * The page extra (src/page/) goes through the same transform into page.css and
  * tailwind-page.css: website pieces, such as a text field or a phone bottom sheet, that the device
- * kit's core entries leave out.
+ * kit's core entries leave out. Its page defaults (page/base.css) go into base.css in
+ * @layer frontpanel, and into tailwind-base.css straight in Tailwind's base layer: a layer inside
+ * base would lose to preflight's own rules there.
  */
 import type { ChildNode, Container, Declaration, Node, Root } from 'postcss'
 import postcss from 'postcss'
@@ -23,7 +25,7 @@ export interface Sources {
   shared: string
   tokens: Tokens
   /** The opt-in page extra: website pieces kept out of the device kit's core entries. */
-  page: { utilities: string, shared: string }
+  page: { utilities: string, shared: string, base: string }
 }
 
 export interface Outputs {
@@ -32,6 +34,8 @@ export interface Outputs {
   'tailwind.css': string
   'page.css': string
   'tailwind-page.css': string
+  'base.css': string
+  'tailwind-base.css': string
 }
 
 export class GenerateError extends Error {
@@ -45,6 +49,8 @@ export function generate(sources: Sources): Outputs {
   const shared = parseShared(sources.shared, 'shared.css')
   const pageUtilities = parseUtilities(sources.page.utilities, 'page/utilities.css', names)
   const pageShared = parseShared(sources.page.shared, 'page/shared.css')
+  const base = postcss.parse(sources.page.base)
+  rejectTailwindOnly(base, 'page/base.css')
   utilities.walkAtRules('utility', utility => rejectViewportQueries(utility, utility.params))
   rejectViewportQueries(shared, 'shared.css')
   checkTokens(sources.tokens)
@@ -54,6 +60,8 @@ export function generate(sources: Sources): Outputs {
     'tailwind.css': tailwindCss(utilities, shared, sources),
     'page.css': componentsCss(pageUtilities.clone(), pageShared.clone()),
     'tailwind-page.css': format(postcss.root({ nodes: tailwindClasses(pageUtilities, pageShared) })),
+    'base.css': format(postcss.root({ nodes: [postcss.atRule({ name: 'layer', params: 'frontpanel', nodes: base.clone().nodes })] })),
+    'tailwind-base.css': format(postcss.root({ nodes: [postcss.atRule({ name: 'layer', params: 'base', nodes: base.nodes })] })),
   }
 }
 

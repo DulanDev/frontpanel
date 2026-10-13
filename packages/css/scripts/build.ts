@@ -21,6 +21,7 @@ async function readSources(): Promise<Sources> {
     page: {
       utilities: await readFile(new URL('page/utilities.css', src), 'utf8'),
       shared: await readFile(new URL('page/shared.css', src), 'utf8'),
+      base: await readFile(new URL('page/base.css', src), 'utf8'),
     },
   }
 }
