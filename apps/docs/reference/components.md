@@ -51,7 +51,9 @@ breakpoints.
 ## FpWindow
 
 A window on the device: a matte module with a chrome title bar. `closable` adds a close button
-that emits `close`; `sheet` wears the phone bottom sheet from the page extra instead.
+that emits `close`; `sheet` wears the phone bottom sheet from the page extra instead. `as`
+renders it as another element, such as an `aside`, and `flush` leaves the body unpadded for
+contents that run edge to edge.
 
 <div class="vp-raw demo demo-surface">
   <FpWindow title="Playlist" :level="3" closable class="demo-window">

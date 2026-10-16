@@ -55,6 +55,21 @@ describe('fpWindow', () => {
     expect(buttons.map(button => button.classes()[0])).toEqual(['extra', 'fp-chrome-btn'])
   })
 
+  it('renders as another landmark element', () => {
+    const wrapper = mount(FpWindow, { props: { title: 'Inspector', as: 'aside' } })
+    expect(wrapper.find('section').exists()).toBe(false)
+    const aside = wrapper.get('aside')
+    expect(aside.classes().sort()).toEqual(['fp-module', 'fp-window'])
+    expect(aside.attributes('aria-labelledby')).toBe(wrapper.get('h2').attributes('id'))
+  })
+
+  it('leaves the body unpadded when flush', () => {
+    const wrapper = mount(FpWindow, { props: { title: 'Tracks', flush: true }, slots: { default: '<ol></ol>' } })
+    const body = wrapper.get('.fp-module-title + div')
+    expect(body.classes()).toEqual([])
+    expect(body.find('ol').exists()).toBe(true)
+  })
+
   it('wears the sheet panel instead of the module as a sheet', () => {
     const section = mount(FpWindow, { props: { title: 'Settings', sheet: true } }).get('section')
     expect(section.classes().sort()).toEqual(['fp-sheet-panel', 'fp-window'])

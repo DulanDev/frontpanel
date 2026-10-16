@@ -1,10 +1,17 @@
 <script setup lang="ts">
 // A window on the device: a matte module with a chrome title bar, docked wherever the caller puts it.
+import type { PrimitiveProps } from 'reka-ui'
+import { Primitive } from 'reka-ui'
 import { useId } from 'vue'
 import FpButton from './FpButton.vue'
 import FpIcon from './FpIcon.vue'
 
 export interface FpWindowProps {
+  /**
+   * The window's element. A `section` or `aside` is a landmark named by the title; a `div` is not a
+   * landmark.
+   */
+  as?: PrimitiveProps['as']
   /** The window's name, shown in the title bar; it also names the window for assistive tech. */
   title: string
   /** The title's heading level. */
@@ -21,9 +28,11 @@ export interface FpWindowProps {
    * Position the sheet and choose when to use it yourself; wrap it in `<Transition name="fp-sheet">`.
    */
   sheet?: boolean
+  /** Leaves the body unpadded, for contents that run edge to edge, like a list or a rack of rows. */
+  flush?: boolean
 }
 
-const props = withDefaults(defineProps<FpWindowProps>(), { level: 2 })
+const props = withDefaults(defineProps<FpWindowProps>(), { as: 'section', level: 2 })
 
 const emit = defineEmits<{
   close: []
@@ -39,7 +48,12 @@ const titleId = useId()
 </script>
 
 <template>
-  <section class="fp-window" :class="[props.sheet ? 'fp-sheet-panel' : 'fp-module']" :aria-labelledby="titleId">
+  <Primitive
+    :as="props.as"
+    class="fp-window"
+    :class="[props.sheet ? 'fp-sheet-panel' : 'fp-module']"
+    :aria-labelledby="titleId"
+  >
     <div class="fp-module-title">
       <component :is="`h${props.level}`" :id="titleId" class="fp-silk fp-window-title">
         {{ props.title }}
@@ -49,8 +63,8 @@ const titleId = useId()
         <FpIcon name="close" />
       </FpButton>
     </div>
-    <div class="fp-window-body">
+    <div :class="props.flush ? undefined : 'fp-window-body'">
       <slot />
     </div>
-  </section>
+  </Primitive>
 </template>
