@@ -66,7 +66,8 @@ export const tokens: Tokens = {
     'color-gel-ink': '#ffffff',
 
     'color-focus': '#4fd2ff',
-    'color-focus-ring': '#0a3d62',
+    // The gel's blue, so focus shares the one accent; 3.2:1 on the page backdrop, its darkest ground.
+    'color-focus-ring': '#1a56b0',
     // Ring around a selected cap: dark on silver, amber on gunmetal, so it reads against white plastic.
     'color-select': '#1a1f29',
     'color-error-text': '#b3261e',
