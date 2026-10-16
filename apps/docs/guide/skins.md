@@ -31,11 +31,14 @@ wins inside its element, so a page can show both skins side by side, as above.
 
 ## Native controls
 
-`base.css`, the opt-in page defaults, sets `color-scheme` on the root to match, so native
-scrollbars and form controls follow the skin, forced or not.
+Each skin names its `--fp-scheme`, `light` or `dark`. The device's surfaces (backdrop, rim, body,
+modules, wells, `fp-scroll-thin`, and the page extra's sheet and field) wear it as their
+`color-scheme`, so native scrollbars and form controls inside a device follow its skin, forced or
+not, even a Gunmetal device on a light page. `base.css`, the opt-in page defaults, sets it on the
+root too; without it, the page outside the device is left alone.
 
 ## A custom skin
 
-A skin is a set of `--fp-color-*` values. Set the same names on your own selector and every class
-follows. The [checked pairs](../reference/tokens#checked-pairs) are the pairings the classes rely
+A skin is a set of `--fp-color-*` values and its `--fp-scheme`. Set the same names on your own
+selector and every class follows; a dark custom skin sets `--fp-scheme: dark`. The [checked pairs](../reference/tokens#checked-pairs) are the pairings the classes rely
 on: a custom skin that keeps them passing stays readable.

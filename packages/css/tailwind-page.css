@@ -64,6 +64,7 @@
  */
 /** A matte panel lifted over the device as a bottom sheet on phones; dock it as an fp-module on wide screens. */
 @utility fp-sheet-panel {
+  color-scheme: var(--fp-scheme);
   border-radius: 14px 14px 0 0;
   background-color: var(--fp-color-shell-matte);
   box-shadow:
@@ -74,6 +75,7 @@
 
 /** Inset text field or select on a matte panel. Its border keeps 3:1 against the panel in both skins. */
 @utility fp-field {
+  color-scheme: var(--fp-scheme);
   min-height: 2.75rem;
   width: 100%;
   border-radius: 6px;

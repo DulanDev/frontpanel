@@ -69,7 +69,7 @@ describe('tailwind.css compiled by Tailwind', () => {
     const css = await build(outputs, [])
 
     expect(css).toContain('@layer theme, base, components, utilities;')
-    expect(css).toContain('@layer theme { @layer frontpanel { :root, [data-fp-skin="silver"] { --fp-color-shell: #bcc5d1; }')
+    expect(css).toContain('@layer theme { @layer frontpanel { :root, [data-fp-skin="silver"] { --fp-scheme: light; --fp-color-shell: #bcc5d1; }')
   })
 
   it('builds a page extra class beside the core entry, reading a core token', async () => {

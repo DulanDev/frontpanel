@@ -10,19 +10,11 @@
  */
 /* The page wears the skin. Native controls and scrollbars follow it, forced or not. */
 :root {
-  color-scheme: light dark;
+  color-scheme: var(--fp-scheme);
   background-color: var(--fp-color-backdrop);
   color: var(--fp-color-ink);
   font-family: var(--fp-font-ui);
   -webkit-text-size-adjust: 100%;
-}
-
-:root[data-fp-skin="silver"] {
-  color-scheme: light;
-}
-
-:root[data-fp-skin="gunmetal"] {
-  color-scheme: dark;
 }
 
 body {

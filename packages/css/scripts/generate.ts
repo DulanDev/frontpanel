@@ -172,20 +172,25 @@ function checkTokens(tokens: Tokens): void {
 /**
  * Silver is the full set. Gunmetal lists only what differs and is written twice from that one
  * list: for a dark system unless the root is forced silver, and on any element forced gunmetal.
+ * Each skin also names its `--fp-scheme`, which the surfaces wear as their color-scheme so native
+ * scrollbars and controls inside a device match it; the root itself is left to base.css.
  */
 function tokensCss({ tokens }: Sources): string {
-  const silver = postcss.rule({ selector: ':root, [data-fp-skin="silver"]', nodes: declarations(tokens.silver) })
+  const silver = postcss.rule({ selector: ':root, [data-fp-skin="silver"]', nodes: declarations(tokens.silver, 'light') })
   const dark = postcss.atRule({
     name: 'media',
     params: '(prefers-color-scheme: dark)',
-    nodes: [postcss.rule({ selector: ':root:not([data-fp-skin="silver"])', nodes: declarations(tokens.gunmetal) })],
+    nodes: [postcss.rule({ selector: ':root:not([data-fp-skin="silver"])', nodes: declarations(tokens.gunmetal, 'dark') })],
   })
-  const gunmetal = postcss.rule({ selector: '[data-fp-skin="gunmetal"]', nodes: declarations(tokens.gunmetal) })
+  const gunmetal = postcss.rule({ selector: '[data-fp-skin="gunmetal"]', nodes: declarations(tokens.gunmetal, 'dark') })
   return format(postcss.root({ nodes: [postcss.atRule({ name: 'layer', params: 'frontpanel', nodes: [silver, dark, gunmetal] })] }))
 }
 
-function declarations(values: Record<string, string>): Declaration[] {
-  return Object.entries(values).map(([name, value]) => postcss.decl({ prop: `--fp-${name}`, value }))
+function declarations(values: Record<string, string>, scheme: 'light' | 'dark'): Declaration[] {
+  return [
+    postcss.decl({ prop: '--fp-scheme', value: scheme }),
+    ...Object.entries(values).map(([name, value]) => postcss.decl({ prop: `--fp-${name}`, value })),
+  ]
 }
 
 function componentsCss(root: Root, shared: Root): string {

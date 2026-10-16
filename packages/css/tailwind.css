@@ -108,6 +108,7 @@
 
 /** The page behind the device: quiet blue-grey with a faint Y2K grid. */
 @utility fp-device-backdrop {
+  color-scheme: var(--fp-scheme);
   background-color: var(--fp-color-backdrop);
   background-image:
     linear-gradient(var(--fp-color-grid) 1px, transparent 1px),
@@ -123,6 +124,7 @@
 
 /** Liquid-chrome ring around the device body. Diagonal so the reflection band crosses the corners. */
 @utility fp-device-rim {
+  color-scheme: var(--fp-scheme);
   border-radius: 36px;
   padding: 10px;
   background-image: linear-gradient(
@@ -152,6 +154,7 @@
 
 /** Molded body plastic the modules sit on. */
 @utility fp-device-body {
+  color-scheme: var(--fp-scheme);
   background-image: linear-gradient(180deg, var(--fp-color-shell-hi), var(--fp-color-shell) 240px);
   box-shadow:
     inset 1px 1px 0 var(--fp-color-bevel-hi),
@@ -414,6 +417,7 @@
 
 /** Matte content panel. This is where reading happens: no gloss, a 1 px bevel and a short hard shadow. */
 @utility fp-module {
+  color-scheme: var(--fp-scheme);
   border-radius: 10px;
   background-color: var(--fp-color-shell-matte);
   box-shadow:
@@ -477,6 +481,7 @@
 
 /** Recessed well inside a matte panel, for secondary content or an empty slot. */
 @utility fp-well {
+  color-scheme: var(--fp-scheme);
   border-radius: 6px;
   background-color: var(--fp-color-well);
   box-shadow:
@@ -591,6 +596,7 @@
 
 /** A scrolling panel, such as a list window, with a thin scrollbar that never pushes the layout. */
 @utility fp-scroll-thin {
+  color-scheme: var(--fp-scheme);
   scrollbar-width: thin;
   scrollbar-color: var(--fp-color-scroll-thumb) transparent;
 }

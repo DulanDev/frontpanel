@@ -322,6 +322,7 @@ describe('tokens.css', () => {
     expect(css).toContain('@layer frontpanel {')
     expect(css).toContain(squish(`
       :root, [data-fp-skin="silver"] {
+        --fp-scheme: light;
         --fp-color-ink: #1a1f29;
         --fp-color-shell: #bcc5d1;
         --fp-font-lcd: "VT323", monospace;
@@ -331,7 +332,7 @@ describe('tokens.css', () => {
 
   it('sets the gunmetal overrides for a dark system unless forced silver, and for any [data-fp-skin="gunmetal"] element', () => {
     const css = squish(generate(sources({ tokens }))['tokens.css'])
-    const gunmetal = '--fp-color-ink: #e7eaf0; --fp-color-shell: #22262e;'
+    const gunmetal = '--fp-scheme: dark; --fp-color-ink: #e7eaf0; --fp-color-shell: #22262e;'
 
     expect(css).toContain(`@media (prefers-color-scheme: dark) { :root:not([data-fp-skin="silver"]) { ${gunmetal} } }`)
     expect(css).toContain(`[data-fp-skin="gunmetal"] { ${gunmetal} }`)
