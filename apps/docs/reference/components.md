@@ -12,6 +12,7 @@ import {
   FpLed,
   FpScrew,
   FpSilk,
+  FpSlider,
   FpWell,
   FpWindow,
 } from '@frontpanel/vue'
@@ -27,6 +28,9 @@ const track = ref(0)
 const saves = ref(0)
 const volume = ref(70)
 const tone = ref(-3)
+const bass = ref(2)
+const treble = ref(-4)
+const balance = ref(0)
 </script>
 
 # Components
@@ -122,6 +126,28 @@ knob and names it, and `valueText` says the value in words.
 ```
 
 <ApiTable name="FpKnob" />
+
+## FpSlider
+
+A fader: a chrome cap that slides along a slot. Drag the cap, press the slot to move it there, or
+use the arrow keys, PageUp and PageDown, Home and End. It takes the same `v-model`, `label` and
+`valueText` as `FpKnob`. It stands up by default; `orientation="horizontal"` lays it on its side,
+and `--fp-fader-length` sets how far it travels.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpSlider v-model="bass" label="Bass" :min="-12" :max="12" :value-text="v => `${v} dB`" />
+  <FpSlider v-model="treble" label="Treble" :min="-12" :max="12" :value-text="v => `${v} dB`" />
+  <FpSlider v-model="balance" label="Balance" orientation="horizontal" :min="-10" :max="10" />
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="`B ${bass} T ${treble} BAL ${balance}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+```vue
+<FpSlider v-model="bass" label="Bass" :min="-12" :max="12" :value-text="v => `${v} dB`" />
+```
+
+<ApiTable name="FpSlider" />
 
 ## FpLcd and FpLcdLine
 
