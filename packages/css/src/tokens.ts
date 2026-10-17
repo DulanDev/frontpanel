@@ -68,7 +68,8 @@ export const tokens: Tokens = {
     'color-focus': '#4fd2ff',
     // The gel's blue, so focus shares the one accent; 3.2:1 on the page backdrop, its darkest ground.
     'color-focus-ring': '#1a56b0',
-    // Ring around a selected cap: dark on silver, amber on gunmetal, so it reads against white plastic.
+    // Ring around a selected cap: the skin's ink, dark on silver and light on gunmetal, so it reads on
+    // every cap colour and never looks like the focus ring.
     'color-select': '#1a1f29',
     'color-error-text': '#b3261e',
 
@@ -117,7 +118,7 @@ export const tokens: Tokens = {
     'color-cap-graphite': '#5a6373',
 
     'color-focus-ring': '#4fd2ff',
-    'color-select': '#ffb547',
+    'color-select': '#e7eaf0',
     'color-error-text': '#ff8a80',
 
     'color-backdrop': '#0d1016',
