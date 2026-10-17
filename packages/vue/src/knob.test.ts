@@ -1,6 +1,6 @@
 import type { VueWrapper } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { h, ref } from 'vue'
 import FpKnob from './FpKnob.vue'
 
@@ -113,6 +113,14 @@ describe('fpKnob', () => {
     expect(wrapper.emitted('valueCommit')).toBeUndefined()
     await slider.trigger('pointerup', { pointerId: 1, clientY: 340 })
     expect(wrapper.emitted('valueCommit')).toEqual([[30]])
+  })
+
+  it('takes focus when pressed, without lighting its focus ring', async () => {
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus')
+    const wrapper = mount(FpKnob, { props: { modelValue: 50 } })
+    await knob(wrapper).trigger('pointerdown', { button: 0, pointerId: 1, clientY: 300 })
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true, focusVisible: false })
+    focus.mockRestore()
   })
 
   it('moves a tenth as far while Shift is held', async () => {

@@ -97,7 +97,8 @@ function onPointerdown(event: PointerEvent): void {
     return
   const target = event.currentTarget as HTMLElement
   target.setPointerCapture?.(event.pointerId)
-  target.focus({ preventScroll: true })
+  // A script focus would light the ring as if from the keyboard; a press should not.
+  target.focus({ preventScroll: true, focusVisible: false })
   drag = { pointerId: event.pointerId, y: event.clientY, raw: value.value, start: value.value }
 }
 
