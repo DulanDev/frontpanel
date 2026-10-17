@@ -29,6 +29,7 @@ export default defineConfig({
         text: 'Guide',
         items: [
           { text: 'Getting started', link: '/guide/getting-started' },
+          { text: 'Using it in an app', link: '/guide/app' },
           { text: 'Skins', link: '/guide/skins' },
           { text: 'Layout and input', link: '/guide/layout' },
           { text: 'Fonts', link: '/guide/fonts' },
