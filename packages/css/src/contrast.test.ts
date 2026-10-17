@@ -28,3 +28,30 @@ describe.each(Object.entries(skins()))('%s skin', (_skin, colours) => {
     expect(contrast(fore!, back!)).toBeGreaterThanOrEqual(required[kind])
   })
 })
+
+// A meter's unlit segment is the LED's off colour with a share of its zone's colour mixed in, so
+// the zones show before they light. A lit segment still has to stand 3:1 against an unlit neighbour.
+const meter = postcss.parse(readFileSync(new URL('utilities.css', import.meta.url), 'utf8'))
+let offShare: number | undefined
+meter.walkAtRules('utility', (rule) => {
+  if (rule.params === 'fp-meter')
+    offShare = Number(/color-mix\(in srgb, var\(--fp-color-led-off\) (\d+)%, transparent\)/.exec(rule.toString())?.[1]) / 100
+})
+
+function mix(over: string, under: string, share: number): string {
+  const channels = (hex: string) => [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16))
+  const [a, b] = [channels(over), channels(under)]
+  return `#${a.map((value, i) => Math.round(value * share + b[i]! * (1 - share)).toString(16).padStart(2, '0')).join('')}`
+}
+
+describe.each(Object.entries(skins()))('%s meter', (_skin, colours) => {
+  it('draws unlit segments over the off colour', () => {
+    expect(offShare).toBeGreaterThan(0)
+  })
+
+  it.each(['led-on', 'led-amber', 'led-red'])('a lit %s segment stands out from an unlit one', (led) => {
+    const lit = colours.get(`--fp-color-${led}`)!
+    const unlit = mix(colours.get('--fp-color-led-off')!, lit, offShare!)
+    expect(contrast(lit, unlit)).toBeGreaterThanOrEqual(required.ui)
+  })
+})

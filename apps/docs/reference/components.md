@@ -10,6 +10,7 @@ import {
   FpLcd,
   FpLcdLine,
   FpLed,
+  FpMeter,
   FpScrew,
   FpSilk,
   FpSlider,
@@ -31,6 +32,7 @@ const tone = ref(-3)
 const bass = ref(2)
 const treble = ref(-4)
 const balance = ref(0)
+const gain = ref(64)
 </script>
 
 # Components
@@ -148,6 +150,27 @@ and `--fp-fader-length` sets how far it travels.
 ```
 
 <ApiTable name="FpSlider" />
+
+## FpMeter
+
+A level meter: LED segments that light green, then amber from `amberAt`, then red from `redAt`. A
+segment lights once the value reaches it. Pass `value`; it can change every frame. It stands up by
+default; `orientation="horizontal"` lays it on its side, and `--fp-meter-length` sets how long it
+is. Name it with `label` or `aria-label`, or hide it with `aria-hidden` when a readout beside it
+says the same.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpSlider v-model="gain" label="Gain" />
+  <FpMeter :value="gain" label="L" />
+  <FpMeter :value="gain * 0.85" label="R" />
+  <FpMeter :value="gain * 0.6 - 60" :min="-60" :max="0" :amber-at="-12" :red-at="-3" orientation="horizontal" label="Input" :value-text="v => `${Math.round(v)} dB`" />
+</div>
+
+```vue
+<FpMeter :value="level" :min="-60" :max="0" :amber-at="-12" :red-at="-3" label="Input" />
+```
+
+<ApiTable name="FpMeter" />
 
 ## FpLcd and FpLcdLine
 

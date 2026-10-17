@@ -531,6 +531,95 @@
   }
 }
 
+/** A meter with its silkscreen label under it. Set `--fp-meter-length` here or on the meter. */
+@utility fp-meter-unit {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/**
+ * Level meter: a strip of LED segments in a dark housing, lit green, then amber, then red. Set
+ * `--fp-meter-level` (0 to 1, in whole segments), `--fp-meter-segments` (12), and where amber and
+ * red begin, `--fp-meter-amber` (0.7) and `--fp-meter-red` (0.9), as shares of the strip. It stands
+ * up by default and lies on its side with `data-orientation="horizontal"`; `--fp-meter-length`
+ * sets how long it is (8rem). Give it `role="meter"` and its values, or `aria-hidden` beside a
+ * readout that says the same.
+ */
+@utility fp-meter {
+  --fp-meter-zones: linear-gradient(
+    to top,
+    var(--fp-color-led-on) 0 calc(var(--fp-meter-amber, 0.7) * 100%),
+    var(--fp-color-led-amber) 0 calc(var(--fp-meter-red, 0.9) * 100%),
+    var(--fp-color-led-red) 0
+  );
+  --fp-meter-gaps: repeating-linear-gradient(
+    to top,
+    #000 0 calc(100% / var(--fp-meter-segments, 12) - 2px),
+    transparent 0 calc(100% / var(--fp-meter-segments, 12))
+  );
+
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: var(--fp-meter-length, 8rem);
+  border-radius: 3px;
+  background-color: var(--fp-color-housing);
+  box-shadow:
+    inset 1px 1px 2px rgb(0 0 0 / 0.5),
+    1px 1px 0 var(--fp-color-bevel-hi);
+
+  /* Each segment's gap sits at its far end, so the strip's own inset at that end is the gap. */
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0 2px 2px;
+    background-image: var(--fp-meter-zones);
+    mask-image: var(--fp-meter-gaps);
+  }
+
+  /* Unlit segments are the LED's off colour with a trace of their zone's, so the zones show. */
+  &::before {
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--fp-color-led-off) 75%, transparent) 0 0),
+      var(--fp-meter-zones);
+  }
+
+  /* The cut sits 1 px into the gap below the next segment, so rounding never lights a sliver of it. */
+  &::after {
+    clip-path: inset(calc((1 - var(--fp-meter-level, 0)) * 100% + 1px) 0 0 0);
+  }
+
+  &[data-orientation="horizontal"] {
+    --fp-meter-zones: linear-gradient(
+      to right,
+      var(--fp-color-led-on) 0 calc(var(--fp-meter-amber, 0.7) * 100%),
+      var(--fp-color-led-amber) 0 calc(var(--fp-meter-red, 0.9) * 100%),
+      var(--fp-color-led-red) 0
+    );
+    --fp-meter-gaps: repeating-linear-gradient(
+      to right,
+      #000 0 calc(100% / var(--fp-meter-segments, 12) - 2px),
+      transparent 0 calc(100% / var(--fp-meter-segments, 12))
+    );
+
+    width: var(--fp-meter-length, 8rem);
+    height: 0.75rem;
+
+    &::before,
+    &::after {
+      inset: 2px 0 2px 2px;
+    }
+
+    &::after {
+      clip-path: inset(0 calc((1 - var(--fp-meter-level, 0)) * 100% + 1px) 0 0);
+    }
+  }
+}
+
 /** Matte content panel. This is where reading happens: no gloss, a 1 px bevel and a short hard shadow. */
 @utility fp-module {
   color-scheme: var(--fp-scheme);
