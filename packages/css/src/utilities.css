@@ -325,6 +325,91 @@
   --fp-cap-ink: var(--fp-color-cap-berry-ink);
 }
 
+/** A knob with its silkscreen label under it. */
+@utility fp-knob-unit {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/**
+ * Rotary knob: a knurled chrome skirt round a domed cap. The cap is lit from the top left and stays
+ * still; only its fp-knob-mark turns, by `rotate`, through 270 degrees. 48 px, 40 px with a mouse,
+ * trackpad or pen.
+ */
+@utility fp-knob {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-image: repeating-conic-gradient(var(--fp-color-chrome-100) 0deg 5deg, var(--fp-color-chrome-300) 5deg 10deg);
+  box-shadow:
+    0 0 0 1px var(--fp-color-edge),
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    inset -1px -1px 0 var(--fp-color-bevel-lo),
+    1px 2px 0 var(--fp-color-cast);
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+
+  @media (pointer: fine) {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border-radius: 50%;
+    background-image: radial-gradient(
+      circle at 30% 25%,
+      color-mix(in srgb, var(--fp-color-chrome-hi) 60%, var(--fp-color-chrome-100)) 0%,
+      var(--fp-color-chrome-100) 45%,
+      var(--fp-color-chrome-300) 100%
+    );
+    box-shadow:
+      0 0 0 1px var(--fp-color-edge),
+      inset 1px 1px 0 var(--fp-color-bevel-hi),
+      inset -1px -1px 0 var(--fp-color-bevel-lo),
+      1px 1px 2px var(--fp-color-cast);
+  }
+
+  /* A solid ring with a glow outside it: the glow alone fails non-text contrast on light chrome. */
+  &:focus-visible {
+    outline: 2px solid var(--fp-color-focus-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
+  &[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+/** The pointer line on a knob's cap. Turn it with `rotate`: -135deg at the minimum, 135deg at the maximum. */
+@utility fp-knob-mark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 21%;
+    left: 50%;
+    width: 3px;
+    height: 24%;
+    translate: -50% 0;
+    border-radius: 2px;
+    background-color: var(--fp-color-ink);
+  }
+}
+
 /** Matte content panel. This is where reading happens: no gloss, a 1 px bevel and a short hard shadow. */
 @utility fp-module {
   color-scheme: var(--fp-scheme);

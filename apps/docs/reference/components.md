@@ -6,6 +6,7 @@ import {
   FpHousing,
   FpIcon,
   fpIconNames,
+  FpKnob,
   FpLcd,
   FpLcdLine,
   FpLed,
@@ -24,6 +25,8 @@ const caps = ['white', 'blue', 'amber', 'graphite', 'berry'] as const
 const tracks = ['CHROME HORIZON', 'GEL PRESSURE', 'SILKSCREEN']
 const track = ref(0)
 const saves = ref(0)
+const volume = ref(70)
+const tone = ref(-3)
 </script>
 
 # Components
@@ -98,6 +101,27 @@ A molded-plastic cap. Selection shows as pressed in with a ring, never by colour
 </div>
 
 <ApiTable name="FpCap" />
+
+## FpKnob
+
+A rotary knob. Drag it up or down (hold Shift for fine moves), or use the arrow keys, PageUp and
+PageDown, Home and End. `v-model` holds a number between `min` and `max`, snapped to `step`;
+`valueCommit` fires when a drag ends or a key moves it. `label` puts a silkscreen label under the
+knob and names it, and `valueText` says the value in words.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpKnob v-model="volume" label="Volume" :value-text="v => `${v} percent`" />
+  <FpKnob v-model="tone" label="Tone" :min="-12" :max="12" :value-text="v => `${v} dB`" />
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="`VOL ${volume} TONE ${tone > 0 ? '+' : ''}${tone}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+```vue
+<FpKnob v-model="tone" label="Tone" :min="-12" :max="12" :value-text="v => `${v} dB`" />
+```
+
+<ApiTable name="FpKnob" />
 
 ## FpLcd and FpLcdLine
 
