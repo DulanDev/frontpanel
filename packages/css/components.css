@@ -666,38 +666,169 @@
   }
 
   /**
-   * Seven-segment readout: LED digits in a dark housing. Each character is an fp-readout-cell whose
-   * segments light with `data-lit`, and the value is said in an fp-readout-text inside. Green by
-   * default; colour it with fp-led-amber or fp-led-red.
+   * Seven-segment readout: LED digits on a near-black face, set in the housing. Each character is an
+   * fp-readout-cell, and the value is said in an fp-readout-text inside. Green by default; colour it
+   * with fp-led-amber or fp-led-red. Lit digits pass as text on the face at any size.
    */
   .fp-readout {
     position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0.125rem;
-    padding: 0.375rem 0.5rem;
-    border-radius: 4px;
-    background-color: var(--fp-color-housing);
+    gap: 0.1875rem;
+    padding: 0.3125rem 0.4375rem;
+    border: 3px solid var(--fp-color-housing);
+    border-radius: 5px;
+    background-color: color-mix(in srgb, var(--fp-color-led-off) 70%, black);
     box-shadow:
-      inset 1px 1px 2px rgb(0 0 0 / 0.5),
+      inset 1px 1px 3px rgb(0 0 0 / 0.8),
       0 1px 0 var(--fp-color-bevel-hi);
   }
 
   /**
-   * One character of an fp-readout: an SVG of seven segments and a decimal point, leaning a little
-   * like a real display. Unlit segments are the LED's off colour with a trace of its own, so the
-   * figure eights show. `--fp-readout-height` sets it (2rem); keep it 24 px or more, where the LED
-   * colours pass as large text against the housing. Give it aria-hidden="true".
+   * One character of an fp-readout, leaning a little like a real display. It shows its unlit
+   * segments itself, a figure eight and a point, faintly in the lit colour; put the lit ones in an
+   * fp-readout-lit inside. With `data-colon` it is a narrow colon cell. `--fp-readout-height` sets
+   * its height (2rem). Give it aria-hidden="true".
    */
   .fp-readout-cell {
+    position: relative;
     flex-shrink: 0;
-    width: auto;
     height: var(--fp-readout-height, 2rem);
-    fill: color-mix(in srgb, var(--fp-color-led-off) 75%, var(--fp-led, var(--fp-color-led-on)));
+    aspect-ratio: 15 / 22;
     transform: skewX(-6deg);
 
-    & [data-lit] {
-      fill: var(--fp-led, var(--fp-color-led-on));
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: color-mix(in srgb, var(--fp-color-led-off) 75%, var(--fp-led, var(--fp-color-led-on)));
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 22'%3E%3Cpolygon points='1.5,1 2.5,0 9.5,0 10.5,1 9.5,2 2.5,2'/%3E%3Cpolygon points='11,1.5 12,2.5 12,9.5 11,10.5 10,9.5 10,2.5'/%3E%3Cpolygon points='11,11.5 12,12.5 12,19.5 11,20.5 10,19.5 10,12.5'/%3E%3Cpolygon points='1.5,21 2.5,20 9.5,20 10.5,21 9.5,22 2.5,22'/%3E%3Cpolygon points='1,11.5 2,12.5 2,19.5 1,20.5 0,19.5 0,12.5'/%3E%3Cpolygon points='1,1.5 2,2.5 2,9.5 1,10.5 0,9.5 0,2.5'/%3E%3Cpolygon points='1.5,11 2.5,10 9.5,10 10.5,11 9.5,12 2.5,12'/%3E%3Ccircle cx='13.5' cy='21' r='1.2'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+    }
+
+    &[data-colon] {
+      aspect-ratio: 5 / 22;
+
+      &::before {
+        content: none;
+      }
+    }
+
+    /* With forced colours, only the lit digits show: a ghost in a system colour blurs into them. */
+    @media (forced-colors: active) {
+      &::before {
+        content: none;
+      }
+    }
+  }
+
+  /**
+   * The lit segments of an fp-readout-cell: an element for each, named by `data-segment`, `a` to `g`
+   * (top, then clockwise, then the middle), `dp`, or a colon's `colon-upper` and `colon-lower`. Each
+   * is brightest over its chip, in the middle, and they glow onto the face, both by the lens.
+   */
+  .fp-readout-lit {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(
+      0 0 calc(var(--fp-readout-height, 2rem) * 0.06 * var(--fp-led-glow, 1))
+        color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 70%, transparent)
+    );
+
+    & > [data-segment] {
+      position: absolute;
+      background-color: var(--fp-led, var(--fp-color-led-on));
+      background-image: radial-gradient(
+        closest-side,
+        color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) calc((1 - var(--fp-led-core, 0.3)) * 100%), white),
+        var(--fp-led, var(--fp-color-led-on))
+      );
+    }
+
+    /* The bars, on the cell's 15 x 22 grid: 9 long and 2 thick, pointed at both ends. */
+    & > [data-segment="a"],
+    & > [data-segment="d"],
+    & > [data-segment="g"] {
+      left: 10%;
+      width: 60%;
+      height: 9.0909%;
+      clip-path: polygon(0 50%, 11.1111% 0, 88.8889% 0, 100% 50%, 88.8889% 100%, 11.1111% 100%);
+    }
+
+    & > [data-segment="b"],
+    & > [data-segment="c"],
+    & > [data-segment="e"],
+    & > [data-segment="f"] {
+      width: 13.3333%;
+      height: 40.9091%;
+      clip-path: polygon(50% 0, 100% 11.1111%, 100% 88.8889%, 50% 100%, 0 88.8889%, 0 11.1111%);
+    }
+
+    & > [data-segment="a"] {
+      top: 0;
+    }
+
+    & > [data-segment="g"] {
+      top: 45.4545%;
+    }
+
+    & > [data-segment="d"] {
+      top: 90.9091%;
+    }
+
+    & > [data-segment="b"],
+    & > [data-segment="c"] {
+      left: 66.6667%;
+    }
+
+    & > [data-segment="e"],
+    & > [data-segment="f"] {
+      left: 0;
+    }
+
+    & > [data-segment="b"],
+    & > [data-segment="f"] {
+      top: 6.8182%;
+    }
+
+    & > [data-segment="c"],
+    & > [data-segment="e"] {
+      top: 52.2727%;
+    }
+
+    & > [data-segment="dp"],
+    & > [data-segment="colon-upper"],
+    & > [data-segment="colon-lower"] {
+      aspect-ratio: 1;
+      border-radius: 50%;
+    }
+
+    & > [data-segment="dp"] {
+      top: 90%;
+      left: 82%;
+      width: 16%;
+    }
+
+    & > [data-segment="colon-upper"],
+    & > [data-segment="colon-lower"] {
+      left: 26%;
+      width: 48%;
+    }
+
+    & > [data-segment="colon-upper"] {
+      top: 26.3636%;
+    }
+
+    & > [data-segment="colon-lower"] {
+      top: 62.7273%;
+    }
+
+    @media (forced-colors: active) {
+      filter: none;
+
+      & > [data-segment] {
+        forced-color-adjust: none;
+        background: CanvasText;
+      }
     }
   }
 

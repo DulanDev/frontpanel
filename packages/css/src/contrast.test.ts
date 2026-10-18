@@ -35,7 +35,7 @@ describe.each(Object.entries(skins()))('%s skin', (_skin, colours) => {
 const utilities = postcss.parse(readFileSync(new URL('utilities.css', import.meta.url), 'utf8'))
 const offShares = new Map<string, number>()
 utilities.walkAtRules('utility', (rule) => {
-  const share = /color-mix\(in srgb, var\(--fp-color-led-off\) (\d+)%,/.exec(rule.toString())?.[1]
+  const share = /color-mix\(in srgb, var\(--fp-color-led-off\) (\d+)%, (?!black)/.exec(rule.toString())?.[1]
   if (share)
     offShares.set(rule.params, Number(share) / 100)
 })
@@ -55,5 +55,21 @@ describe.each(Object.entries(skins()))('%s unlit segments', (_skin, colours) => 
     const lit = colours.get(`--fp-color-${led}`)!
     const unlit = mix(colours.get('--fp-color-led-off')!, lit, share)
     expect(contrast(lit, unlit)).toBeGreaterThanOrEqual(required.ui)
+  })
+})
+
+// The readout's digits sit on a near-black face, the off colour darkened. They are text, so a lit
+// segment needs 4.5:1 against it at any size.
+let faceShare: number | undefined
+utilities.walkAtRules('utility', (rule) => {
+  if (rule.params === 'fp-readout')
+    faceShare = Number(/color-mix\(in srgb, var\(--fp-color-led-off\) (\d+)%, black\)/.exec(rule.toString())?.[1]) / 100
+})
+
+describe.each(Object.entries(skins()))('%s readout face', (_skin, colours) => {
+  it.each(['led-on', 'led-amber', 'led-red'])('a lit %s segment reads as text on it', (led) => {
+    expect(faceShare).toBeGreaterThan(0)
+    const face = mix(colours.get('--fp-color-led-off')!, '#000000', faceShare!)
+    expect(contrast(colours.get(`--fp-color-${led}`)!, face)).toBeGreaterThanOrEqual(required.text)
   })
 })

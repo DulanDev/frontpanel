@@ -193,8 +193,18 @@ so a changing number keeps its width. Screen readers read the value as text, or 
 <FpReadout :value="level.toFixed(1)" :digits="4" :value-text="v => `${v} dB`" />
 ```
 
-Without Vue, draw each character as an `fp-readout-cell` SVG with the `fpReadoutSegments` shapes and
-light the segments `fpReadoutGlyph` names, both exported from `@frontpanel/vue`.
+Without Vue, each character is an `fp-readout-cell` holding an `fp-readout-lit` with one element
+per lit segment, named by `data-segment`; `fpReadoutGlyph` from `@frontpanel/vue` gives the
+segments a character lights. The cell draws the unlit ones itself:
+
+```html
+<span class="fp-readout fp-led-amber">
+  <span class="fp-readout-text">7</span>
+  <span class="fp-readout-cell" aria-hidden="true">
+    <span class="fp-readout-lit"><span data-segment="a"></span><span data-segment="b"></span><span data-segment="c"></span></span>
+  </span>
+</span>
+```
 
 <ApiTable name="FpReadout" />
 

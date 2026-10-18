@@ -43,4 +43,10 @@ describe('led lenses', () => {
   it('keeps the glow on a flat lens', () => {
     expect(sets('fp-lens-flat')['--fp-led-glow']).toBe(sets('fp-lens-diffused')['--fp-led-glow'])
   })
+
+  it.each(['fp-led-lit', 'fp-meter', 'fp-readout-lit'])('%s reads the lens', (name) => {
+    const rule = utilities.get(name)!.toString()
+    expect(rule).toContain('var(--fp-led-core')
+    expect(rule).toContain('var(--fp-led-glow')
+  })
 })

@@ -5,11 +5,13 @@ import { describe, expect, it } from 'vitest'
 import FpReadout from './FpReadout.vue'
 
 // Each cell as the segments it lights: 'abcdefg' plus '.' for the decimal point, or ':' for a colon.
+// Only lit segments are drawn as elements; the cell shows the unlit ones itself.
 function cells(wrapper: VueWrapper): string[] {
   return wrapper.findAll('.fp-readout-cell').map((cell) => {
+    const lit = cell.findAll('.fp-readout-lit > [data-segment]').map(segment => segment.attributes('data-segment'))
     if (cell.attributes('data-colon') !== undefined)
-      return ':'
-    return cell.findAll('[data-lit]').map(segment => segment.attributes('data-segment') === 'dp' ? '.' : segment.attributes('data-segment')).join('')
+      return lit.join() === 'colon-upper,colon-lower' ? ':' : `bad colon: ${lit.join()}`
+    return lit.map(name => name === 'dp' ? '.' : name).join('')
   })
 }
 
@@ -70,6 +72,11 @@ describe('fpReadout', () => {
 
   it.each(['amber', 'red'] as const)('lights in %s', (color) => {
     expect(readout({ value: 1, color }).classes()).toEqual(['fp-readout', `fp-led-${color}`])
+  })
+
+  it('takes its lens from around it unless given one', () => {
+    expect(readout({ value: 1 }).classes()).toEqual(['fp-readout', 'fp-led-green'])
+    expect(readout({ value: 1, lens: 'clear' }).classes()).toEqual(['fp-readout', 'fp-led-green', 'fp-lens-clear'])
   })
 
   it('reads out its value as text, and hides the drawing', () => {
