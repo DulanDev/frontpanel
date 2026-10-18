@@ -602,6 +602,21 @@
     clip-path: inset(calc((1 - var(--fp-meter-level, 0)) * 100% + 1px) 0 0 0);
   }
 
+  /* Forced colours: the strip as an outline and the lit segments in CanvasText, so the level shows. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+
+    &::before {
+      content: none;
+    }
+
+    &::after {
+      forced-color-adjust: none;
+      background: CanvasText;
+      mask-image: var(--fp-meter-gaps);
+    }
+  }
+
   &[data-orientation="horizontal"] {
     --fp-meter-zones: linear-gradient(
       to right,
@@ -952,6 +967,12 @@
   box-shadow:
     0 0 0 2px var(--fp-color-housing),
     inset 0 -1px 1px rgb(0 0 0 / 0.45);
+
+  /* Forced colours drop the fill and the ring: an outline keeps an unlit LED in view. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+    outline-offset: 1px;
+  }
 }
 
 /** Green for an fp-led or fp-readout, the default. */
@@ -985,6 +1006,13 @@
     0 0 calc(7px * var(--fp-led-glow, 1)) calc(2px * var(--fp-led-glow, 1))
       color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, transparent),
     inset 0 -1px 1px rgb(0 0 0 / 0.2);
+
+  /* Lit is filled, so it reads apart from unlit by shape as well as colour. */
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    background: CanvasText;
+    box-shadow: none;
+  }
 }
 
 /**
