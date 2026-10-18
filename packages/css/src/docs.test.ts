@@ -17,4 +17,12 @@ describe('the class reference', () => {
     // A doc comment opens with /**, which postcss keeps as a leading * in the text.
     expect(comment?.type === 'comment' && comment.text.startsWith('*') ? comment.text.slice(1).trim() : undefined).toBeTruthy()
   })
+
+  // The class page promises every core class on one device, in both skins, so a new class has to
+  // be added to the sheet too.
+  it('shows every core class on the class sheet', async () => {
+    const sheet = await readFile(new URL('../../../apps/docs/.vitepress/theme/demos/ClassSheet.vue', import.meta.url), 'utf8')
+    const core = utilities.filter(({ file }) => file === 'utilities.css').map(({ node }) => node.params)
+    expect(core.filter(name => !new RegExp(`(?<![\\w-])${name}(?![\\w-])`).test(sheet))).toEqual([])
+  })
 })

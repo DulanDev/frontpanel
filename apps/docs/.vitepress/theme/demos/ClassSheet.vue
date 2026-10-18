@@ -12,6 +12,10 @@ const caps = [
   { label: 'Fmaj7', variant: 'fp-cap-berry' },
 ]
 
+// The pixel set's close icon, copied from @frontpanel/vue (fpIconPaths.close), since the sheet uses
+// no components.
+const close = 'M2 2h2v1h-2zM12 2h2v1h-2zM2 3h3v1h-3zM11 3h3v1h-3zM3 4h3v1h-3zM10 4h3v1h-3zM4 5h3v1h-3zM9 5h3v1h-3zM5 6h6v1h-6zM6 7h4v1h-4zM6 8h4v1h-4zM5 9h6v1h-6zM4 10h3v1h-3zM9 10h3v1h-3zM3 11h3v1h-3zM10 11h3v1h-3zM2 12h3v1h-3zM11 12h3v1h-3zM2 13h2v1h-2zM12 13h2v1h-2z'
+
 const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscreen', '05 Backlight', '06 Two Blinks', '07 Rim Light', '08 Outro']
 </script>
 
@@ -28,7 +32,10 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
 
           <div class="stack">
             <div class="fp-lcd lcd">
-              <span>NOW PLAYING 02:41</span>
+              <p class="fp-lcd-line">
+                <span class="fp-lcd-ghost" aria-hidden="true">88888888888888888</span>
+                <span>NOW PLAYING 02:41</span>
+              </p>
               <span class="fp-lcd-redraw">CHROME HORIZON</span>
             </div>
 
@@ -73,6 +80,42 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
               >
                 {{ cap.label }}
               </button>
+            </div>
+
+            <div class="fp-module fp-window">
+              <div class="fp-module-title">
+                <h3 class="fp-silk fp-window-title">
+                  Mixer
+                </h3>
+                <button type="button" class="fp-chrome-btn" aria-label="Close mixer">
+                  <svg viewBox="0 0 16 16" class="fp-icon" aria-hidden="true"><path :d="close" /></svg>
+                </button>
+              </div>
+              <!-- A specimen of the look: the knob and fader do not move here, so they are hidden. -->
+              <div class="fp-window-body row mixer">
+                <div class="fp-unit" aria-hidden="true">
+                  <div class="fp-knob">
+                    <span class="fp-knob-mark" style="rotate: 45deg" />
+                  </div>
+                  <span class="fp-silk">Tone</span>
+                </div>
+                <div class="fp-unit" aria-hidden="true">
+                  <div class="fp-fader" data-orientation="vertical">
+                    <span class="fp-fader-slot" data-orientation="vertical" />
+                    <span class="fp-fader-cap" data-orientation="vertical" style="bottom: 45%" />
+                  </div>
+                  <span class="fp-silk">Gain</span>
+                </div>
+                <div class="fp-unit">
+                  <div class="fp-meter" role="meter" aria-label="Left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" style="--fp-meter-level: 0.75" />
+                  <span class="fp-silk" aria-hidden="true">L</span>
+                </div>
+                <div class="fp-unit">
+                  <div class="fp-meter" role="meter" aria-label="Right" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" style="--fp-meter-level: 1" />
+                  <span class="fp-silk" aria-hidden="true">R</span>
+                </div>
+                <div class="fp-meter" data-orientation="horizontal" role="meter" aria-label="Input" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="--fp-meter-level: 0.5" />
+              </div>
             </div>
 
             <div class="fp-well well">
@@ -131,6 +174,10 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
   font-family: var(--fp-font-lcd);
   font-size: 1.5rem;
   line-height: 1.1;
+}
+
+.mixer {
+  gap: 1rem;
 }
 
 .well {
