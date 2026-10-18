@@ -63,14 +63,14 @@ describe('fpMeter', () => {
 
   it('wears a silkscreen label under the meter that names it', () => {
     const { wrapper, el } = meter({ label: 'Left' })
-    const label = wrapper.get('.fp-meter-unit > .fp-silk')
+    const label = wrapper.get('.fp-unit > .fp-silk')
     expect(label.text()).toBe('Left')
     expect(el.attributes('aria-labelledby')).toBe(label.attributes('id'))
   })
 
   it('puts class and style on the unit and every other attribute on the meter', () => {
     const { wrapper, el } = meter({}, { 'class': 'mx-2', 'style': 'margin: 1px;', 'aria-label': 'Input level', 'id': 'input' })
-    expect(wrapper.classes()).toEqual(['fp-meter-unit', 'mx-2'])
+    expect(wrapper.classes()).toEqual(['fp-unit', 'mx-2'])
     expect(wrapper.attributes('style')).toBe('margin: 1px;')
     expect(el.attributes('aria-label')).toBe('Input level')
     expect(el.attributes('id')).toBe('input')

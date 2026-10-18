@@ -40,14 +40,14 @@ describe('fpKnob', () => {
 
   it('wears a silkscreen label under the knob that names it', () => {
     const wrapper = mount(FpKnob, { props: { label: 'Volume' } })
-    const label = wrapper.get('.fp-knob-unit > .fp-silk')
+    const label = wrapper.get('.fp-unit > .fp-silk')
     expect(label.text()).toBe('Volume')
     expect(knob(wrapper).attributes('aria-labelledby')).toBe(label.attributes('id'))
   })
 
   it('puts class and style on the unit and every other attribute on the knob', () => {
     const wrapper = mount(FpKnob, { attrs: { 'class': 'mx-2', 'style': 'margin: 1px;', 'aria-label': 'Gain', 'id': 'gain' } })
-    expect(wrapper.classes()).toEqual(['fp-knob-unit', 'mx-2'])
+    expect(wrapper.classes()).toEqual(['fp-unit', 'mx-2'])
     expect(wrapper.attributes('style')).toBe('margin: 1px;')
     expect(knob(wrapper).attributes('aria-label')).toBe('Gain')
     expect(knob(wrapper).attributes('id')).toBe('gain')

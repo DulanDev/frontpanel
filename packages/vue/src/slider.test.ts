@@ -44,14 +44,14 @@ describe('fpSlider', () => {
 
   it('wears a silkscreen label under the fader that names it', () => {
     const wrapper = mount(FpSlider, { props: { label: 'Bass' } })
-    const label = wrapper.get('.fp-fader-unit > .fp-silk')
+    const label = wrapper.get('.fp-unit > .fp-silk')
     expect(label.text()).toBe('Bass')
     expect(cap(wrapper).attributes('aria-labelledby')).toBe(label.attributes('id'))
   })
 
   it('puts class and style on the unit and every other attribute on the cap', () => {
     const wrapper = mount(FpSlider, { attrs: { 'class': 'mx-2', 'style': 'margin: 1px;', 'aria-label': 'Gain', 'id': 'gain' } })
-    expect(wrapper.classes()).toEqual(['fp-fader-unit', 'mx-2'])
+    expect(wrapper.classes()).toEqual(['fp-unit', 'mx-2'])
     expect(wrapper.attributes('style')).toBe('margin: 1px;')
     expect(cap(wrapper).attributes('aria-label')).toBe('Gain')
     expect(cap(wrapper).attributes('id')).toBe('gain')

@@ -415,8 +415,11 @@
   --fp-cap-ink: var(--fp-color-cap-berry-ink);
 }
 
-/** A knob with its silkscreen label under it. */
-@utility fp-knob-unit {
+/**
+ * A control with its silkscreen label under it: a knob, fader or meter and an fp-silk. A length
+ * set here, such as `--fp-fader-length`, reaches the control inside.
+ */
+@utility fp-unit {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -498,14 +501,6 @@
     border-radius: 2px;
     background-color: var(--fp-color-ink);
   }
-}
-
-/** A fader with its silkscreen label under it. Set `--fp-fader-length` here or on the fader. */
-@utility fp-fader-unit {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.375rem;
 }
 
 /**
@@ -619,14 +614,6 @@
     outline-offset: 2px;
     filter: drop-shadow(0 0 3px var(--fp-color-focus));
   }
-}
-
-/** A meter with its silkscreen label under it. Set `--fp-meter-length` here or on the meter. */
-@utility fp-meter-unit {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.375rem;
 }
 
 /**

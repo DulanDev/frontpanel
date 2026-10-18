@@ -67,7 +67,7 @@ function onCommit(next: number[]): void {
 </script>
 
 <template>
-  <div ref="unit" class="fp-fader-unit" v-bind="unitAttrs" @pointerdown.capture="onPress">
+  <div ref="unit" class="fp-unit" v-bind="unitAttrs" @pointerdown.capture="onPress">
     <SliderRoot
       class="fp-fader"
       :model-value="values"

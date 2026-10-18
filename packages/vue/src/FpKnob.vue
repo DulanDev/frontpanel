@@ -123,7 +123,7 @@ function onPointerup(event: PointerEvent): void {
 </script>
 
 <template>
-  <div class="fp-knob-unit" v-bind="unitAttrs">
+  <div class="fp-unit" v-bind="unitAttrs">
     <div
       v-bind="knobAttrs"
       class="fp-knob"

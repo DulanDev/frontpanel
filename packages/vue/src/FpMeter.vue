@@ -65,7 +65,7 @@ const meterStyle = computed(() => {
 </script>
 
 <template>
-  <div class="fp-meter-unit" v-bind="unitAttrs">
+  <div class="fp-unit" v-bind="unitAttrs">
     <div
       v-bind="meterAttrs"
       class="fp-meter"
