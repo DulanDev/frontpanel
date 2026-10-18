@@ -845,13 +845,46 @@
     --fp-led: var(--fp-color-led-red);
   }
 
-  /** Lights an fp-led in its colour, with a glow. Say what it means in text nearby, never by colour alone. */
+  /**
+   * Lights an fp-led in its colour, brightest over the chip in its middle, with a glow. The lens sets
+   * how strong both are. Say what it means in text nearby, never by colour alone.
+   */
   .fp-led-lit {
     background-color: var(--fp-led, var(--fp-color-led-on));
+    background-image: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) calc((1 - var(--fp-led-core, 0.3)) * 100%), white),
+      var(--fp-led, var(--fp-color-led-on))
+    );
     box-shadow:
       0 0 0 2px var(--fp-color-housing),
-      0 0 7px 2px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, transparent),
+      0 0 calc(7px * var(--fp-led-glow, 1)) calc(2px * var(--fp-led-glow, 1))
+        color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, transparent),
       inset 0 -1px 1px rgb(0 0 0 / 0.2);
+  }
+
+  /**
+   * LED lens, flat: an even fill with no hot spot. A lens class works on an fp-led, fp-meter or
+   * fp-readout, or on any element around them, such as a device body, to set every one inside.
+   */
+  .fp-lens-flat {
+    --fp-led-core: 0;
+    --fp-led-glow: 1;
+  }
+
+  /**
+   * LED lens, diffused, the default: like most real displays, each LED is a little brighter over its
+   * chip, in the middle, with a soft glow.
+   */
+  .fp-lens-diffused {
+    --fp-led-core: 0.3;
+    --fp-led-glow: 1;
+  }
+
+  /** LED lens, clear: a bright, pale core over each chip and a wider glow, like a water-clear lens. */
+  .fp-lens-clear {
+    --fp-led-core: 0.5;
+    --fp-led-glow: 1.5;
   }
 
   /** Decorative screw head. Give it aria-hidden="true". */

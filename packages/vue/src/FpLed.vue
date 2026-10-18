@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { FpLens } from './lens'
+import { lensClass } from './lens'
+
 export type FpLedColor = 'green' | 'amber' | 'red'
 
 export interface FpLedProps {
@@ -8,6 +11,8 @@ export interface FpLedProps {
   lit?: boolean
   /** Blinks twice when it lights, then holds, to confirm an action. Re-key the LED to blink again. */
   blink?: boolean
+  /** How its light spreads. Unset, it takes the lens set around it (`fp-lens-*`), else diffused. */
+  lens?: FpLens
   /** Announces the LED as an image with this name. Without it the LED is decorative: say its state in text nearby. */
   label?: string
 }
@@ -21,7 +26,7 @@ const colorClass: Record<FpLedColor, string> = { green: 'fp-led-green', amber: '
 <template>
   <span
     class="fp-led"
-    :class="[colorClass[props.color], { 'fp-led-lit': props.lit, 'fp-blink-twice': props.lit && props.blink }]"
+    :class="[colorClass[props.color], props.lens && lensClass[props.lens], { 'fp-led-lit': props.lit, 'fp-blink-twice': props.lit && props.blink }]"
     :role="props.label ? 'img' : undefined"
     :aria-label="props.label || undefined"
     :aria-hidden="props.label ? undefined : 'true'"

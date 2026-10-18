@@ -46,10 +46,10 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
 
             <div class="row">
               <span class="fp-housing">
-                <span class="fp-led fp-led-green fp-led-lit" /> PWR
+                <span class="fp-led fp-led-green fp-led-lit fp-lens-flat" /> PWR
               </span>
               <span class="fp-housing">
-                <span class="fp-led fp-led-amber fp-led-lit fp-blink-twice" /> REC
+                <span class="fp-led fp-led-amber fp-led-lit fp-lens-clear fp-blink-twice" /> REC
               </span>
               <span class="fp-housing">
                 <span class="fp-led fp-led-red" /> CLIP
@@ -105,7 +105,7 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
               </button>
             </div>
 
-            <div class="fp-module fp-window">
+            <div class="fp-module fp-window fp-lens-diffused">
               <div class="fp-module-title">
                 <h3 class="fp-silk fp-window-title">
                   Mixer

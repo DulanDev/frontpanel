@@ -19,6 +19,12 @@ describe('fpLed', () => {
     expect(led.classes()).toEqual(['fp-led', `fp-led-${color}`, 'fp-led-lit'])
   })
 
+  it('takes its lens from around it unless given one', () => {
+    expect(mount(FpLed, { props: { lit: true } }).classes().filter(name => name.startsWith('fp-lens'))).toEqual([])
+    expect(mount(FpLed, { props: { lit: true, lens: 'clear' } }).classes()).toContain('fp-lens-clear')
+    expect(mount(FpLed, { props: { lit: true, lens: 'flat' } }).classes()).toContain('fp-lens-flat')
+  })
+
   it('blinks twice only while lit', () => {
     expect(mount(FpLed, { props: { lit: true, blink: true } }).classes()).toContain('fp-blink-twice')
     expect(mount(FpLed, { props: { blink: true } }).classes()).not.toContain('fp-blink-twice')

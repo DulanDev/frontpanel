@@ -47,6 +47,9 @@ describe('the classes the components wear, scanned from dist/ by Tailwind', () =
     'fp-cap-amber',
     'fp-cap-graphite',
     'fp-cap-berry',
+    'fp-lens-flat',
+    'fp-lens-diffused',
+    'fp-lens-clear',
   ])('generates .%s', async (name) => {
     expect(existsSync(join(dist, 'index.js')), 'dist/ is missing: run pnpm build').toBe(true)
 
