@@ -56,6 +56,11 @@ describe('fpMeter', () => {
     expect(style(el, '--fp-meter-red')).toBe(String(5 / 6))
   })
 
+  it('takes its lens from around it unless given one', () => {
+    expect(meter().el.classes()).toEqual(['fp-meter'])
+    expect(meter({ lens: 'clear' }).el.classes()).toEqual(['fp-meter', 'fp-lens-clear'])
+  })
+
   it('reads its value out as text when given a format', () => {
     const { el } = meter({ value: -6, min: -60, max: 6, valueText: (value: number) => `${value} dB` })
     expect(el.attributes('aria-valuetext')).toBe('-6 dB')

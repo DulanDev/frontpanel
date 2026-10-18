@@ -1,7 +1,9 @@
 <script setup lang="ts">
 // A level meter: a column of LED segments that light green, then amber, then red. Reka has no
 // meter, so this is our own, on `role="meter"`.
+import type { FpLens } from './lens'
 import { computed, useAttrs, useId } from 'vue'
+import { lensClass } from './lens'
 
 export interface FpMeterProps {
   /** The level to show. Values past the ends light all or none of it. */
@@ -18,6 +20,8 @@ export interface FpMeterProps {
   redAt?: number
   /** Stands up, like a channel's level, or lies on its side. */
   orientation?: 'vertical' | 'horizontal'
+  /** How its segments light. Unset, it takes the lens set around it (`fp-lens-*`), else diffused. */
+  lens?: FpLens
   /** A silkscreen label under the meter, which also names it. Without one, give it an `aria-label`. */
   label?: string
   /** Turns the value into the words a screen reader says, such as `v => `${v} dB``. */
@@ -69,6 +73,7 @@ const meterStyle = computed(() => {
     <div
       v-bind="meterAttrs"
       class="fp-meter"
+      :class="props.lens && lensClass[props.lens]"
       role="meter"
       :data-orientation="props.orientation"
       :aria-valuemin="props.min"

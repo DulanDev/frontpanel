@@ -552,6 +552,13 @@
     #000 0 calc(100% / var(--fp-meter-segments, 12) - 2px),
     transparent 0 calc(100% / var(--fp-meter-segments, 12))
   );
+  /* Lit segments spill a little light into the gaps beside them: the lens's glow. */
+  --fp-meter-lit-gaps: repeating-linear-gradient(
+    to top,
+    #000 0 calc(100% / var(--fp-meter-segments, 12) - 2px),
+    rgb(0 0 0 / calc(0.18 * var(--fp-led-glow, 1))) 0 calc(100% / var(--fp-meter-segments, 12))
+  );
+  --fp-meter-cell: 100% calc(100% / var(--fp-meter-segments, 12));
 
   position: relative;
   display: inline-block;
@@ -581,8 +588,17 @@
       var(--fp-meter-zones);
   }
 
-  /* The cut sits 1 px into the gap below the next segment, so rounding never lights a sliver of it. */
+  /*
+   * A lit segment is brightest over its chip, in the middle, by the lens. The cut sits 1 px into the
+   * gap below the next segment, so rounding never lights a sliver of it.
+   */
   &::after {
+    background-image:
+      radial-gradient(closest-side, rgb(255 255 255 / var(--fp-led-core, 0.3)), transparent),
+      var(--fp-meter-zones);
+    background-position: left bottom;
+    background-size: var(--fp-meter-cell), auto;
+    mask-image: var(--fp-meter-lit-gaps);
     clip-path: inset(calc((1 - var(--fp-meter-level, 0)) * 100% + 1px) 0 0 0);
   }
 
@@ -598,6 +614,12 @@
       #000 0 calc(100% / var(--fp-meter-segments, 12) - 2px),
       transparent 0 calc(100% / var(--fp-meter-segments, 12))
     );
+    --fp-meter-lit-gaps: repeating-linear-gradient(
+      to right,
+      #000 0 calc(100% / var(--fp-meter-segments, 12) - 2px),
+      rgb(0 0 0 / calc(0.18 * var(--fp-led-glow, 1))) 0 calc(100% / var(--fp-meter-segments, 12))
+    );
+    --fp-meter-cell: calc(100% / var(--fp-meter-segments, 12)) 100%;
 
     width: var(--fp-meter-length, 8rem);
     height: 0.75rem;
