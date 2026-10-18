@@ -469,8 +469,13 @@
   }
 }
 
-/** A fader's cap: brushed chrome lit from the top left, with an ink grip line that marks the value. */
+/**
+ * A fader's cap: brushed chrome lit from the top left, with an ink grip line that marks the value.
+ * Place it along the slot with `bottom` (or `left` on its side, with `data-orientation="horizontal"`
+ * on the slot and cap as well as the fader).
+ */
 @utility fp-fader-cap {
+  position: absolute;
   inset-inline: 0;
   height: 1.5rem;
   border-radius: 4px;
@@ -529,7 +534,8 @@
 /**
  * Level meter: a strip of LED segments in a dark housing, lit green, then amber, then red. Set
  * `--fp-meter-level` (0 to 1, in whole segments), `--fp-meter-segments` (12), and where amber and
- * red begin, `--fp-meter-amber` (0.7) and `--fp-meter-red` (0.9), as shares of the strip. It stands
+ * red begin, `--fp-meter-amber` (8/12) and `--fp-meter-red` (11/12), as shares of the strip on
+ * segment edges, or a segment lights in two colours. It stands
  * up by default and lies on its side with `data-orientation="horizontal"`; `--fp-meter-length`
  * sets how long it is (8rem). Give it `role="meter"` and its values, or `aria-hidden` beside a
  * readout that says the same.
@@ -537,8 +543,8 @@
 @utility fp-meter {
   --fp-meter-zones: linear-gradient(
     to top,
-    var(--fp-color-led-on) 0 calc(var(--fp-meter-amber, 0.7) * 100%),
-    var(--fp-color-led-amber) 0 calc(var(--fp-meter-red, 0.9) * 100%),
+    var(--fp-color-led-on) 0 calc(var(--fp-meter-amber, calc(8 / 12)) * 100%),
+    var(--fp-color-led-amber) 0 calc(var(--fp-meter-red, calc(11 / 12)) * 100%),
     var(--fp-color-led-red) 0
   );
   --fp-meter-gaps: repeating-linear-gradient(
@@ -583,8 +589,8 @@
   &[data-orientation="horizontal"] {
     --fp-meter-zones: linear-gradient(
       to right,
-      var(--fp-color-led-on) 0 calc(var(--fp-meter-amber, 0.7) * 100%),
-      var(--fp-color-led-amber) 0 calc(var(--fp-meter-red, 0.9) * 100%),
+      var(--fp-color-led-on) 0 calc(var(--fp-meter-amber, calc(8 / 12)) * 100%),
+      var(--fp-color-led-amber) 0 calc(var(--fp-meter-red, calc(11 / 12)) * 100%),
       var(--fp-color-led-red) 0
     );
     --fp-meter-gaps: repeating-linear-gradient(
