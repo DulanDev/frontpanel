@@ -11,6 +11,7 @@ import {
   FpLcdLine,
   FpLed,
   FpMeter,
+  FpReadout,
   FpScrew,
   FpSilk,
   FpSlider,
@@ -33,6 +34,7 @@ const bass = ref(2)
 const treble = ref(-4)
 const balance = ref(0)
 const gain = ref(64)
+const seconds = ref(125)
 </script>
 
 # Components
@@ -171,6 +173,30 @@ says the same.
 ```
 
 <ApiTable name="FpMeter" />
+
+## FpReadout
+
+A seven-segment readout: LED digits in a dark housing, with the unlit segments faintly showing.
+It draws digits, a minus, a space and the letters such a display can; a `.` lights the decimal
+point of the digit before it and a `:` adds a colon. `digits` pads it with dark cells on the left,
+so a changing number keeps its width. Screen readers read the value as text, or the words
+`valueText` gives.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpReadout :value="`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`" :digits="4" color="amber" />
+  <FpReadout :value="(tone / 2).toFixed(1)" :digits="4" :value-text="v => `${v} dB`" />
+  <FpReadout value="Err" color="red" />
+  <FpButton @click="seconds++">+1 s</FpButton>
+</div>
+
+```vue
+<FpReadout :value="level.toFixed(1)" :digits="4" :value-text="v => `${v} dB`" />
+```
+
+Without Vue, draw each character as an `fp-readout-cell` SVG with the `fpReadoutSegments` shapes and
+light the segments `fpReadoutGlyph` names, both exported from `@frontpanel/vue`.
+
+<ApiTable name="FpReadout" />
 
 ## FpLcd and FpLcdLine
 

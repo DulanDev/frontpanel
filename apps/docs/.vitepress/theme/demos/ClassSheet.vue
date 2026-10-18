@@ -1,5 +1,7 @@
 <script setup lang="ts">
 // Every core class on one device panel, as raw classes, in the skin it is given.
+import { fpReadoutGlyph, fpReadoutSegments } from '@frontpanel/vue'
+
 defineProps<{
   skin: { id: 'silver' | 'gunmetal', name: string }
 }>()
@@ -15,6 +17,9 @@ const caps = [
 // The pixel set's close icon, copied from @frontpanel/vue (fpIconPaths.close), since the sheet uses
 // no components.
 const close = 'M2 2h2v1h-2zM12 2h2v1h-2zM2 3h3v1h-3zM11 3h3v1h-3zM3 4h3v1h-3zM10 4h3v1h-3zM4 5h3v1h-3zM9 5h3v1h-3zM5 6h6v1h-6zM6 7h4v1h-4zM6 8h4v1h-4zM5 9h6v1h-6zM4 10h3v1h-3zM9 10h3v1h-3zM3 11h3v1h-3zM10 11h3v1h-3zM2 12h3v1h-3zM11 12h3v1h-3zM2 13h2v1h-2zM12 13h2v1h-2z'
+
+// A clock on the readout, drawn from the exported glyphs rather than the component.
+const clock = [...'12:05']
 
 const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscreen', '05 Backlight', '06 Two Blinks', '07 Rim Light', '08 Outro']
 </script>
@@ -48,6 +53,24 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
               </span>
               <span class="fp-housing">
                 <span class="fp-led fp-led-red" /> CLIP
+              </span>
+              <span class="fp-readout fp-led-amber">
+                <span class="fp-readout-text">12:05</span>
+                <template v-for="(character, index) in clock" :key="index">
+                  <svg v-if="character === ':'" viewBox="0 0 5 22" class="fp-readout-cell" aria-hidden="true">
+                    <circle cx="2.5" cy="7" r="1.2" data-lit />
+                    <circle cx="2.5" cy="15" r="1.2" data-lit />
+                  </svg>
+                  <svg v-else viewBox="0 0 15 22" class="fp-readout-cell" aria-hidden="true">
+                    <polygon
+                      v-for="segment in fpReadoutSegments"
+                      :key="segment.name"
+                      :points="segment.points"
+                      :data-lit="fpReadoutGlyph(character).includes(segment.name) ? '' : undefined"
+                    />
+                    <circle cx="13.5" cy="21" r="1.2" />
+                  </svg>
+                </template>
               </span>
             </div>
 

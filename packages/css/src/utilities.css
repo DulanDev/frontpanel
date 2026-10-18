@@ -613,6 +613,52 @@
   }
 }
 
+/**
+ * Seven-segment readout: LED digits in a dark housing. Each character is an fp-readout-cell whose
+ * segments light with `data-lit`, and the value is said in an fp-readout-text inside. Green by
+ * default; colour it with fp-led-amber or fp-led-red.
+ */
+@utility fp-readout {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 4px;
+  background-color: var(--fp-color-housing);
+  box-shadow:
+    inset 1px 1px 2px rgb(0 0 0 / 0.5),
+    0 1px 0 var(--fp-color-bevel-hi);
+}
+
+/**
+ * One character of an fp-readout: an SVG of seven segments and a decimal point, leaning a little
+ * like a real display. Unlit segments are the LED's off colour with a trace of its own, so the
+ * figure eights show. `--fp-readout-height` sets it (2rem); keep it 24 px or more, where the LED
+ * colours pass as large text against the housing. Give it aria-hidden="true".
+ */
+@utility fp-readout-cell {
+  flex-shrink: 0;
+  width: auto;
+  height: var(--fp-readout-height, 2rem);
+  fill: color-mix(in srgb, var(--fp-color-led-off) 75%, var(--fp-led, var(--fp-color-led-on)));
+  transform: skewX(-6deg);
+
+  & [data-lit] {
+    fill: var(--fp-led, var(--fp-color-led-on));
+  }
+}
+
+/** An fp-readout's value as text, for screen readers: hidden from view, read in place of the digits. */
+@utility fp-readout-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /** Matte content panel. This is where reading happens: no gloss, a 1 px bevel and a short hard shadow. */
 @utility fp-module {
   color-scheme: var(--fp-scheme);
@@ -755,17 +801,17 @@
     inset 0 -1px 1px rgb(0 0 0 / 0.45);
 }
 
-/** Green for an fp-led, the default. */
+/** Green for an fp-led or fp-readout, the default. */
 @utility fp-led-green {
   --fp-led: var(--fp-color-led-on);
 }
 
-/** Amber for an fp-led. */
+/** Amber for an fp-led or fp-readout. */
 @utility fp-led-amber {
   --fp-led: var(--fp-color-led-amber);
 }
 
-/** Red for an fp-led. */
+/** Red for an fp-led or fp-readout. */
 @utility fp-led-red {
   --fp-led: var(--fp-color-led-red);
 }

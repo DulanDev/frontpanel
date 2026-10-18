@@ -29,13 +29,15 @@ describe.each(Object.entries(skins()))('%s skin', (_skin, colours) => {
   })
 })
 
-// A meter's unlit segment is the LED's off colour with a share of its zone's colour mixed in, so
-// the zones show before they light. A lit segment still has to stand 3:1 against an unlit neighbour.
-const meter = postcss.parse(readFileSync(new URL('utilities.css', import.meta.url), 'utf8'))
-let offShare: number | undefined
-meter.walkAtRules('utility', (rule) => {
-  if (rule.params === 'fp-meter')
-    offShare = Number(/color-mix\(in srgb, var\(--fp-color-led-off\) (\d+)%, transparent\)/.exec(rule.toString())?.[1]) / 100
+// A meter's or readout's unlit segment is the LED's off colour with a share of the lit colour mixed
+// in, so the shapes show before they light. A lit segment still has to stand 3:1 against an unlit
+// neighbour; against the housing it is the LED pairs above.
+const utilities = postcss.parse(readFileSync(new URL('utilities.css', import.meta.url), 'utf8'))
+const offShares = new Map<string, number>()
+utilities.walkAtRules('utility', (rule) => {
+  const share = /color-mix\(in srgb, var\(--fp-color-led-off\) (\d+)%,/.exec(rule.toString())?.[1]
+  if (share)
+    offShares.set(rule.params, Number(share) / 100)
 })
 
 function mix(over: string, under: string, share: number): string {
@@ -44,14 +46,14 @@ function mix(over: string, under: string, share: number): string {
   return `#${a.map((value, i) => Math.round(value * share + b[i]! * (1 - share)).toString(16).padStart(2, '0')).join('')}`
 }
 
-describe.each(Object.entries(skins()))('%s meter', (_skin, colours) => {
-  it('draws unlit segments over the off colour', () => {
-    expect(offShare).toBeGreaterThan(0)
+describe.each(Object.entries(skins()))('%s unlit segments', (_skin, colours) => {
+  it('are drawn by the meter and the readout', () => {
+    expect([...offShares.keys()]).toEqual(['fp-meter', 'fp-readout-cell'])
   })
 
-  it.each(['led-on', 'led-amber', 'led-red'])('a lit %s segment stands out from an unlit one', (led) => {
+  it.each([...offShares].flatMap(([utility, share]) => ['led-on', 'led-amber', 'led-red'].map(led => [utility, led, share] as const)))('%s: a lit %s segment stands out from an unlit one', (_utility, led, share) => {
     const lit = colours.get(`--fp-color-${led}`)!
-    const unlit = mix(colours.get('--fp-color-led-off')!, lit, offShare!)
+    const unlit = mix(colours.get('--fp-color-led-off')!, lit, share)
     expect(contrast(lit, unlit)).toBeGreaterThanOrEqual(required.ui)
   })
 })
