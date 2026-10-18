@@ -112,6 +112,20 @@
   padding: 6px 12px;
 }
 
+.demo-lenses {
+  align-items: flex-start;
+}
+
+.demo-lens {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+}
+
+.demo-readout-big {
+  --fp-readout-height: 3.5rem;
+}
+
 .demo-lcd-line {
   font-size: 32px;
   line-height: 1;

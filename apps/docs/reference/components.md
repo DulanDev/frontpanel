@@ -35,6 +35,7 @@ const treble = ref(-4)
 const balance = ref(0)
 const gain = ref(64)
 const seconds = ref(125)
+const lenses = ['flat', 'diffused', 'clear'] as const
 </script>
 
 # Components
@@ -237,6 +238,29 @@ nearby. `blink` blinks it twice when it lights; re-key it to blink again.
 </div>
 
 <ApiTable name="FpLed" />
+
+## Lenses
+
+A real LED has its chip in the middle of the segment, under a diffusing lens, so it is brightest
+there. The lens sets how strong that is, for `FpLed`, `FpMeter` and `FpReadout`:
+`fp-lens-diffused`, the default, gives a soft hot spot; `fp-lens-clear` a bright core and a wider
+glow; `fp-lens-flat` an even fill. Put a lens class on any element to set every LED part inside
+it, a whole device at once, or pass a part its own `lens`.
+
+<div class="vp-raw demo demo-surface demo-row demo-lenses">
+  <div v-for="lens in lenses" :key="lens" class="demo-lens" :class="`fp-lens-${lens}`">
+    <FpReadout value="8.8" color="red" class="demo-readout-big" />
+    <FpMeter :value="75" orientation="horizontal" aria-hidden="true" />
+    <FpHousing><FpLed lit /> <FpLed color="amber" lit /> <FpLed color="red" lit /> {{ lens.toUpperCase() }}</FpHousing>
+  </div>
+</div>
+
+```vue
+<FpDevice class="fp-lens-clear">
+  <FpReadout :value="time" />            <!-- clear, from the device -->
+  <FpLed lit lens="flat" />              <!-- its own lens -->
+</FpDevice>
+```
 
 ## FpHousing, FpWell, FpSilk and FpScrew
 
