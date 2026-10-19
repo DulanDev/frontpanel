@@ -1,5 +1,7 @@
 ---
 layout: home
+# The device backdrop: the kit's blue-grey sky with its faint grid, behind the whole page.
+pageClass: fp-device-backdrop
 
 hero:
   name: Frontpanel
@@ -21,12 +23,3 @@ features:
   - title: Vue components on Reka UI
     details: Device, window, buttons, caps, LCD, LEDs and a pixel icon set, with behaviour and ARIA from Reka UI.
 ---
-
-<script setup lang="ts">
-import DeckDemo from './.vitepress/theme/demos/DeckDemo.vue'
-</script>
-
-<div class="home-demo vp-raw">
-  <DeckDemo />
-</div>
-

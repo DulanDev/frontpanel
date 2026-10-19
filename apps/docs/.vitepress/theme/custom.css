@@ -71,11 +71,48 @@
   overflow: clip;
 }
 
-/* The home page's live device, under the features. */
-.home-demo {
-  max-width: 1152px;
-  margin: 48px auto 64px;
-  padding: 0 24px;
+/* The home page stands on the device backdrop (its pageClass), where only ink is promised. */
+.Layout.fp-device-backdrop .VPHero .tagline {
+  color: var(--fp-color-ink);
+}
+
+/*
+ * The live device in the hero's image slot, which VitePress sizes for a square logo: under the
+ * text on narrow screens, beside it from 960 px, scaled to the column it gets.
+ */
+.Layout .VPHero .image {
+  order: 3;
+  margin: 40px 0 0;
+}
+
+/*
+ * A block, not the slot's centring flexbox: the device takes its width from this box. The hero
+ * centres its text on narrow screens; the device keeps its own alignment.
+ */
+.Layout .VPHero .image-container {
+  display: block;
+  width: 100%;
+  text-align: start;
+  max-width: 600px;
+  height: auto;
+  transform: none;
+}
+
+.Layout .VPHero .image-bg {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .Layout .VPHero .image {
+    flex: 1 1 0;
+    align-self: center;
+    min-width: 0;
+    margin: 0 0 0 48px;
+  }
+
+  .Layout .VPHero .main {
+    flex-shrink: 1;
+  }
 }
 
 

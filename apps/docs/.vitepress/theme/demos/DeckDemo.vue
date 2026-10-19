@@ -19,7 +19,10 @@ import {
 import { computed, ref } from 'vue'
 
 // One small device built from the Vue components, drawn at 600 px and scaled to fit its column.
-// It wears the page's skin, which follows the appearance toggle.
+// It wears the page's skin, which follows the appearance toggle. The home page's hero turns the
+// backdrop off, since the page stands on one already.
+
+const { backdrop = true } = defineProps<{ backdrop?: boolean }>()
 
 const tracks = ['CHROME HORIZON', 'GEL PRESSURE', 'SILKSCREEN', 'BACKLIGHT', 'TWO BLINKS', 'RIM LIGHT']
 const track = ref(0)
@@ -44,7 +47,7 @@ function step(by: number) {
 </script>
 
 <template>
-  <FpDevice fit="width" :width="600" class="deck">
+  <FpDevice fit="width" :width="600" :backdrop class="deck" :class="{ framed: backdrop }">
     <div class="body">
       <header class="top">
         <FpScrew />
@@ -129,9 +132,12 @@ function step(by: number) {
 
 <style scoped>
 .deck {
+  color: var(--fp-color-ink);
+}
+
+.framed {
   padding: 1.5rem;
   border-radius: 12px;
-  color: var(--fp-color-ink);
 }
 
 .body {
