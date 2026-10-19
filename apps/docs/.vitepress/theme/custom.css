@@ -102,12 +102,6 @@
   display: none;
 }
 
-/* The skin picker over the device. */
-.hero-device {
-  display: grid;
-  gap: 12px;
-}
-
 /*
  * Side by side, the home page runs wider than VitePress's 1152 px with narrower side padding, and
  * the device takes the larger share, so it reaches its full 600 px from about 1240 px wide.

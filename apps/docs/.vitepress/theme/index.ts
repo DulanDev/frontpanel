@@ -10,14 +10,11 @@ import './custom.css'
 
 export default {
   extends: DefaultTheme,
-  // The live device sits beside the hero text on the home page, in the hero's image slot, under
-  // the skin picker, with vp-raw keeping VitePress's unlayered element resets off the kit's
+  // The live device sits beside the hero text on the home page, in the hero's image slot, with the
+  // skin picker built in and vp-raw keeping VitePress's unlayered element resets off the kit's
   // layered classes.
   Layout: () => h(DefaultTheme.Layout, null, {
-    'home-hero-image': () => h('div', { class: 'vp-raw hero-device' }, [
-      h(SkinPicker),
-      h(DeckDemo, { backdrop: false }),
-    ]),
+    'home-hero-image': () => h('div', { class: 'vp-raw' }, h(DeckDemo, { backdrop: false }, () => h(SkinPicker))),
   }),
   setup() {
     // The head script sets the skin before the first paint; this keeps it with the appearance toggle.

@@ -64,6 +64,9 @@ function step(by: number) {
         <FpScrew />
       </header>
 
+      <!-- An extra control under the header: the home page's skin picker. -->
+      <slot />
+
       <FpLcd class="lcd" aria-label="Display">
         <div class="lcd-row">
           <FpLcdLine :text="`TRACK ${trackNumber}`" ghost class="small" />
