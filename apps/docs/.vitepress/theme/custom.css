@@ -102,16 +102,32 @@
   display: none;
 }
 
+/*
+ * Side by side, the home page runs wider than VitePress's 1152 px with narrower side padding, and
+ * the device takes the larger share, so it reaches its full 600 px from about 1240 px wide.
+ */
 @media (min-width: 960px) {
-  .Layout .VPHero .image {
-    flex: 1 1 0;
-    align-self: center;
-    min-width: 0;
-    margin: 0 0 0 48px;
+  .Layout .VPHero,
+  .Layout .VPFeatures {
+    padding-inline: 32px;
+  }
+
+  .Layout .VPHero .container,
+  .Layout .VPFeatures .container {
+    max-width: 1216px;
   }
 
   .Layout .VPHero .main {
-    flex-shrink: 1;
+    flex: 5 1 0;
+    width: auto;
+    max-width: none;
+  }
+
+  .Layout .VPHero .image {
+    flex: 6 1 0;
+    align-self: center;
+    min-width: 0;
+    margin: 0 0 0 48px;
   }
 }
 
