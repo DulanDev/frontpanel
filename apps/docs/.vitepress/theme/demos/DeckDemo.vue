@@ -16,13 +16,14 @@ import {
   FpWell,
   FpWindow,
 } from '@frontpanel/vue'
-import { computed, ref } from 'vue'
+import { useData } from 'vitepress'
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 // One small device built from the Vue components, drawn at 600 px and scaled to fit its column.
 // It wears the page's skin, which follows the appearance toggle. The home page's hero turns the
-// backdrop off, since the page stands on one already.
+// backdrop off, since the page stands on one already, and gives it a SKIN button.
 
-const { backdrop = true } = defineProps<{ backdrop?: boolean }>()
+const { backdrop = true, skinButton = false } = defineProps<{ backdrop?: boolean, skinButton?: boolean }>()
 
 const tracks = ['CHROME HORIZON', 'GEL PRESSURE', 'SILKSCREEN', 'BACKLIGHT', 'TWO BLINKS', 'RIM LIGHT']
 const track = ref(0)
@@ -44,6 +45,33 @@ const trackNumber = computed(() => String(track.value + 1).padStart(2, '0'))
 function step(by: number) {
   track.value = (track.value + by + tracks.length) % tracks.length
 }
+
+// The SKIN button steps the page's skin (VitePress's isDark, which the theme turns into
+// data-fp-skin) and borrows the LCD to name it for a moment, as a player shows a setting it has
+// just changed, then goes back to the track.
+const skinNames = {
+  silver: { lcd: 'SILVER', full: 'Chrome Silver' },
+  gunmetal: { lcd: 'GUNMETAL', full: 'Gunmetal Night' },
+} as const
+const { isDark } = useData()
+/** The skin the LCD names while it shows one. */
+const shownSkin = ref<keyof typeof skinNames>()
+/** Said once a skin is stepped to, never on load. */
+const skinStatus = ref('')
+let skinTimer: ReturnType<typeof setTimeout> | undefined
+
+function nextSkin() {
+  isDark.value = !isDark.value
+  const skin = isDark.value ? 'gunmetal' : 'silver'
+  shownSkin.value = skin
+  skinStatus.value = `Skin: ${skinNames[skin].full}`
+  clearTimeout(skinTimer)
+  skinTimer = setTimeout(() => {
+    shownSkin.value = undefined
+  }, 1500)
+}
+
+onBeforeUnmount(() => clearTimeout(skinTimer))
 </script>
 
 <template>
@@ -64,15 +92,17 @@ function step(by: number) {
         <FpScrew />
       </header>
 
-      <!-- An extra control under the header: the home page's skin picker. -->
-      <slot />
-
       <FpLcd class="lcd" aria-label="Display">
         <div class="lcd-row">
-          <FpLcdLine :text="`TRACK ${trackNumber}`" ghost class="small" />
+          <FpLcdLine :text="shownSkin ? 'SKIN' : `TRACK ${trackNumber}`" ghost :cells="8" class="small" />
           <FpLcdLine :text="playing ? 'PLAY' : 'STOP'" ghost :cells="4" class="small" />
         </div>
-        <FpLcdLine :text="tracks[track]!" redraw ghost :cells="14" class="large" aria-live="polite" />
+        <!--
+          A skin's name stands in for the track for a moment. The status line says it, so the
+          glass stays quiet, and the track's live region comes back without repeating itself.
+        -->
+        <FpLcdLine v-if="shownSkin" :text="skinNames[shownSkin].lcd" redraw ghost :cells="14" class="large" aria-hidden="true" />
+        <FpLcdLine v-else :text="tracks[track]!" redraw ghost :cells="14" class="large" aria-live="polite" />
       </FpLcd>
 
       <div class="row" role="group" aria-label="Transport">
@@ -90,6 +120,9 @@ function step(by: number) {
         </FpButton>
         <FpButton :pressed="playlistOpen" @click="playlistOpen = !playlistOpen">
           <FpIcon name="grid" /> List
+        </FpButton>
+        <FpButton v-if="skinButton" @click="nextSkin">
+          Skin
         </FpButton>
         <FpGelButton class="save" @click="saves++">
           <FpIcon name="save" /> Save
@@ -130,6 +163,7 @@ function step(by: number) {
         </FpWindow>
       </div>
     </div>
+    <span v-if="skinButton" class="sr-only" role="status">{{ skinStatus }}</span>
   </FpDevice>
 </template>
 
@@ -183,6 +217,18 @@ function step(by: number) {
 
 .save {
   margin-inline-start: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .cap {

@@ -3,18 +3,17 @@ import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import { h, watch } from 'vue'
 import DeckDemo from './demos/DeckDemo.vue'
-import SkinPicker from './SkinPicker.vue'
 import '@frontpanel/css/index.css'
 import '@frontpanel/css/fonts.css'
 import './custom.css'
 
 export default {
   extends: DefaultTheme,
-  // The live device sits beside the hero text on the home page, in the hero's image slot, with the
-  // skin picker built in and vp-raw keeping VitePress's unlayered element resets off the kit's
-  // layered classes.
+  // The live device sits beside the hero text on the home page, in the hero's image slot, with its
+  // SKIN button, and vp-raw keeping VitePress's unlayered element resets off the kit's layered
+  // classes.
   Layout: () => h(DefaultTheme.Layout, null, {
-    'home-hero-image': () => h('div', { class: 'vp-raw' }, h(DeckDemo, { backdrop: false }, () => h(SkinPicker))),
+    'home-hero-image': () => h('div', { class: 'vp-raw' }, h(DeckDemo, { backdrop: false, skinButton: true })),
   }),
   setup() {
     // The head script sets the skin before the first paint; this keeps it with the appearance toggle.
