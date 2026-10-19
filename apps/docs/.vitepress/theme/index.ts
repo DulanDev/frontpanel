@@ -9,8 +9,11 @@ import './custom.css'
 
 export default {
   extends: DefaultTheme,
-  // The live device sits beside the hero text on the home page, in the hero's image slot.
-  Layout: () => h(DefaultTheme.Layout, null, { 'home-hero-image': () => h(DeckDemo, { backdrop: false }) }),
+  // The live device sits beside the hero text on the home page, in the hero's image slot, with
+  // vp-raw keeping VitePress's unlayered element resets off the kit's layered classes.
+  Layout: () => h(DefaultTheme.Layout, null, {
+    'home-hero-image': () => h('div', { class: 'vp-raw' }, h(DeckDemo, { backdrop: false })),
+  }),
   setup() {
     // The head script sets the skin before the first paint; this keeps it with the appearance toggle.
     const { isDark } = useData()
