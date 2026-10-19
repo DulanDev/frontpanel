@@ -84,7 +84,7 @@ A small push button in brushed chrome. Set `pressed` to make it a toggle: it hol
 
 <div class="vp-raw demo demo-surface demo-row">
   <FpButton aria-label="Previous track"><FpIcon name="left" /></FpButton>
-  <FpButton :pressed="playing" @click="playing = !playing"><FpIcon name="go" /> Play</FpButton>
+  <FpButton :pressed="playing" @click="playing = !playing"><FpIcon name="play" /> Play</FpButton>
   <FpButton disabled>Eject</FpButton>
 </div>
 

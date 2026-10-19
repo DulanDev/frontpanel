@@ -11,7 +11,7 @@ describe('toPath', () => {
 
 describe('icon set', () => {
   it('draws every glyph on the 16 px grid', () => {
-    expect(fpIconNames).toHaveLength(18)
+    expect(fpIconNames).toHaveLength(19)
     for (const name of fpIconNames)
       expect(fpIconPaths[name], name).toMatch(/^M/)
   })

@@ -117,7 +117,7 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
           <FpIcon name="left" />
         </FpButton>
         <FpButton :pressed="playing" @click="playing = !playing">
-          <FpIcon name="go" /> Play
+          <FpIcon name="play" /> Play
         </FpButton>
         <FpButton aria-label="Next track" @click="step(1)">
           <FpIcon name="right" />

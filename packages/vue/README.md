@@ -72,7 +72,7 @@ const playing = ref(false)
 | `FpLcd`, `FpLcdLine` | LCD glass, and a line of text on it with optional unlit segments (`ghost`, `cells`) and a left-to-right `redraw` |
 | `FpLed` | A `green`, `amber` or `red` LED; `lit`, and `blink` to confirm an action |
 | `FpHousing`, `FpWell`, `FpSilk`, `FpScrew` | A dark housing for LEDs, a recessed well, a silkscreened label, a screw head |
-| `FpIcon` | An 18-glyph 16 px pixel icon set (`fpIconNames`) |
+| `FpIcon` | A 19-glyph 16 px pixel icon set (`fpIconNames`) |
 
 Element components take Reka's `as` and `asChild`.
 
