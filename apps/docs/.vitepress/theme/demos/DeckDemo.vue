@@ -11,8 +11,10 @@ import {
   FpLcd,
   FpLcdLine,
   FpLed,
+  FpMeter,
   FpScrew,
   FpSilk,
+  FpSlider,
   FpWell,
   FpWindow,
 } from '@frontpanel/vue'
@@ -20,10 +22,11 @@ import { useData } from 'vitepress'
 import { computed, onBeforeUnmount, ref } from 'vue'
 
 // One small device built from the Vue components, drawn at 600 px and scaled to fit its column.
-// It wears the page's skin, which follows the appearance toggle. The home page's hero turns the
-// backdrop off, since the page stands on one already, and gives it a SKIN button.
+// It wears the page's skin, which follows the appearance toggle. In the home page's hero it drops
+// its backdrop, since the page stands on one already, gains a Skin button, and shows a levels
+// window in place of the icons.
 
-const { backdrop = true, skinButton = false } = defineProps<{ backdrop?: boolean, skinButton?: boolean }>()
+const { hero = false } = defineProps<{ hero?: boolean }>()
 
 const tracks = ['CHROME HORIZON', 'GEL PRESSURE', 'SILKSCREEN', 'BACKLIGHT', 'TWO BLINKS', 'RIM LIGHT']
 const track = ref(0)
@@ -39,6 +42,7 @@ const caps: { label: string, color: FpCapColor }[] = [
   { label: 'E', color: 'berry' },
 ]
 const bank = ref('B')
+const gain = ref(64)
 
 const trackNumber = computed(() => String(track.value + 1).padStart(2, '0'))
 
@@ -75,7 +79,7 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
 </script>
 
 <template>
-  <FpDevice fit="width" :width="600" :backdrop class="deck" :class="{ framed: backdrop }">
+  <FpDevice fit="width" :width="600" :backdrop="!hero" class="deck" :class="{ framed: !hero }">
     <div class="body">
       <header class="top">
         <FpScrew />
@@ -121,7 +125,7 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
         <FpButton :pressed="playlistOpen" @click="playlistOpen = !playlistOpen">
           <FpIcon name="grid" /> List
         </FpButton>
-        <FpButton v-if="skinButton" @click="nextSkin">
+        <FpButton v-if="hero" @click="nextSkin">
           Skin
         </FpButton>
         <FpGelButton class="save" @click="saves++">
@@ -154,7 +158,14 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
           <FpSilk>Playlist closed</FpSilk>
         </FpWell>
 
-        <FpWindow title="Icons" :level="4">
+        <FpWindow v-if="hero" title="Levels" :level="4">
+          <div class="levels">
+            <FpSlider v-model="gain" label="Gain" />
+            <FpMeter :value="gain" label="L" />
+            <FpMeter :value="Math.round(gain * 0.85)" label="R" />
+          </div>
+        </FpWindow>
+        <FpWindow v-else title="Icons" :level="4">
           <ul class="icons">
             <li v-for="name in fpIconNames" :key="name">
               <FpIcon :name="name" :label="name" />
@@ -163,7 +174,7 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
         </FpWindow>
       </div>
     </div>
-    <span v-if="skinButton" class="sr-only" role="status">{{ skinStatus }}</span>
+    <span v-if="hero" class="sr-only" role="status">{{ skinStatus }}</span>
   </FpDevice>
 </template>
 
@@ -243,7 +254,7 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
 }
 
 .playlist {
-  max-height: 11rem;
+  max-height: 12rem;
   overflow-y: auto;
 }
 
@@ -261,6 +272,18 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   display: grid;
   place-items: center;
   min-height: 6rem;
+}
+
+/* Sized so the levels window stands as tall as the playlist beside it. */
+.levels {
+  --fp-fader-length: 5rem;
+  --fp-meter-length: 5rem;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.875rem 0.75rem;
 }
 
 .icons {
