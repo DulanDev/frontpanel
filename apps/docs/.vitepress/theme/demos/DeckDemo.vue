@@ -8,10 +8,12 @@ import {
   FpHousing,
   FpIcon,
   fpIconNames,
+  FpKnob,
   FpLcd,
   FpLcdLine,
   FpLed,
   FpMeter,
+  FpReadout,
   FpScrew,
   FpSilk,
   FpSlider,
@@ -43,6 +45,7 @@ const caps: { label: string, color: FpCapColor }[] = [
 ]
 const bank = ref('B')
 const gain = ref(64)
+const volume = ref(70)
 
 const trackNumber = computed(() => String(track.value + 1).padStart(2, '0'))
 
@@ -163,6 +166,11 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
             <FpSlider v-model="gain" label="Gain" />
             <FpMeter :value="gain" label="L" />
             <FpMeter :value="Math.round(gain * 0.85)" label="R" />
+            <!-- The knob says its own value, so the readout that repeats it stays out of the way. -->
+            <div class="dial">
+              <FpReadout :value="volume" :digits="3" color="amber" aria-hidden="true" />
+              <FpKnob v-model="volume" label="Volume" :value-text="v => `${v} percent`" />
+            </div>
           </div>
         </FpWindow>
         <FpWindow v-else title="Icons" :level="4">
@@ -248,13 +256,13 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
 
 .windows {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.75rem;
   align-items: start;
 }
 
 .playlist {
-  max-height: 12rem;
+  max-height: 13.75rem;
   overflow-y: auto;
 }
 
@@ -282,8 +290,15 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 0.875rem 0.75rem;
+  gap: 1rem;
+  padding: 1.25rem 0.75rem;
+}
+
+.dial {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  margin-inline-start: 0.5rem;
 }
 
 .icons {
