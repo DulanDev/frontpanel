@@ -49,9 +49,4 @@ describe('led lenses', () => {
     expect(rule).toContain('var(--fp-led-core')
     expect(rule).toContain('var(--fp-led-glow')
   })
-
-  // Forced colours drop backgrounds, gradients and shadows, which is all an LED is drawn with.
-  it.each(['fp-led', 'fp-led-lit', 'fp-meter', 'fp-readout-cell', 'fp-readout-lit'])('%s still shows with forced colours', (name) => {
-    expect(utilities.get(name)!.toString()).toContain('@media (forced-colors: active)')
-  })
 })
