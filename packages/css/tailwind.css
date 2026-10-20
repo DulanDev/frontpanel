@@ -150,6 +150,11 @@
     overflow: clip;
     border-radius: 26px;
   }
+
+  /* Forced colours drop the chrome: an outline keeps the device's edge. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+  }
 }
 
 /** Molded body plastic the modules sit on. */
@@ -254,6 +259,35 @@
   &:disabled {
     opacity: 0.45;
   }
+
+  /*
+   * Forced colours drop the chrome and its shadows: an outline keeps the button's edge, the system's
+   * selected colours show it pressed, and GrayText, not a fade, shows it disabled.
+   */
+  @media (forced-colors: active) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+
+    &[aria-pressed="true"],
+    &[aria-expanded="true"],
+    &[aria-current="page"] {
+      forced-color-adjust: none;
+      background: SelectedItem;
+      box-shadow: none;
+      color: SelectedItemText;
+
+      /* Opted out, its focus ring would keep the skin's colour: the system's text colour shows on any ground. */
+      &:focus-visible {
+        outline-color: CanvasText;
+      }
+    }
+
+    &:disabled {
+      opacity: 1;
+      color: GrayText;
+      outline-color: GrayText;
+    }
+  }
 }
 
 /**
@@ -316,6 +350,18 @@
 
   &:disabled {
     opacity: 0.45;
+  }
+
+  /* Forced colours drop the gel and its shadows: an outline keeps its edge, and GrayText, not a fade, shows it disabled. */
+  @media (forced-colors: active) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+
+    &:disabled {
+      opacity: 1;
+      color: GrayText;
+      outline-color: GrayText;
+    }
   }
 }
 
@@ -388,6 +434,34 @@
 
   &:disabled {
     opacity: 0.5;
+  }
+
+  /*
+   * Forced colours drop the plastic and its ring: an outline keeps the cap's edge, the system's
+   * selected colours show it selected, and GrayText, not a fade, shows it disabled.
+   */
+  @media (forced-colors: active) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+
+    &[aria-pressed="true"],
+    &[aria-checked="true"] {
+      forced-color-adjust: none;
+      background: SelectedItem;
+      box-shadow: none;
+      color: SelectedItemText;
+
+      /* Opted out, its focus ring would keep the skin's colour: the system's text colour shows on any ground. */
+      &:focus-visible {
+        outline-color: CanvasText;
+      }
+    }
+
+    &:disabled {
+      opacity: 1;
+      color: GrayText;
+      outline-color: GrayText;
+    }
   }
 }
 
@@ -482,6 +556,15 @@
     opacity: 0.45;
     cursor: not-allowed;
   }
+
+  /* Forced colours drop the knurling, the dome and their shadows: outlines draw the skirt and the cap. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+
+    &::before {
+      outline: 1px solid CanvasText;
+    }
+  }
 }
 
 /** The pointer line on a knob's cap. Turn it with `rotate`: -135deg at the minimum, 135deg at the maximum. */
@@ -500,6 +583,14 @@
     translate: -50% 0;
     border-radius: 2px;
     background-color: var(--fp-color-ink);
+  }
+
+  /* Forced colours would paint the line in the page colour, on the page colour. */
+  @media (forced-colors: active) {
+    &::after {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
   }
 }
 
@@ -556,6 +647,13 @@
     width: auto;
     height: 6px;
     translate: 0 -50%;
+  }
+
+  /* Forced colours: the slot as a solid line, so the cap's travel shows. */
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+    box-shadow: none;
   }
 }
 
@@ -618,6 +716,18 @@
     outline: 2px solid var(--fp-color-focus-ring);
     outline-offset: 2px;
     filter: drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
+  /* Forced colours: a cap in the page colour hides the slot under it; an outline and the grip draw it. */
+  @media (forced-colors: active) {
+    background-color: Canvas;
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+
+    &::after {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
   }
 }
 
@@ -926,6 +1036,11 @@
     inset 1px 1px 0 var(--fp-color-bevel-hi),
     inset -1px -1px 0 var(--fp-color-bevel-lo),
     2px 3px 0 var(--fp-color-cast);
+
+  /* Forced colours drop the shadow that draws its edge: an outline keeps it. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+  }
 }
 
 /** A module's own little title bar, in brushed chrome. */
@@ -988,6 +1103,11 @@
   box-shadow:
     inset 1px 1px 2px var(--fp-color-bevel-lo),
     inset -1px -1px 0 var(--fp-color-bevel-hi);
+
+  /* Forced colours drop the shading that recesses it: an outline keeps an empty well in view. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+  }
 }
 
 /** Silkscreened hardware label. */
@@ -1010,6 +1130,11 @@
     0 0 0 2px var(--fp-color-chrome-800),
     inset 2px 2px 4px rgb(0 0 0 / 0.35),
     inset -1px -1px 0 rgb(255 255 255 / 0.2);
+
+  /* Forced colours drop the chrome bezel: an outline frames the glass. */
+  @media (forced-colors: active) {
+    outline: 2px solid CanvasText;
+  }
 }
 
 /** One line of LCD text. Cells of fp-lcd-ghost stacked behind it show the unlit segments, as on real glass. */
@@ -1027,6 +1152,11 @@
 /** The unlit segments behind an LCD line. Decorative: give it aria-hidden="true". */
 @utility fp-lcd-ghost {
   color: var(--fp-color-lcd-ghost);
+
+  /* Forced colours would draw the unlit segments as solid as the text over them. */
+  @media (forced-colors: active) {
+    visibility: hidden;
+  }
 }
 
 /** Dark housing that LEDs and small readouts sit in. */
@@ -1043,6 +1173,11 @@
   box-shadow:
     inset 1px 1px 2px rgb(0 0 0 / 0.5),
     0 1px 0 var(--fp-color-bevel-hi);
+
+  /* Forced colours turn the dark housing into the page colour: an outline keeps it in view. */
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+  }
 }
 
 /** An LED with its own dark bezel ring, so a lit one reads on light chrome too. Unlit by default. */

@@ -11,6 +11,11 @@ your markup. What the kit guarantees:
   focus only, and stays while the control is hovered.
 - **State is physical and named.** A pressed toggle holds down *and* sets `aria-pressed`; a
   selected cap is pressed in with a ring, never shown by colour alone.
+- **Forced colours** (such as Windows high contrast) drop the chrome, gradients and shadows, so
+  each part is redrawn in the user's own system colours: controls and panels keep an edge, a
+  pressed or selected control is filled with the selected colour, a disabled button greys, and
+  the values stay in view (a knob's mark, a fader's cap, lit LEDs and meter segments, a
+  readout's lit digits). The finishes (chrome strips, screws) go, as decoration should.
 - **Motion** respects `prefers-reduced-motion`, per component. See [Motion](./motion).
 
 ## What's up to you
