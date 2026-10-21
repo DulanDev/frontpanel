@@ -30,6 +30,20 @@ describe('fpSwitch', () => {
     expect(control(wrapper).attributes('data-state')).toBe('checked')
   })
 
+  it('stands up with its label under it by default', () => {
+    const wrapper = mount(FpSwitch, { props: { label: 'Power' } })
+    expect(control(wrapper).attributes('data-orientation')).toBe('vertical')
+    expect(wrapper.attributes('data-label-placement')).toBe('below')
+  })
+
+  it('lies on its side with its label before it', () => {
+    const wrapper = mount(FpSwitch, { props: { label: 'Power', orientation: 'horizontal', labelPlacement: 'start' } })
+    expect(control(wrapper).attributes('data-orientation')).toBe('horizontal')
+    expect(wrapper.attributes('data-label-placement')).toBe('start')
+    // The label stays after the switch in the markup; the unit reverses the row.
+    expect(wrapper.findAll(':scope > *').map(part => part.classes()[0])).toEqual(['fp-switch', 'fp-silk'])
+  })
+
   it('takes an LED colour for its lamp', () => {
     const wrapper = mount(FpSwitch, { props: { color: 'green' } })
     expect(control(wrapper).classes()).toEqual(['fp-switch', 'fp-led-green'])
