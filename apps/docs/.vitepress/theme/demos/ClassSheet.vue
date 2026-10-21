@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Every core class on one device panel, as raw classes, in the skin it is given.
 import { fpReadoutGlyph } from '@frontpanel/vue'
+import { ref } from 'vue'
 
 defineProps<{
   skin: { id: 'silver' | 'gunmetal', name: string }
@@ -20,6 +21,10 @@ const close = 'M2 2h2v1h-2zM12 2h2v1h-2zM2 3h3v1h-3zM11 3h3v1h-3zM3 4h3v1h-3zM10
 
 // A clock on the readout, lit from the exported glyphs rather than the component.
 const clock = [...'12:05']
+
+// Two rockers on plain classes: the button carries role="switch" and aria-checked, and the look follows.
+const power = ref(true)
+const monitor = ref(false)
 
 const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscreen', '05 Backlight', '06 Two Blinks', '07 Rim Light', '08 Outro']
 </script>
@@ -138,6 +143,18 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
                   <span class="fp-silk" aria-hidden="true">R</span>
                 </div>
                 <div class="fp-meter" data-orientation="horizontal" role="meter" aria-label="Input" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="--fp-meter-level: 0.5" />
+                <div class="fp-unit">
+                  <button type="button" role="switch" class="fp-switch" :aria-checked="power" aria-label="Power" @click="power = !power">
+                    <span class="fp-switch-rocker"><span class="fp-switch-lamp" /><span class="fp-switch-face" /></span>
+                  </button>
+                  <span class="fp-silk" aria-hidden="true">Power</span>
+                </div>
+                <div class="fp-unit" data-label-placement="start">
+                  <button type="button" role="switch" class="fp-switch fp-led-green" data-orientation="horizontal" :aria-checked="monitor" aria-label="Monitor" @click="monitor = !monitor">
+                    <span class="fp-switch-rocker"><span class="fp-switch-lamp" /><span class="fp-switch-face" /></span>
+                  </button>
+                  <span class="fp-silk" aria-hidden="true">Monitor</span>
+                </div>
               </div>
             </div>
 

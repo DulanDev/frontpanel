@@ -148,6 +148,12 @@
   gap: 10px;
 }
 
+/* A module inside a demo, holding a row of controls. */
+.demo-module {
+  padding: 12px 16px;
+  gap: 16px;
+}
+
 .demo-window {
   max-width: 320px;
 }

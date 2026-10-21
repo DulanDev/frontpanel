@@ -17,11 +17,12 @@ import {
   FpScrew,
   FpSilk,
   FpSlider,
+  FpSwitch,
   FpWell,
   FpWindow,
 } from '@frontpanel/vue'
 import { useData } from 'vitepress'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
 // One small device built from the Vue components, drawn at 600 px and scaled to fit its column.
 // It wears the page's skin, which follows the appearance toggle. In the home page's hero it drops
@@ -34,6 +35,13 @@ const tracks = ['CHROME HORIZON', 'GEL PRESSURE', 'SILKSCREEN', 'BACKLIGHT', 'TW
 const track = ref(0)
 const playing = ref(false)
 const saves = ref(0)
+// The rocker powers the deck: off, the LCD shows only its ghost segments, the LEDs, meters and
+// readout go dark, play stops and the transport waits. The fader and knob still turn, as pots do.
+const power = ref(true)
+watch(power, (on) => {
+  if (!on)
+    playing.value = false
+})
 const playlistOpen = ref(true)
 
 const caps: { label: string, color: FpCapColor }[] = [
@@ -85,41 +93,47 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   <FpDevice fit="width" :width="600" :backdrop="!hero" class="deck" :class="{ framed: !hero }">
     <div class="body">
       <header class="top">
-        <FpScrew />
+        <div class="side">
+          <FpScrew />
+          <FpSwitch v-model="power" label="Power" orientation="horizontal" label-placement="start" />
+        </div>
         <FpSilk as="h3" class="name">
           Deck · components
         </FpSilk>
-        <FpHousing>
-          <FpLed :lit="playing" /> PLAY
-        </FpHousing>
-        <FpHousing>
-          <!-- Re-keyed on each save so the LED blinks twice again. -->
-          <FpLed :key="saves" color="amber" :lit="saves > 0" blink /> SAVED
-        </FpHousing>
-        <FpScrew />
+        <div class="side end">
+          <FpHousing>
+            <FpLed :lit="power && playing" /> PLAY
+          </FpHousing>
+          <FpHousing>
+            <!-- Re-keyed on each save so the LED blinks twice again. -->
+            <FpLed :key="saves" color="amber" :lit="power && saves > 0" blink /> SAVED
+          </FpHousing>
+          <FpScrew />
+        </div>
       </header>
 
       <FpLcd class="lcd" aria-label="Display">
         <div class="lcd-row">
-          <FpLcdLine :text="shownSkin ? 'SKIN' : `TRACK ${trackNumber}`" ghost :cells="8" class="small" />
-          <FpLcdLine :text="playing ? 'PLAY' : 'STOP'" ghost :cells="4" class="small" />
+          <FpLcdLine :text="!power ? '' : shownSkin ? 'SKIN' : `TRACK ${trackNumber}`" ghost :cells="8" class="small" />
+          <FpLcdLine :text="!power ? '' : playing ? 'PLAY' : 'STOP'" ghost :cells="4" class="small" />
         </div>
         <!--
           A skin's name stands in for the track for a moment. The status line says it, so the
           glass stays quiet, and the track's live region comes back without repeating itself.
         -->
-        <FpLcdLine v-if="shownSkin" :text="skinNames[shownSkin].lcd" redraw ghost :cells="14" class="large" aria-hidden="true" />
+        <FpLcdLine v-if="!power" text="" ghost :cells="14" class="large" aria-hidden="true" />
+        <FpLcdLine v-else-if="shownSkin" :text="skinNames[shownSkin].lcd" redraw ghost :cells="14" class="large" aria-hidden="true" />
         <FpLcdLine v-else :text="tracks[track]!" redraw ghost :cells="14" class="large" aria-live="polite" />
       </FpLcd>
 
       <div class="row" role="group" aria-label="Transport">
-        <FpButton aria-label="Previous track" @click="step(-1)">
+        <FpButton aria-label="Previous track" :disabled="!power" @click="step(-1)">
           <FpIcon name="left" />
         </FpButton>
-        <FpButton :pressed="playing" @click="playing = !playing">
+        <FpButton :pressed="playing" :disabled="!power" @click="playing = !playing">
           <FpIcon name="play" /> Play
         </FpButton>
-        <FpButton aria-label="Next track" @click="step(1)">
+        <FpButton aria-label="Next track" :disabled="!power" @click="step(1)">
           <FpIcon name="right" />
         </FpButton>
         <FpButton disabled>
@@ -164,11 +178,11 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
         <FpWindow v-if="hero" title="Levels" :level="4">
           <div class="levels">
             <FpSlider v-model="gain" label="Gain" />
-            <FpMeter :value="gain" label="L" />
-            <FpMeter :value="Math.round(gain * 0.85)" label="R" />
+            <FpMeter :value="power ? gain : 0" label="L" />
+            <FpMeter :value="power ? Math.round(gain * 0.85) : 0" label="R" />
             <!-- The knob says its own value, so the readout that repeats it stays out of the way. -->
             <div class="dial">
-              <FpReadout :value="volume" :digits="3" color="amber" aria-hidden="true" />
+              <FpReadout :value="power ? volume : ''" :digits="3" color="amber" aria-hidden="true" />
               <FpKnob v-model="volume" label="Volume" :value-text="v => `${v} percent`" />
             </div>
           </div>
@@ -202,7 +216,15 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   padding: 1rem;
 }
 
-.top,
+/* Equal sides, so the name sits on the deck's centre line whatever stands either side of it. */
+.top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.side,
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -210,8 +232,12 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   gap: 0.5rem;
 }
 
+.end {
+  justify-content: flex-end;
+}
+
 .name {
-  margin: 0 auto 0 0;
+  margin: 0;
   font-weight: 400;
 }
 

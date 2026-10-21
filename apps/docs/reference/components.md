@@ -15,6 +15,7 @@ import {
   FpScrew,
   FpSilk,
   FpSlider,
+  FpSwitch,
   FpWell,
   FpWindow,
 } from '@frontpanel/vue'
@@ -33,6 +34,9 @@ const tone = ref(-3)
 const bass = ref(2)
 const treble = ref(-4)
 const balance = ref(0)
+const power = ref(true)
+const monitor = ref(false)
+const record = ref(false)
 const gain = ref(64)
 const seconds = ref(125)
 const lenses = ['flat', 'diffused', 'clear'] as const
@@ -153,6 +157,35 @@ and `--fp-fader-length` sets how far it travels.
 ```
 
 <ApiTable name="FpSlider" />
+
+## FpSwitch
+
+An illuminated rocker: press it, or focus it and press Space or Enter, and the I half rocks in as
+the lamp behind its lens lights; off, the lamp fades out as a filament cools. `v-model` holds a
+boolean and `label` names it. The lamp is red; `color` lights it green or amber.
+`orientation="horizontal"` lays it on its side, O on the left and I on the right, and
+`label-placement="start"` puts the label level with it, before it in the line. Only the label goes
+with it: a switch is always on or off, so show a fault where the device reports one, on its readout
+or an LED, as the readout here does.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <div class="fp-module demo-row demo-module">
+    <FpSwitch v-model="power" label="Power" />
+    <FpSwitch v-model="monitor" label="Monitor" color="green" />
+    <FpSwitch v-model="record" label="Rec" color="amber" orientation="horizontal" label-placement="start" />
+  </div>
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="record && !power ? 'REC NEEDS PWR' : `PWR ${power ? 'ON' : 'OFF'} MON ${monitor ? 'ON' : 'OFF'}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+```vue
+<FpSwitch v-model="power" label="Power" />
+
+<FpSwitch v-model="record" label="Rec" orientation="horizontal" label-placement="start" />
+```
+
+<ApiTable name="FpSwitch" />
 
 ## FpMeter
 
