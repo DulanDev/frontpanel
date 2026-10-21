@@ -93,19 +93,23 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   <FpDevice fit="width" :width="600" :backdrop="!hero" class="deck" :class="{ framed: !hero }">
     <div class="body">
       <header class="top">
-        <FpScrew />
-        <FpSwitch v-model="power" label="Power" />
+        <div class="side">
+          <FpScrew />
+          <FpSwitch v-model="power" label="Power" orientation="horizontal" label-placement="start" />
+        </div>
         <FpSilk as="h3" class="name">
           Deck · components
         </FpSilk>
-        <FpHousing>
-          <FpLed :lit="power && playing" /> PLAY
-        </FpHousing>
-        <FpHousing>
-          <!-- Re-keyed on each save so the LED blinks twice again. -->
-          <FpLed :key="saves" color="amber" :lit="power && saves > 0" blink /> SAVED
-        </FpHousing>
-        <FpScrew />
+        <div class="side end">
+          <FpHousing>
+            <FpLed :lit="power && playing" /> PLAY
+          </FpHousing>
+          <FpHousing>
+            <!-- Re-keyed on each save so the LED blinks twice again. -->
+            <FpLed :key="saves" color="amber" :lit="power && saves > 0" blink /> SAVED
+          </FpHousing>
+          <FpScrew />
+        </div>
       </header>
 
       <FpLcd class="lcd" aria-label="Display">
@@ -212,7 +216,15 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   padding: 1rem;
 }
 
-.top,
+/* Equal sides, so the name sits on the deck's centre line whatever stands either side of it. */
+.top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.side,
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -220,8 +232,12 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
   gap: 0.5rem;
 }
 
+.end {
+  justify-content: flex-end;
+}
+
 .name {
-  margin: 0 auto 0 0;
+  margin: 0;
   font-weight: 400;
 }
 

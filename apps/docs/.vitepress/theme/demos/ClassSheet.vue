@@ -149,8 +149,8 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
                   </button>
                   <span class="fp-silk" aria-hidden="true">Power</span>
                 </div>
-                <div class="fp-unit">
-                  <button type="button" role="switch" class="fp-switch fp-led-green" :aria-checked="monitor" aria-label="Monitor" @click="monitor = !monitor">
+                <div class="fp-unit" data-label-placement="start">
+                  <button type="button" role="switch" class="fp-switch fp-led-green" data-orientation="horizontal" :aria-checked="monitor" aria-label="Monitor" @click="monitor = !monitor">
                     <span class="fp-switch-rocker"><span class="fp-switch-lamp" /><span class="fp-switch-face" /></span>
                   </button>
                   <span class="fp-silk" aria-hidden="true">Monitor</span>

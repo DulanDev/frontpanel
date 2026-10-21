@@ -162,15 +162,17 @@ and `--fp-fader-length` sets how far it travels.
 
 An illuminated rocker: press it, or focus it and press Space or Enter, and the I half rocks in as
 the lamp behind its lens lights; off, the lamp fades out as a filament cools. `v-model` holds a
-boolean and `label` names it. The lamp is red; `color` lights it green or amber. Only the label sits
-under it: a switch is always on or off, so show a fault where the device reports one, on its
-readout or an LED, as the readout here does.
+boolean and `label` names it. The lamp is red; `color` lights it green or amber.
+`orientation="horizontal"` lays it on its side, O on the left and I on the right, and
+`label-placement="start"` puts the label level with it, before it in the line. Only the label goes
+with it: a switch is always on or off, so show a fault where the device reports one, on its readout
+or an LED, as the readout here does.
 
 <div class="vp-raw demo demo-surface demo-row">
   <div class="fp-module demo-row demo-module">
     <FpSwitch v-model="power" label="Power" />
     <FpSwitch v-model="monitor" label="Monitor" color="green" />
-    <FpSwitch v-model="record" label="Rec" color="amber" />
+    <FpSwitch v-model="record" label="Rec" color="amber" orientation="horizontal" label-placement="start" />
   </div>
   <FpLcd class="demo-lcd">
     <FpLcdLine :text="record && !power ? 'REC NEEDS PWR' : `PWR ${power ? 'ON' : 'OFF'} MON ${monitor ? 'ON' : 'OFF'}`" class="demo-lcd-line" />
@@ -179,6 +181,8 @@ readout or an LED, as the readout here does.
 
 ```vue
 <FpSwitch v-model="power" label="Power" />
+
+<FpSwitch v-model="record" label="Rec" orientation="horizontal" label-placement="start" />
 ```
 
 <ApiTable name="FpSwitch" />
