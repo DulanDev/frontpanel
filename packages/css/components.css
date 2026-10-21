@@ -673,6 +673,262 @@
   }
 
   /**
+   * Illuminated rocker switch: a lamp-lit paddle in a dark bezel, marked I at the top and O at the
+   * bottom. Off, the O half is pressed in; on, the I half is, and the lamp behind the lens lights.
+   * Put it on a button with `role="switch"` and `aria-checked`, holding an fp-switch-rocker. The
+   * lamp is red; colour it with fp-led-green or fp-led-amber. 44 x 56 px, 36 x 46 px with a mouse,
+   * trackpad or pen. After an illuminated rocker pen by ykadosh (CodePen, MIT), rebuilt on the kit's
+   * tokens.
+   */
+  .fp-switch {
+    --fp-switch-lamp: var(--fp-led, var(--fp-color-led-red));
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 3.5rem;
+    padding: 5px;
+    border: 0;
+    border-radius: 4px;
+    background-color: color-mix(in srgb, var(--fp-color-housing) 40%, black);
+    box-shadow:
+      0 0 0 1px var(--fp-color-edge),
+      inset 1px 1px 0 rgb(255 255 255 / 0.25),
+      inset 0 0 1px 3px var(--fp-color-housing),
+      inset 0 0 1px 5px color-mix(in srgb, var(--fp-color-housing) 40%, black),
+      1px 2px 0 var(--fp-color-cast);
+    perspective: 216px;
+    cursor: pointer;
+
+    @media (pointer: fine) {
+      width: 2.25rem;
+      height: 2.875rem;
+      padding: 4px;
+    }
+
+    /* On: the I half goes in, the shine comes up, the shading goes, and the lamp lights as it lands. */
+    &[aria-checked="true"] .fp-switch-rocker {
+      transform: translateZ(6px) rotateX(25deg);
+      box-shadow: 0 -3px 6px var(--fp-switch-lamp);
+    }
+
+    &[aria-checked="true"] .fp-switch-face::before {
+      opacity: 1;
+    }
+
+    &[aria-checked="true"] .fp-switch-face::after {
+      opacity: 0;
+    }
+
+    &[aria-checked="true"] .fp-switch-lamp {
+      opacity: 1;
+      transition-duration: 60ms;
+      transition-timing-function: linear;
+      transition-delay: 250ms;
+    }
+
+    /* A solid ring with a glow outside it: the glow alone fails non-text contrast on light chrome. */
+    &:focus-visible {
+      outline: 2px solid var(--fp-color-focus-ring);
+      outline-offset: 2px;
+      filter: drop-shadow(0 0 3px var(--fp-color-focus));
+    }
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /*
+     * Forced colours drop the paddle's paint: an outline keeps the bezel's edge, and the rocker fills
+     * when on, as a lit LED does, so the state reads by shape as well as by the tilt.
+     */
+    @media (forced-colors: active) {
+      outline: 1px solid ButtonText;
+
+      &[aria-checked="true"] .fp-switch-rocker {
+        background: CanvasText;
+        box-shadow: none;
+      }
+
+      &:disabled,
+      &[aria-disabled="true"] {
+        opacity: 1;
+        outline-color: GrayText;
+      }
+    }
+  }
+
+  /**
+   * The paddle of an fp-switch, tilted in 3D. It holds an fp-switch-lamp and then an fp-switch-face;
+   * its top and bottom ends show as it tips.
+   */
+  .fp-switch-rocker {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform-origin: 50% 50% -6px;
+    transform: translateZ(6px) rotateX(-25deg);
+    transform-style: preserve-3d;
+    background: linear-gradient(
+      color-mix(in srgb, var(--fp-switch-lamp) 60%, black) 0%,
+      color-mix(in srgb, var(--fp-switch-lamp) 44%, black) 30%,
+      color-mix(in srgb, var(--fp-switch-lamp) 44%, black) 70%,
+      color-mix(in srgb, var(--fp-switch-lamp) 60%, black) 100%
+    );
+
+    /* Snaps over at the end of its travel, as a rocker's spring does. */
+    transition: transform 300ms cubic-bezier(1, 0, 1, 1), box-shadow 300ms cubic-bezier(1, 0, 1, 1);
+
+    @media (prefers-reduced-motion: reduce) {
+      transition-duration: 0ms;
+    }
+
+    /* The top end, lit from above while it stands proud. */
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      transform-origin: top;
+      transform: rotateX(-90deg);
+      background:
+        linear-gradient(
+            rgb(255 255 255 / 0.8) 10%,
+            rgb(255 255 255 / 0.3) 30%,
+            color-mix(in srgb, var(--fp-switch-lamp) 40%, black) 75%,
+            color-mix(in srgb, var(--fp-switch-lamp) 20%, black)
+          )
+          50% 50% / 97% 97% no-repeat,
+        color-mix(in srgb, var(--fp-switch-lamp) 70%, black);
+    }
+
+    /* The bottom end, in shadow, with the shadow the paddle casts into the bezel. */
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      transform-origin: top;
+      transform: translateY(15px) rotateX(-90deg);
+      background-image: linear-gradient(
+        color-mix(in srgb, var(--fp-switch-lamp) 40%, black),
+        color-mix(in srgb, var(--fp-switch-lamp) 20%, black)
+      );
+      box-shadow:
+        0 15px 3px 0 black,
+        0 24px 6px 0 rgb(0 0 0 / 0.5);
+    }
+
+    /* Forced colours: a plain paddle in the system's colours; fp-switch fills it when on. */
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+      background: Canvas;
+      outline: 1px solid CanvasText;
+      outline-offset: -1px;
+
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+  }
+
+  /** The lamp behind an fp-switch's lens: lit when the switch is on, and slow to fade, like a filament cooling. */
+  .fp-switch-lamp {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--fp-switch-lamp) 35%, #fff2c8),
+      var(--fp-switch-lamp) 40%,
+      transparent 70%
+    );
+    transition: opacity 600ms ease-out;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition-duration: 0ms;
+    }
+
+    /* Forced colours: the rocker's fill shows the state instead. */
+    @media (forced-colors: active) {
+      display: none;
+    }
+  }
+
+  /**
+   * The front of an fp-switch's paddle: the dotted lens over the lamp, the I and O marks, and the
+   * shine that comes up on the pressed-in half. Decorative; the switch says its state.
+   */
+  .fp-switch-face {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(#fff, #fff) 50% 20% / max(2px, 5%) 20% no-repeat,
+      radial-gradient(circle, transparent 50%, #fff 52%, #fff 70%, transparent 72%) 50% 80% / 33% 25% no-repeat,
+      radial-gradient(transparent 30%, color-mix(in srgb, color-mix(in srgb, var(--fp-switch-lamp) 40%, black) 70%, transparent) 70%) 0 0 / 3px 3px;
+
+    /* The shine: faint while the I half stands out, full once it is pressed in. */
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transition: opacity 300ms cubic-bezier(1, 0, 1, 1);
+
+      @media (prefers-reduced-motion: reduce) {
+        transition-duration: 0ms;
+      }
+    }
+
+    &::before {
+      opacity: 0.3;
+      background:
+        linear-gradient(#fff, transparent 3%) 50% 50% / 97% 97% no-repeat,
+        linear-gradient(rgb(255 255 255 / 0.5), transparent 50%, transparent 80%, rgb(255 255 255 / 0.5)) 50% 50% / 97% 97% no-repeat;
+    }
+
+    /* The shading on the O half while it is pressed in. */
+    &::after {
+      opacity: 1;
+      background-image: linear-gradient(transparent 70%, rgb(0 0 0 / 0.8));
+    }
+
+    /* Forced colours: no lens or marks; the rocker's fill shows the state. */
+    @media (forced-colors: active) {
+      display: none;
+    }
+  }
+
+  /** Help text under a form control: what it does, or what it needs. */
+  .fp-hint {
+    max-width: 14em;
+    font-size: 12px;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--fp-color-ink-soft);
+  }
+
+  /**
+   * An error message under a form control. It passes WCAG AA on matte panels and fields, not on the
+   * bare shell, so keep a control that can fail in a module.
+   */
+  .fp-error {
+    max-width: 14em;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--fp-color-error-text);
+  }
+
+  /**
    * Level meter: a strip of LED segments in a dark housing, lit green, then amber, then red. Set
    * `--fp-meter-level` (0 to 1, in whole segments), `--fp-meter-segments` (12), and where amber and
    * red begin, `--fp-meter-amber` (8/12) and `--fp-meter-red` (11/12), as shares of the strip on
