@@ -15,6 +15,7 @@ import {
   FpScrew,
   FpSilk,
   FpSlider,
+  FpSwitch,
   FpWell,
   FpWindow,
 } from '@frontpanel/vue'
@@ -33,6 +34,9 @@ const tone = ref(-3)
 const bass = ref(2)
 const treble = ref(-4)
 const balance = ref(0)
+const power = ref(true)
+const monitor = ref(false)
+const record = ref(false)
 const gain = ref(64)
 const seconds = ref(125)
 const lenses = ['flat', 'diffused', 'clear'] as const
@@ -153,6 +157,31 @@ and `--fp-fader-length` sets how far it travels.
 ```
 
 <ApiTable name="FpSlider" />
+
+## FpSwitch
+
+An illuminated rocker: press it, or focus it and press Space or Enter, and the I half rocks in as
+the lamp behind its lens lights; off, the lamp fades out as a filament cools. `v-model` holds a
+boolean. `label` names it, `hint` and `error` are read out after the name, and an `error` marks it
+invalid. Keep a switch that can show an error in a module: the error colour passes AA on matte
+panels, not on the bare shell. The lamp is red; `color` lights it green or amber.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <div class="fp-module demo-row demo-module">
+    <FpSwitch v-model="power" label="Power" hint="Mains in" />
+    <FpSwitch v-model="monitor" label="Monitor" color="green" />
+    <FpSwitch v-model="record" label="Rec" color="amber" :error="record && !power ? 'Needs power' : undefined" />
+  </div>
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="`PWR ${power ? 'ON' : 'OFF'} MON ${monitor ? 'ON' : 'OFF'}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+```vue
+<FpSwitch v-model="power" label="Power" hint="Mains in" />
+```
+
+<ApiTable name="FpSwitch" />
 
 ## FpMeter
 

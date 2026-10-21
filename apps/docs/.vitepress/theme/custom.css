@@ -148,6 +148,13 @@
   gap: 10px;
 }
 
+/* A module inside a demo, for controls whose error text needs a matte panel. */
+.demo-module {
+  align-items: flex-start;
+  padding: 12px 16px;
+  gap: 16px;
+}
+
 .demo-window {
   max-width: 320px;
 }
