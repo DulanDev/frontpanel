@@ -148,7 +148,7 @@
   gap: 10px;
 }
 
-/* A module inside a demo, for controls whose error text needs a matte panel. */
+/* A module inside a demo, its units lined up along the top whatever text sits under them. */
 .demo-module {
   align-items: flex-start;
   padding: 12px 16px;

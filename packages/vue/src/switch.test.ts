@@ -63,20 +63,15 @@ describe('fpSwitch', () => {
     expect(control(wrapper).attributes('aria-labelledby')).toBe(label.attributes('id'))
   })
 
-  it('describes itself with its hint and error, and is invalid while it has an error', () => {
-    const wrapper = mount(FpSwitch, { props: { label: 'Power', hint: 'Mains in', error: 'Turn it on to record' }, attrs: { 'aria-describedby': 'own' } })
+  it('describes itself with its hint, after any description of your own', () => {
+    const wrapper = mount(FpSwitch, { props: { label: 'Power', hint: 'Mains in' }, attrs: { 'aria-describedby': 'own' } })
     const hint = wrapper.get('.fp-hint')
-    const error = wrapper.get('.fp-error')
     expect(hint.text()).toBe('Mains in')
-    expect(error.text()).toBe('Turn it on to record')
-    expect(control(wrapper).attributes('aria-describedby')).toBe(`own ${hint.attributes('id')} ${error.attributes('id')}`)
-    expect(control(wrapper).attributes('aria-invalid')).toBe('true')
+    expect(control(wrapper).attributes('aria-describedby')).toBe(`own ${hint.attributes('id')}`)
   })
 
-  it('has no description and is not invalid without a hint or error', () => {
-    const button = control(mount(FpSwitch))
-    expect(button.attributes('aria-describedby')).toBeUndefined()
-    expect(button.attributes('aria-invalid')).toBeUndefined()
+  it('has no description without a hint', () => {
+    expect(control(mount(FpSwitch)).attributes('aria-describedby')).toBeUndefined()
   })
 
   it('puts class and style on the unit and every other attribute on the switch', () => {

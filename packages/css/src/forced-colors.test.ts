@@ -57,7 +57,6 @@ const fineAsIs: Record<string, string> = {
   'fp-icon': 'its fill follows the forced text colour',
   'fp-field': 'its border is kept, in the system colour',
   'fp-hint': 'text',
-  'fp-error': 'text, which says it is an error in words',
 }
 
 const systemColors = new Set(['Canvas', 'CanvasText', 'LinkText', 'VisitedText', 'ActiveText', 'ButtonFace', 'ButtonText', 'ButtonBorder', 'Field', 'FieldText', 'Highlight', 'HighlightText', 'SelectedItem', 'SelectedItemText', 'Mark', 'MarkText', 'GrayText', 'AccentColor', 'AccentColorText'])

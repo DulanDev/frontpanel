@@ -162,18 +162,18 @@ and `--fp-fader-length` sets how far it travels.
 
 An illuminated rocker: press it, or focus it and press Space or Enter, and the I half rocks in as
 the lamp behind its lens lights; off, the lamp fades out as a filament cools. `v-model` holds a
-boolean. `label` names it, `hint` and `error` are read out after the name, and an `error` marks it
-invalid. Keep a switch that can show an error in a module: the error colour passes AA on matte
-panels, not on the bare shell. The lamp is red; `color` lights it green or amber.
+boolean. `label` names it and `hint` is read out after the name. The lamp is red; `color` lights it
+green or amber. A switch is always on or off, so it has no error text of its own: show a fault where
+the device reports one, on its readout or an LED, as the readout here does.
 
 <div class="vp-raw demo demo-surface demo-row">
   <div class="fp-module demo-row demo-module">
     <FpSwitch v-model="power" label="Power" hint="Mains in" />
     <FpSwitch v-model="monitor" label="Monitor" color="green" />
-    <FpSwitch v-model="record" label="Rec" color="amber" :error="record && !power ? 'Needs power' : undefined" />
+    <FpSwitch v-model="record" label="Rec" color="amber" />
   </div>
   <FpLcd class="demo-lcd">
-    <FpLcdLine :text="`PWR ${power ? 'ON' : 'OFF'} MON ${monitor ? 'ON' : 'OFF'}`" class="demo-lcd-line" />
+    <FpLcdLine :text="record && !power ? 'REC NEEDS PWR' : `PWR ${power ? 'ON' : 'OFF'} MON ${monitor ? 'ON' : 'OFF'}`" class="demo-lcd-line" />
   </FpLcd>
 </div>
 

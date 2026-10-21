@@ -3,4 +3,4 @@
 '@frontpanel/vue': minor
 ---
 
-An illuminated rocker switch. In the CSS, `fp-switch` goes on a button with `role="switch"` and `aria-checked`, holding an `fp-switch-rocker` with an `fp-switch-lamp` and an `fp-switch-face`: on, the I half rocks in and the lamp lights; off, the lamp fades out. The lamp is red, or green or amber with `fp-led-green` or `fp-led-amber`. `fp-hint` and `fp-error` set help and error text under any form control. In Vue, `FpSwitch` takes a boolean `v-model`, `label`, `hint`, `error` (which marks it invalid) and `color`, on Reka's Switch.
+An illuminated rocker switch. In the CSS, `fp-switch` goes on a button with `role="switch"` and `aria-checked`, holding an `fp-switch-rocker` with an `fp-switch-lamp` and an `fp-switch-face`: on, the I half rocks in and the lamp lights; off, the lamp fades out. The lamp is red, or green or amber with `fp-led-green` or `fp-led-amber`. `fp-hint` sets help text under any form control. In Vue, `FpSwitch` takes a boolean `v-model`, `label`, `hint` and `color`, on Reka's Switch.

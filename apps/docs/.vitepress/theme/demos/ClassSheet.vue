@@ -151,11 +151,10 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
                   <span :id="`${skin.id}-power-hint`" class="fp-hint">Mains in</span>
                 </div>
                 <div class="fp-unit">
-                  <button type="button" role="switch" class="fp-switch fp-led-green" :aria-checked="monitor" aria-label="Monitor" aria-invalid="true" :aria-describedby="`${skin.id}-monitor-error`" @click="monitor = !monitor">
+                  <button type="button" role="switch" class="fp-switch fp-led-green" :aria-checked="monitor" aria-label="Monitor" @click="monitor = !monitor">
                     <span class="fp-switch-rocker"><span class="fp-switch-lamp" /><span class="fp-switch-face" /></span>
                   </button>
                   <span class="fp-silk" aria-hidden="true">Monitor</span>
-                  <span :id="`${skin.id}-monitor-error`" class="fp-error">Needs power</span>
                 </div>
               </div>
             </div>

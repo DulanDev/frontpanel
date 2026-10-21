@@ -885,19 +885,6 @@
 }
 
 /**
- * An error message under a form control. It passes WCAG AA on matte panels and fields, not on the
- * bare shell, so keep a control that can fail in a module.
- */
-@utility fp-error {
-  max-width: 14em;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.3;
-  text-align: center;
-  color: var(--fp-color-error-text);
-}
-
-/**
  * Level meter: a strip of LED segments in a dark housing, lit green, then amber, then red. Set
  * `--fp-meter-level` (0 to 1, in whole segments), `--fp-meter-segments` (12), and where amber and
  * red begin, `--fp-meter-amber` (8/12) and `--fp-meter-red` (11/12), as shares of the strip on
