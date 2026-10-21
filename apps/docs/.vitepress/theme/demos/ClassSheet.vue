@@ -144,11 +144,10 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
                 </div>
                 <div class="fp-meter" data-orientation="horizontal" role="meter" aria-label="Input" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="--fp-meter-level: 0.5" />
                 <div class="fp-unit">
-                  <button type="button" role="switch" class="fp-switch" :aria-checked="power" aria-label="Power" :aria-describedby="`${skin.id}-power-hint`" @click="power = !power">
+                  <button type="button" role="switch" class="fp-switch" :aria-checked="power" aria-label="Power" @click="power = !power">
                     <span class="fp-switch-rocker"><span class="fp-switch-lamp" /><span class="fp-switch-face" /></span>
                   </button>
                   <span class="fp-silk" aria-hidden="true">Power</span>
-                  <span :id="`${skin.id}-power-hint`" class="fp-hint">Mains in</span>
                 </div>
                 <div class="fp-unit">
                   <button type="button" role="switch" class="fp-switch fp-led-green" :aria-checked="monitor" aria-label="Monitor" @click="monitor = !monitor">

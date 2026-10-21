@@ -63,22 +63,12 @@ describe('fpSwitch', () => {
     expect(control(wrapper).attributes('aria-labelledby')).toBe(label.attributes('id'))
   })
 
-  it('describes itself with its hint, after any description of your own', () => {
-    const wrapper = mount(FpSwitch, { props: { label: 'Power', hint: 'Mains in' }, attrs: { 'aria-describedby': 'own' } })
-    const hint = wrapper.get('.fp-hint')
-    expect(hint.text()).toBe('Mains in')
-    expect(control(wrapper).attributes('aria-describedby')).toBe(`own ${hint.attributes('id')}`)
-  })
-
-  it('has no description without a hint', () => {
-    expect(control(mount(FpSwitch)).attributes('aria-describedby')).toBeUndefined()
-  })
-
   it('puts class and style on the unit and every other attribute on the switch', () => {
-    const wrapper = mount(FpSwitch, { attrs: { 'class': 'mx-2', 'style': 'margin: 1px;', 'aria-label': 'Power', 'id': 'power' } })
+    const wrapper = mount(FpSwitch, { attrs: { 'class': 'mx-2', 'style': 'margin: 1px;', 'aria-label': 'Power', 'aria-describedby': 'power-note', 'id': 'power' } })
     expect(wrapper.classes()).toEqual(['fp-unit', 'mx-2'])
     expect(wrapper.attributes('style')).toBe('margin: 1px;')
     expect(control(wrapper).attributes('aria-label')).toBe('Power')
+    expect(control(wrapper).attributes('aria-describedby')).toBe('power-note')
     expect(control(wrapper).attributes('id')).toBe('power')
   })
 })

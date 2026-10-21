@@ -56,7 +56,6 @@ const fineAsIs: Record<string, string> = {
   'fp-scroll-thin': 'the system scrollbar takes over',
   'fp-icon': 'its fill follows the forced text colour',
   'fp-field': 'its border is kept, in the system colour',
-  'fp-hint': 'text',
 }
 
 const systemColors = new Set(['Canvas', 'CanvasText', 'LinkText', 'VisitedText', 'ActiveText', 'ButtonFace', 'ButtonText', 'ButtonBorder', 'Field', 'FieldText', 'Highlight', 'HighlightText', 'SelectedItem', 'SelectedItemText', 'Mark', 'MarkText', 'GrayText', 'AccentColor', 'AccentColorText'])

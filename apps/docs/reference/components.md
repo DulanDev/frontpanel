@@ -162,13 +162,13 @@ and `--fp-fader-length` sets how far it travels.
 
 An illuminated rocker: press it, or focus it and press Space or Enter, and the I half rocks in as
 the lamp behind its lens lights; off, the lamp fades out as a filament cools. `v-model` holds a
-boolean. `label` names it and `hint` is read out after the name. The lamp is red; `color` lights it
-green or amber. A switch is always on or off, so it has no error text of its own: show a fault where
-the device reports one, on its readout or an LED, as the readout here does.
+boolean and `label` names it. The lamp is red; `color` lights it green or amber. Only the label sits
+under it: a switch is always on or off, so show a fault where the device reports one, on its
+readout or an LED, as the readout here does.
 
 <div class="vp-raw demo demo-surface demo-row">
   <div class="fp-module demo-row demo-module">
-    <FpSwitch v-model="power" label="Power" hint="Mains in" />
+    <FpSwitch v-model="power" label="Power" />
     <FpSwitch v-model="monitor" label="Monitor" color="green" />
     <FpSwitch v-model="record" label="Rec" color="amber" />
   </div>
@@ -178,7 +178,7 @@ the device reports one, on its readout or an LED, as the readout here does.
 </div>
 
 ```vue
-<FpSwitch v-model="power" label="Power" hint="Mains in" />
+<FpSwitch v-model="power" label="Power" />
 ```
 
 <ApiTable name="FpSwitch" />
