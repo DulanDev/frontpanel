@@ -95,7 +95,11 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
       <header class="top">
         <div class="side">
           <FpScrew />
-          <FpSwitch v-model="power" label="Power" orientation="horizontal" label-placement="start" />
+          <!-- The power symbol silkscreened before the rocker, as on a device; the switch is named in words. -->
+          <span class="power">
+            <FpIcon name="power" class="mark" />
+            <FpSwitch v-model="power" aria-label="Power" orientation="horizontal" />
+          </span>
         </div>
         <FpSilk as="h3" class="name">
           Deck · components
@@ -234,6 +238,17 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
 
 .end {
   justify-content: flex-end;
+}
+
+.power {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* In the silkscreen's ink, as a printed label. */
+.mark {
+  color: var(--fp-color-ink-soft);
 }
 
 .name {
