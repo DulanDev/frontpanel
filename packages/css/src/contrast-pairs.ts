@@ -46,6 +46,7 @@ export const contrastPairs: ContrastPair[] = [
   { fg: 'focus-ring', bg: 'shell', kind: 'ui', where: 'focus ring on the device body' },
   { fg: 'focus-ring', bg: 'shell-matte', kind: 'ui', where: 'focus ring in a module' },
   { fg: 'focus-ring', bg: 'chrome-100', kind: 'ui', where: 'focus ring on chrome' },
+  { fg: 'focus-ring', bg: 'chrome-300', kind: 'ui', where: 'focus ring on a highlighted menu row' },
   { fg: 'focus-ring', bg: 'backdrop', kind: 'ui', where: 'focus ring on the page' },
   { fg: 'led-on', bg: 'housing', kind: 'ui', where: 'lit green LED in its bezel' },
   { fg: 'led-amber', bg: 'housing', kind: 'ui', where: 'lit amber LED in its bezel' },

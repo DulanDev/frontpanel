@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { h } from 'vue'
 import FpButton from './FpButton.vue'
+import FpButtonGroup from './FpButtonGroup.vue'
 import FpCap from './FpCap.vue'
 import FpGelButton from './FpGelButton.vue'
 
@@ -50,6 +51,24 @@ describe('fpButton', () => {
     expect(link.classes()).toEqual(['fp-chrome-btn'])
     expect(link.attributes('href')).toBe('/deck')
     expect(link.attributes('type')).toBeUndefined()
+  })
+})
+
+describe('fpButtonGroup', () => {
+  it('joins its buttons in a named group', () => {
+    const wrapper = mount(FpButtonGroup, {
+      attrs: { 'aria-label': 'Transport' },
+      slots: { default: () => [h(FpButton, null, () => 'Prev'), h(FpButton, null, () => 'Next')] },
+    })
+    const group = wrapper.get('div')
+    expect(group.classes()).toEqual(['fp-button-group'])
+    expect(group.attributes('role')).toBe('group')
+    expect(group.attributes('aria-label')).toBe('Transport')
+    expect(group.findAll(':scope > button.fp-chrome-btn')).toHaveLength(2)
+  })
+
+  it('renders as another element', () => {
+    expect(mount(FpButtonGroup, { props: { as: 'span' } }).get('span').classes()).toEqual(['fp-button-group'])
   })
 })
 
