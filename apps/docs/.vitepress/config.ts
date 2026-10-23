@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitepress'
+import { sections } from './llms/build'
 import { llmsPlugin, writeLlmsFiles } from './llms/plugin'
 import { base, description, sidebar } from './site'
+
+// The pages served as Markdown too (see llms/), by their path in the docs.
+const markdownPages = new Set(sections.flatMap(section => section.pages.map(page => page.path)))
 
 // VitePress keeps its light/dark choice in this key; the skin follows the same choice, set before
 // the first paint so a demo never flashes the other skin.
@@ -40,6 +44,13 @@ export default defineConfig({
     plugins: [llmsPlugin()],
   },
   buildEnd: writeLlmsFiles,
+  // Each doc page names its Markdown in its head, so an agent that fetches the page finds it.
+  transformPageData(pageData) {
+    if (!markdownPages.has(pageData.relativePath))
+      return
+    pageData.frontmatter.head ??= []
+    pageData.frontmatter.head.push(['link', { rel: 'alternate', type: 'text/markdown', href: `${base}${pageData.relativePath}` }])
+  },
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
