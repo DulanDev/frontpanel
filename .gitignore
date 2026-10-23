@@ -14,3 +14,6 @@ playwright-report/
 
 # VitePress dev cache
 **/.vitepress/cache/
+
+/docs/
+TODO.md
