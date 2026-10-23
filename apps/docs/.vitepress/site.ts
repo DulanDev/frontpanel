@@ -20,8 +20,8 @@ export const sidebar = [
       { text: 'Motion', link: '/guide/motion' },
       { text: 'Accessibility', link: '/guide/accessibility' },
       { text: 'Browser support', link: '/guide/browser-support' },
-      // The docs for AI agents, as Markdown (see llms/).
-      { text: 'llms.txt', link: '/llms.txt' },
+      // The docs for AI agents, as Markdown (see llms/). VitePress adds the base only to page links.
+      { text: 'llms.txt', link: `${base}llms.txt` },
     ],
   },
   {
