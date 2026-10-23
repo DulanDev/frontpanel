@@ -7,6 +7,8 @@ export default antfu(
     ignores: [
       '**/dist/**',
       '**/coverage/**',
+      // The docs' Markdown as generated, checked by its test, not written by hand.
+      'apps/docs/.vitepress/llms/__golden__/**',
     ],
   },
   {
