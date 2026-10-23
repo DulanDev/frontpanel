@@ -67,12 +67,14 @@ const playing = ref(false)
 | `FpDevice` | The device: a molded body in a liquid-chrome rim on a backdrop. `fit="width"` or `"contain"` draws it at a design `width` and scales it to the room it has; the default `fit="none"` leaves layout to your page |
 | `FpWindow` | A matte module with a chrome title bar: `title`, `level`, `closable` (emits `close`), an `actions` slot, and `sheet` for a phone bottom sheet |
 | `FpButton` | A brushed-chrome push button; `pressed` makes it a toggle |
+| `FpButtonGroup` | Chrome buttons joined into one bezel, as a named group |
+| `FpMenu`, `FpMenuItem`, `FpMenuSeparator` | A faceplate menu that drops from the button in its `trigger` slot; rows emit `select`, or are links with `as="a"` |
 | `FpGelButton` | The glossy gel pill, for the panel's main action |
 | `FpCap` | A molded-plastic cap in `white`, `blue`, `amber`, `graphite` or `berry`; `pressed` holds it down with a ring |
 | `FpLcd`, `FpLcdLine` | LCD glass, and a line of text on it with optional unlit segments (`ghost`, `cells`) and a left-to-right `redraw` |
 | `FpLed` | A `green`, `amber` or `red` LED; `lit`, and `blink` to confirm an action |
 | `FpHousing`, `FpWell`, `FpSilk`, `FpScrew` | A dark housing for LEDs, a recessed well, a silkscreened label, a screw head |
-| `FpIcon` | A 19-glyph 16 px pixel icon set (`fpIconNames`) |
+| `FpIcon` | A 20-glyph 16 px pixel icon set (`fpIconNames`) |
 
 Element components take Reka's `as` and `asChild`.
 

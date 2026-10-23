@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   FpButton,
+  FpButtonGroup,
   FpCap,
   FpGelButton,
   FpHousing,
@@ -10,6 +11,9 @@ import {
   FpLcd,
   FpLcdLine,
   FpLed,
+  FpMenu,
+  FpMenuItem,
+  FpMenuSeparator,
   FpMeter,
   FpReadout,
   FpScrew,
@@ -40,6 +44,8 @@ const record = ref(false)
 const gain = ref(64)
 const seconds = ref(125)
 const lenses = ['flat', 'diffused', 'clear'] as const
+const sources = ['TAPE', 'TUNER', 'AUX'] as const
+const source = ref<string>('TAPE')
 </script>
 
 # Components
@@ -93,6 +99,79 @@ A small push button in brushed chrome. Set `pressed` to make it a toggle: it hol
 </div>
 
 <ApiTable name="FpButton" />
+
+## FpButtonGroup
+
+Chrome buttons joined into one bezel, as on a transport row: they share their seams, and only the
+outer corners stay round. It is a `role="group"`, so name it with `aria-label`.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpButtonGroup aria-label="Transport">
+    <FpButton aria-label="Previous track"><FpIcon name="left" /></FpButton>
+    <FpButton :pressed="playing" @click="playing = !playing"><FpIcon name="play" /> Play</FpButton>
+    <FpButton aria-label="Next track"><FpIcon name="right" /></FpButton>
+  </FpButtonGroup>
+</div>
+
+<ApiTable name="FpButtonGroup" />
+
+## FpMenu
+
+A faceplate menu: a brushed-chrome plate that drops from the button in its `trigger` slot, holding
+`FpMenuItem` rows and `FpMenuSeparator` grooves. Press the button, or focus it and press Enter,
+Space or the down arrow; the arrow keys move along the rows, a letter jumps to a row, and Escape
+closes it. Choosing a row emits `select` and closes the menu, and `as="a"` makes a row a link. The
+button stays held down while the menu is open. The plate is mounted at the end of the page and
+takes the skin around its button with it.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpMenu>
+    <template #trigger>
+      <FpButton>Source <FpIcon name="down" /></FpButton>
+    </template>
+    <FpMenuItem v-for="name in sources" :key="name" @select="source = name">{{ name }}</FpMenuItem>
+    <FpMenuSeparator />
+    <FpMenuItem disabled>Eject</FpMenuItem>
+  </FpMenu>
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="`SRC ${source}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+Its button can sit in an `FpButtonGroup`, joined to the action it offers more of:
+
+<div class="vp-raw demo demo-surface demo-row">
+  <FpButtonGroup aria-label="Save">
+    <FpButton @click="saves++"><FpIcon name="save" /> Save</FpButton>
+    <FpMenu align="end">
+      <template #trigger>
+        <FpButton aria-label="More save options"><FpIcon name="down" /></FpButton>
+      </template>
+      <FpMenuItem @select="saves++">Save a copy</FpMenuItem>
+      <FpMenuSeparator />
+      <FpMenuItem @select="saves = 0">Clear</FpMenuItem>
+    </FpMenu>
+  </FpButtonGroup>
+  <FpHousing><FpLed :key="saves" color="amber" :lit="saves > 0" blink /> {{ saves }} SAVED</FpHousing>
+</div>
+
+```vue
+<FpButtonGroup aria-label="Save">
+  <FpButton @click="save">Save</FpButton>
+  <FpMenu align="end">
+    <template #trigger>
+      <FpButton aria-label="More save options"><FpIcon name="down" /></FpButton>
+    </template>
+    <FpMenuItem @select="saveCopy">Save a copy</FpMenuItem>
+    <FpMenuSeparator />
+    <FpMenuItem as="a" href="/help">Help</FpMenuItem>
+  </FpMenu>
+</FpButtonGroup>
+```
+
+<ApiTable name="FpMenu" />
+
+<ApiTable name="FpMenuItem" />
 
 ## FpGelButton
 
