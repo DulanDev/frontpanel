@@ -45,9 +45,13 @@ export async function loadPageData(): Promise<PageData> {
 /** Every file, by its path from the site root: each page's `.md`, `llms.txt` and `llms-full.txt`. */
 export async function buildLlmsFiles(data: PageData): Promise<Map<string, string>> {
   const files = new Map<string, string>()
+  const summaries = new Map<string, string>()
   for (const { pages } of sections) {
-    for (const { path } of pages)
-      files.set(path, pageMarkdown(await readFile(new URL(path, docs), 'utf8'), path, data))
+    for (const { path } of pages) {
+      const source = await readFile(new URL(path, docs), 'utf8')
+      files.set(path, pageMarkdown(source, path, data))
+      summaries.set(path, frontmatterDescription(source) ?? firstSentence(files.get(path)!))
+    }
   }
 
   files.set('llms.txt', [
@@ -60,7 +64,7 @@ export async function buildLlmsFiles(data: PageData): Promise<Map<string, string
       '',
       `## ${text}`,
       '',
-      ...pages.map(({ title, path }) => `- [${title}](${pageUrl(path, 'markdown')}): ${summary(files.get(path)!)}`),
+      ...pages.map(({ title, path }) => `- [${title}](${pageUrl(path, 'markdown')}): ${summaries.get(path)}`),
     ]),
     '',
   ].join('\n'))
@@ -72,8 +76,18 @@ export async function buildLlmsFiles(data: PageData): Promise<Map<string, string
   return files
 }
 
-/** A page's first sentence, after its title and source line. */
-function summary(markdown: string): string {
+/**
+ * A page's own one-line summary, `description` in its frontmatter, which VitePress also puts in
+ * the page's meta description. One line, quoted or not.
+ */
+function frontmatterDescription(source: string): string | undefined {
+  const frontmatter = /^---\n([\s\S]*?)\n---\n/.exec(source)?.[1]
+  const line = frontmatter && /^description:[ \t]*(\S.*)$/m.exec(frontmatter)?.[1]
+  return line ? line.trim().replace(/^(["'])(.*)\1$/, '$2') : undefined
+}
+
+/** A page's first sentence, after its title and source line, for a page with no description. */
+function firstSentence(markdown: string): string {
   const paragraph = markdown.split('\n\n').find(block => /^[A-Z`]/.test(block)) ?? ''
   const text = paragraph.replace(/\s*\n\s*/g, ' ').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
   return /^.*?\.(?=\s|$)/.exec(text)?.[0] ?? text

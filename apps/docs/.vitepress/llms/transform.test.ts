@@ -155,6 +155,12 @@ describe('the docs as Markdown', async () => {
     }
   })
 
+  it('summarises a page by its description, else by its first sentence', () => {
+    const index = files.get('llms.txt')!
+    expect(index).toContain('guide/layout.md): A device can scale as a whole or reflow its modules')
+    expect(index).toContain('guide/skins.md): Frontpanel ships two skins with the same token names:')
+  })
+
   it('joins every page in llms-full.txt', () => {
     const full = files.get('llms-full.txt')!
     for (const [name, markdown] of files) {

@@ -1,3 +1,7 @@
+---
+description: A device can scale as a whole or reflow its modules at your own breakpoints, and control sizes follow the input, not the page width.
+---
+
 # Layout and input
 
 Layout is yours. A device can **scale as a whole**, drawn at one design size like a picture of
