@@ -1,4 +1,10 @@
 import { defineConfig } from 'vitepress'
+import { sections } from './llms/build'
+import { llmsPlugin, writeLlmsFiles } from './llms/plugin'
+import { base, description, sidebar } from './site'
+
+// The pages served as Markdown too (see llms/), by their path in the docs.
+const markdownPages = new Set(sections.flatMap(section => section.pages.map(page => page.path)))
 
 // VitePress keeps its light/dark choice in this key; the skin follows the same choice, set before
 // the first paint so a demo never flashes the other skin.
@@ -9,44 +15,48 @@ const skinScript = `;(() => {
 })()`
 
 export default defineConfig({
-  // Served from GitHub Pages at dulandev.github.io/frontpanel/.
-  base: '/frontpanel/',
+  base,
   title: 'Frontpanel',
-  description: 'An early-2000s hardware UI kit for building device front panels: liquid-chrome bezels, gel buttons, LCD readouts and LEDs, in plain CSS with Vue 3 components on top.',
+  description,
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/frontpanel/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }],
     ['script', {}, skinScript],
   ],
+  markdown: {
+    config(md) {
+      // The Copy page control, in a row with each doc page's title.
+      md.core.ruler.push('copy-page', (state) => {
+        if (state.env.relativePath === 'index.md')
+          return
+        const open = state.tokens.findIndex(token => token.type === 'heading_open' && token.tag === 'h1')
+        const close = state.tokens.findIndex(token => token.type === 'heading_close' && token.tag === 'h1')
+        if (open === -1 || close === -1)
+          return
+        const html = (content: string) => Object.assign(new state.Token('html_block', '', 0), { content })
+        state.tokens.splice(close + 1, 0, html('<CopyPage />\n</div>\n'))
+        state.tokens.splice(open, 0, html('<div class="doc-title">\n'))
+      })
+    },
+  },
+  vite: {
+    plugins: [llmsPlugin()],
+  },
+  buildEnd: writeLlmsFiles,
+  // Each doc page names its Markdown in its head, so an agent that fetches the page finds it.
+  transformPageData(pageData) {
+    if (!markdownPages.has(pageData.relativePath))
+      return
+    pageData.frontmatter.head ??= []
+    pageData.frontmatter.head.push(['link', { rel: 'alternate', type: 'text/markdown', href: `${base}${pageData.relativePath}` }])
+  },
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Reference', link: '/reference/components' },
     ],
-    sidebar: [
-      {
-        text: 'Guide',
-        items: [
-          { text: 'Getting started', link: '/guide/getting-started' },
-          { text: 'Using it in an app', link: '/guide/app' },
-          { text: 'Skins', link: '/guide/skins' },
-          { text: 'Layout and input', link: '/guide/layout' },
-          { text: 'Fonts', link: '/guide/fonts' },
-          { text: 'Motion', link: '/guide/motion' },
-          { text: 'Accessibility', link: '/guide/accessibility' },
-          { text: 'Browser support', link: '/guide/browser-support' },
-        ],
-      },
-      {
-        text: 'Reference',
-        items: [
-          { text: 'Components', link: '/reference/components' },
-          { text: 'Classes', link: '/reference/classes' },
-          { text: 'Tokens', link: '/reference/tokens' },
-        ],
-      },
-    ],
+    sidebar,
     search: { provider: 'local' },
     socialLinks: [{ icon: 'github', link: 'https://github.com/DulanDev/frontpanel' }],
     footer: {

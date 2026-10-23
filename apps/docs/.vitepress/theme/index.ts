@@ -2,6 +2,7 @@ import type { Theme } from 'vitepress'
 import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import { h, watch } from 'vue'
+import CopyPage from './CopyPage.vue'
 import DeckDemo from './demos/DeckDemo.vue'
 import '@frontpanel/css/index.css'
 import '@frontpanel/css/fonts.css'
@@ -14,6 +15,10 @@ export default {
   Layout: () => h(DefaultTheme.Layout, null, {
     'home-hero-image': () => h('div', { class: 'vp-raw' }, h(DeckDemo, { hero: true })),
   }),
+  enhanceApp({ app }) {
+    // Placed under each doc page's title by the copy-page rule in the config's markdown setup.
+    app.component('CopyPage', CopyPage)
+  },
   setup() {
     // The head script sets the skin before the first paint; this keeps it with the appearance toggle.
     const { isDark } = useData()

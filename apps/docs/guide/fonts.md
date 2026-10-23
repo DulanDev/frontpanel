@@ -1,3 +1,7 @@
+---
+description: The three faces of the look, the two that are bundled, and how to self-host and preload them.
+---
+
 # Fonts
 
 Three faces make the look:
