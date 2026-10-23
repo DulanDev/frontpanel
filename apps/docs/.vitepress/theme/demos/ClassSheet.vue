@@ -80,15 +80,17 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
             </div>
 
             <div class="row">
-              <button type="button" class="fp-chrome-btn">
-                Prev
-              </button>
-              <button type="button" class="fp-chrome-btn" aria-pressed="true">
-                Play
-              </button>
-              <button type="button" class="fp-chrome-btn">
-                Next
-              </button>
+              <div class="fp-button-group" role="group" aria-label="Transport">
+                <button type="button" class="fp-chrome-btn">
+                  Prev
+                </button>
+                <button type="button" class="fp-chrome-btn" aria-pressed="true">
+                  Play
+                </button>
+                <button type="button" class="fp-chrome-btn">
+                  Next
+                </button>
+              </div>
               <button type="button" class="fp-chrome-btn" disabled>
                 Eject
               </button>
@@ -108,6 +110,20 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
               >
                 {{ cap.label }}
               </button>
+            </div>
+
+            <!-- A specimen of the plate, held open: it is not a working menu, so it is hidden. -->
+            <div class="fp-menu menu" aria-hidden="true">
+              <div class="fp-menu-item">
+                Open
+              </div>
+              <div class="fp-menu-item" data-highlighted>
+                Save as
+              </div>
+              <div class="fp-menu-separator" />
+              <div class="fp-menu-item" data-disabled>
+                Eject
+              </div>
             </div>
 
             <div class="fp-module fp-window fp-lens-diffused">
@@ -214,6 +230,10 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
   font-family: var(--fp-font-lcd);
   font-size: 1.5rem;
   line-height: 1.1;
+}
+
+.menu {
+  justify-self: start;
 }
 
 .mixer {
