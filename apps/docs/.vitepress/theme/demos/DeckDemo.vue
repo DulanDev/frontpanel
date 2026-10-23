@@ -22,71 +22,193 @@ import {
   FpWindow,
 } from '@frontpanel/vue'
 import { useData } from 'vitepress'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { clock, levelAt, marqueeFrame } from './player'
 
-// One small device built from the Vue components, drawn at 600 px and scaled to fit its column.
-// It wears the page's skin, which follows the appearance toggle. In the home page's hero it drops
-// its backdrop, since the page stands on one already, gains a Skin button, and shows a levels
-// window in place of the icons.
+// A desk media player built from the Vue components, drawn at 600 px and scaled to fit its column.
+// Every control does what it would on the device: power-on lights every segment for a moment, Play
+// runs the counter and moves the meters, a long title steps across the glass, and the caps pick an
+// EQ preset. It wears the page's skin, which follows the appearance toggle. In the home page's hero
+// it drops its backdrop, since the page stands on one already, gains a Skin button, and shows a
+// levels window in place of the icons.
 
 const { hero = false } = defineProps<{ hero?: boolean }>()
 
-const tracks = ['CHROME HORIZON', 'GEL PRESSURE', 'SILKSCREEN', 'BACKLIGHT', 'TWO BLINKS', 'RIM LIGHT']
+const tracks = [
+  { title: 'Chrome Horizon', length: 192 },
+  { title: 'Gel Pressure', length: 167 },
+  { title: 'Silkscreen', length: 214 },
+  { title: 'Backlight at Midnight', length: 238 },
+  { title: 'Two Blinks', length: 145 },
+  { title: 'Rim Light (Extended Mix)', length: 301 },
+]
+/** The title line's width in cells; a longer title steps across it. */
+const TITLE_CELLS = 14
+/** Milliseconds per tick of the clock that runs play, the meters and the title. */
+const TICK = 100
+/** Milliseconds a long title rests on each cell. */
+const SCROLL = 300
+/** How long the display shows a setting it has just changed, and how long the start-up check lasts. */
+const NOTICE = 1500
+const BOOT = 900
+
 const track = ref(0)
 const playing = ref(false)
+/** How far into the track play has run, in milliseconds. */
+const playMs = ref(0)
 const saves = ref(0)
-// The rocker powers the deck: off, the LCD shows only its ghost segments, the LEDs, meters and
-// readout go dark, play stops and the transport waits. The fader and knob still turn, as pots do.
-const power = ref(true)
-watch(power, (on) => {
-  if (!on)
-    playing.value = false
-})
 const playlistOpen = ref(true)
-
-const caps: { label: string, color: FpCapColor }[] = [
-  { label: 'A', color: 'white' },
-  { label: 'B', color: 'blue' },
-  { label: 'C', color: 'amber' },
-  { label: 'D', color: 'graphite' },
-  { label: 'E', color: 'berry' },
-]
-const bank = ref('B')
 const gain = ref(64)
 const volume = ref(70)
 
+const current = computed(() => tracks[track.value]!)
 const trackNumber = computed(() => String(track.value + 1).padStart(2, '0'))
 
+/** What the status line says once a track, preset or skin changes; never on load. */
+const status = ref('')
+
+// Reduced motion keeps every state and drops the movement: the meters hold the gain and a long
+// title stays on its start. The counter still counts.
+const reducedMotion = ref(false)
+let motionQuery: MediaQueryList | undefined
+function onMotion(event: MediaQueryListEvent) {
+  reducedMotion.value = event.matches
+}
+onMounted(() => {
+  motionQuery = matchMedia('(prefers-reduced-motion: reduce)')
+  reducedMotion.value = motionQuery.matches
+  motionQuery.addEventListener('change', onMotion)
+})
+
+// The rocker powers the deck. On, it lights every segment and LED for a moment, as a device checks
+// its display, then settles. Off, the glass shows only its ghost segments, the LEDs, meters and
+// readout go dark, play stops and the controls wait. The fader and knob still turn, as pots do.
+const power = ref(true)
+const booting = ref(false)
+const ready = computed(() => power.value && !booting.value)
+let bootTimer: ReturnType<typeof setTimeout> | undefined
+
+// A setting the display names for a moment after it changes, in place of the track, as a player
+// shows a setting it has just changed.
+const notice = ref<{ tag: string, text: string }>()
+let noticeTimer: ReturnType<typeof setTimeout> | undefined
+
+function showNotice(tag: string, text: string, said: string) {
+  status.value = said
+  clearTimeout(noticeTimer)
+  if (!ready.value)
+    return
+  notice.value = { tag, text }
+  noticeTimer = setTimeout(() => {
+    notice.value = undefined
+  }, NOTICE)
+}
+
+watch(power, (on) => {
+  clearTimeout(bootTimer)
+  clearTimeout(noticeTimer)
+  notice.value = undefined
+  playing.value = false
+  playMs.value = 0
+  booting.value = on
+  if (on) {
+    bootTimer = setTimeout(() => {
+      booting.value = false
+    }, BOOT)
+  }
+})
+
+// One clock runs play: the counter, the meters and a long title all follow playMs.
+let clockTimer: ReturnType<typeof setInterval> | undefined
+watch(() => playing.value && ready.value, (running) => {
+  clearInterval(clockTimer)
+  if (running)
+    clockTimer = setInterval(tick, TICK)
+})
+
+function tick() {
+  playMs.value += TICK
+  if (playMs.value >= current.value.length * 1000)
+    step(1)
+}
+
+// Back in the first few seconds goes to the track before; later, to the start of this one.
 function step(by: number) {
+  if (by < 0 && playMs.value >= 3000) {
+    playMs.value = 0
+    return
+  }
   track.value = (track.value + by + tracks.length) % tracks.length
+  playMs.value = 0
+}
+
+watch(track, () => {
+  status.value = `Track ${trackNumber.value}: ${current.value.title}`
+})
+
+// The title steps across the glass while it plays, and holds where it is when stopped.
+const title = computed(() => current.value.title.toUpperCase())
+const scrolling = computed(() => ready.value && playing.value && !reducedMotion.value && title.value.length > TITLE_CELLS)
+const titleFrame = computed(() => marqueeFrame(title.value, TITLE_CELLS, reducedMotion.value ? 0 : Math.floor(playMs.value / SCROLL)))
+
+/** What each line of the glass shows: all segments during the check, nothing when off. */
+const display = computed(() => {
+  if (booting.value)
+    return { tag: '8'.repeat(8), time: '88:88', mode: '8888', main: '8'.repeat(TITLE_CELLS) }
+  if (!power.value)
+    return { tag: '', time: '', mode: '', main: '' }
+  const mode = playing.value ? 'PLAY' : 'STOP'
+  if (notice.value)
+    return { tag: notice.value.tag, time: '', mode, main: notice.value.text }
+  return { tag: `TRACK ${trackNumber.value}`, time: clock(Math.floor(playMs.value / 1000)), mode, main: titleFrame.value }
+})
+
+// While playing, the meters follow the made-up signal, scaled by the gain; stopped, they show the
+// gain itself, as an input monitor would.
+const levels = computed(() => {
+  if (booting.value)
+    return [100, 100]
+  if (!power.value)
+    return [0, 0]
+  if (!playing.value || reducedMotion.value)
+    return [gain.value, Math.round(gain.value * 0.85)]
+  return ([0, 1] as const).map(channel => Math.min(100, Math.round(gain.value * 1.3 * levelAt(playMs.value, channel))))
+})
+
+const presets: { label: string, name: string, color: FpCapColor }[] = [
+  { label: 'A', name: 'Flat', color: 'white' },
+  { label: 'B', name: 'Bass', color: 'blue' },
+  { label: 'C', name: 'Vocal', color: 'amber' },
+  { label: 'D', name: 'Live', color: 'graphite' },
+  { label: 'E', name: 'Night', color: 'berry' },
+]
+const preset = ref('B')
+
+function pickPreset(choice: typeof presets[number]) {
+  preset.value = choice.label
+  showNotice('EQ', choice.name.toUpperCase(), `EQ preset: ${choice.name}`)
 }
 
 // The SKIN button steps the page's skin (VitePress's isDark, which the theme turns into
-// data-fp-skin) and borrows the LCD to name it for a moment, as a player shows a setting it has
-// just changed, then goes back to the track.
+// data-fp-skin) and borrows the display to name it.
 const skinNames = {
   silver: { lcd: 'SILVER', full: 'Chrome Silver' },
   gunmetal: { lcd: 'GUNMETAL', full: 'Gunmetal Night' },
 } as const
 const { isDark } = useData()
-/** The skin the LCD names while it shows one. */
-const shownSkin = ref<keyof typeof skinNames>()
-/** Said once a skin is stepped to, never on load. */
-const skinStatus = ref('')
-let skinTimer: ReturnType<typeof setTimeout> | undefined
 
 function nextSkin() {
   isDark.value = !isDark.value
-  const skin = isDark.value ? 'gunmetal' : 'silver'
-  shownSkin.value = skin
-  skinStatus.value = `Skin: ${skinNames[skin].full}`
-  clearTimeout(skinTimer)
-  skinTimer = setTimeout(() => {
-    shownSkin.value = undefined
-  }, 1500)
+  const skin = skinNames[isDark.value ? 'gunmetal' : 'silver']
+  showNotice('SKIN', skin.lcd, `Skin: ${skin.full}`)
 }
 
-onBeforeUnmount(() => clearTimeout(skinTimer))
+onBeforeUnmount(() => {
+  clearTimeout(noticeTimer)
+  clearTimeout(bootTimer)
+  clearInterval(clockTimer)
+  motionQuery?.removeEventListener('change', onMotion)
+})
 </script>
 
 <template>
@@ -102,15 +224,15 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
           </span>
         </div>
         <FpSilk as="h3" class="name">
-          Deck · components
+          Desk player
         </FpSilk>
         <div class="side end">
           <FpHousing>
-            <FpLed :lit="power && playing" /> PLAY
+            <FpLed :lit="booting || (ready && playing)" /> PLAY
           </FpHousing>
           <FpHousing>
             <!-- Re-keyed on each save so the LED blinks twice again. -->
-            <FpLed :key="saves" color="amber" :lit="power && saves > 0" blink /> SAVED
+            <FpLed :key="saves" color="amber" :lit="booting || (ready && saves > 0)" :blink="!booting" /> SAVED
           </FpHousing>
           <FpScrew />
         </div>
@@ -118,26 +240,23 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
 
       <FpLcd class="lcd" aria-label="Display">
         <div class="lcd-row">
-          <FpLcdLine :text="!power ? '' : shownSkin ? 'SKIN' : `TRACK ${trackNumber}`" ghost :cells="8" class="small" />
-          <FpLcdLine :text="!power ? '' : playing ? 'PLAY' : 'STOP'" ghost :cells="4" class="small" />
+          <FpLcdLine :text="display.tag" ghost :cells="8" class="small" />
+          <FpLcdLine :text="display.time" ghost :cells="5" class="small" />
+          <FpLcdLine :text="display.mode" ghost :cells="4" class="small" />
         </div>
-        <!--
-          A skin's name stands in for the track for a moment. The status line says it, so the
-          glass stays quiet, and the track's live region comes back without repeating itself.
-        -->
-        <FpLcdLine v-if="!power" text="" ghost :cells="14" class="large" aria-hidden="true" />
-        <FpLcdLine v-else-if="shownSkin" :text="skinNames[shownSkin].lcd" redraw ghost :cells="14" class="large" aria-hidden="true" />
-        <FpLcdLine v-else :text="tracks[track]!" redraw ghost :cells="14" class="large" aria-live="polite" />
+        <!-- The glass shows the title a frame at a time; screen readers get it whole, and the status line says each change. -->
+        <FpLcdLine :text="display.main" :redraw="!scrolling" ghost :cells="TITLE_CELLS" class="large" aria-hidden="true" />
+        <span v-if="ready" class="sr-only">{{ notice ? notice.text : current.title }}</span>
       </FpLcd>
 
       <div class="row" role="group" aria-label="Transport">
-        <FpButton aria-label="Previous track" :disabled="!power" @click="step(-1)">
+        <FpButton aria-label="Previous track" :disabled="!ready" @click="step(-1)">
           <FpIcon name="left" />
         </FpButton>
-        <FpButton :pressed="playing" :disabled="!power" @click="playing = !playing">
+        <FpButton :pressed="playing" :disabled="!ready" @click="playing = !playing">
           <FpIcon name="play" /> Play
         </FpButton>
-        <FpButton aria-label="Next track" :disabled="!power" @click="step(1)">
+        <FpButton aria-label="Next track" :disabled="!ready" @click="step(1)">
           <FpIcon name="right" />
         </FpButton>
         <FpButton disabled>
@@ -154,24 +273,26 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
         </FpGelButton>
       </div>
 
-      <div class="row" role="group" aria-label="Bank">
+      <div class="row" role="group" aria-label="EQ preset">
         <FpCap
-          v-for="cap in caps"
-          :key="cap.label"
-          :color="cap.color"
-          :pressed="bank === cap.label"
+          v-for="choice in presets"
+          :key="choice.label"
+          :color="choice.color"
+          :pressed="preset === choice.label"
+          :aria-label="`${choice.label}, ${choice.name}`"
+          :disabled="!ready"
           class="cap"
-          @click="bank = cap.label"
+          @click="pickPreset(choice)"
         >
-          {{ cap.label }}
+          {{ choice.label }}
         </FpCap>
       </div>
 
       <div class="windows">
         <FpWindow v-if="playlistOpen" title="Playlist" :level="4" closable class="playlist fp-scroll-thin" @close="playlistOpen = false">
           <FpWell as="ol" class="list">
-            <li v-for="(name, index) in tracks" :key="name" :aria-current="index === track ? 'true' : undefined">
-              {{ name }}
+            <li v-for="(entry, index) in tracks" :key="entry.title" :aria-current="index === track ? 'true' : undefined">
+              {{ entry.title.toUpperCase() }}
             </li>
           </FpWell>
         </FpWindow>
@@ -182,11 +303,11 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
         <FpWindow v-if="hero" title="Levels" :level="4">
           <div class="levels">
             <FpSlider v-model="gain" label="Gain" />
-            <FpMeter :value="power ? gain : 0" label="L" />
-            <FpMeter :value="power ? Math.round(gain * 0.85) : 0" label="R" />
+            <FpMeter :value="levels[0]" label="L" />
+            <FpMeter :value="levels[1]" label="R" />
             <!-- The knob says its own value, so the readout that repeats it stays out of the way. -->
             <div class="dial">
-              <FpReadout :value="power ? volume : ''" :digits="3" color="amber" aria-hidden="true" />
+              <FpReadout :value="booting ? 888 : power ? volume : ''" :digits="3" color="amber" aria-hidden="true" />
               <FpKnob v-model="volume" label="Volume" :value-text="v => `${v} percent`" />
             </div>
           </div>
@@ -200,7 +321,7 @@ onBeforeUnmount(() => clearTimeout(skinTimer))
         </FpWindow>
       </div>
     </div>
-    <span v-if="hero" class="sr-only" role="status">{{ skinStatus }}</span>
+    <span class="sr-only" role="status">{{ status }}</span>
   </FpDevice>
 </template>
 
