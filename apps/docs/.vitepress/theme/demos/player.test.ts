@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clock, levelAt, marqueeFrame } from './player'
+import { bandsAt, clock, levelAt, marqueeFrame } from './player'
 
 describe('clock', () => {
   it('shows minutes and seconds, two digits each', () => {
@@ -42,5 +42,23 @@ describe('levelAt', () => {
 
   it('gives the two channels different levels at the same moment', () => {
     expect(levelAt(1234, 0)).not.toBe(levelAt(1234, 1))
+  })
+})
+
+describe('bandsAt', () => {
+  it('gives each band a level within the range', () => {
+    const bands = bandsAt(1234, 12)
+    expect(bands).toHaveLength(12)
+    for (const band of bands) {
+      expect(band).toBeGreaterThanOrEqual(0)
+      expect(band).toBeLessThanOrEqual(1)
+    }
+  })
+
+  it('runs higher in the low bands than the high ones, over a stretch of play', () => {
+    const sums = Array.from<number>({ length: 12 }).fill(0)
+    for (let ms = 0; ms < 20000; ms += 100)
+      bandsAt(ms, 12).forEach((band, index) => sums[index]! += band)
+    expect(sums[1]!).toBeGreaterThan(sums[10]!)
   })
 })

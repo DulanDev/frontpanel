@@ -37,3 +37,16 @@ export function levelAt(ms: number, channel: 0 | 1): number {
   const flutter = Math.sin(ms / 63 + channel * 2.1) * Math.sin(ms / 211)
   return Math.min(1, Math.max(0, 0.5 + 0.32 * beat + 0.12 * swell + 0.08 * flutter))
 }
+
+/**
+ * The levels of a spectrum display's bands at a moment of play, low to high, each 0 to 1: the
+ * beat lands in the low bands, and each band flickers on its own beside it.
+ */
+export function bandsAt(ms: number, count: number): number[] {
+  const beat = Math.exp(-(ms % 500) / 160)
+  return Array.from({ length: count }, (_, index) => {
+    const low = 1 - index / count
+    const own = 0.5 + 0.5 * Math.sin(ms / (90 + index * 23) + index * 1.7)
+    return Math.min(1, Math.max(0, 0.15 + 0.5 * beat * low + 0.35 * own * (0.4 + 0.6 * low)))
+  })
+}
