@@ -85,10 +85,6 @@ onBeforeUnmount(() => clearTimeout(timer))
 </template>
 
 <style scoped>
-.copy-page {
-  margin-top: 16px;
-}
-
 .labels {
   display: grid;
 }

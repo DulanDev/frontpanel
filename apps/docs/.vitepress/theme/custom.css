@@ -212,3 +212,19 @@
   display: grid;
   gap: 0;
 }
+
+/*
+ * A doc page's title on the left and its Copy page control on the right, on one row. A long title
+ * pushes the control onto a row of its own, still on the right.
+ */
+.doc-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+.doc-title .copy-page {
+  margin-inline-start: auto;
+}

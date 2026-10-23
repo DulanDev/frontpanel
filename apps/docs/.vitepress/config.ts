@@ -22,16 +22,17 @@ export default defineConfig({
   ],
   markdown: {
     config(md) {
-      // The Copy page control, under each doc page's title.
+      // The Copy page control, in a row with each doc page's title.
       md.core.ruler.push('copy-page', (state) => {
         if (state.env.relativePath === 'index.md')
           return
-        const title = state.tokens.findIndex(token => token.type === 'heading_close' && token.tag === 'h1')
-        if (title === -1)
+        const open = state.tokens.findIndex(token => token.type === 'heading_open' && token.tag === 'h1')
+        const close = state.tokens.findIndex(token => token.type === 'heading_close' && token.tag === 'h1')
+        if (open === -1 || close === -1)
           return
-        const control = new state.Token('html_block', '', 0)
-        control.content = '<CopyPage />\n'
-        state.tokens.splice(title + 1, 0, control)
+        const html = (content: string) => Object.assign(new state.Token('html_block', '', 0), { content })
+        state.tokens.splice(close + 1, 0, html('<CopyPage />\n</div>\n'))
+        state.tokens.splice(open, 0, html('<div class="doc-title">\n'))
       })
     },
   },
