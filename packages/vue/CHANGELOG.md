@@ -1,5 +1,18 @@
 # @frontpanel/vue
 
+## 0.3.0
+
+### Minor Changes
+
+- 71c32e0: An illuminated rocker switch. In the CSS, `fp-switch` goes on a button with `role="switch"` and `aria-checked`, holding an `fp-switch-rocker` with an `fp-switch-lamp` and an `fp-switch-face`: on, the I half rocks in and the lamp lights; off, the lamp fades out. The lamp is red, or green or amber with `fp-led-green` or `fp-led-amber`. `data-orientation="horizontal"` lays it on its side, I on the right. `fp-unit` takes `data-label-placement="start"` to set the label level with any control, before it. In Vue, `FpSwitch` takes a boolean `v-model`, `label`, `labelPlacement` (`below` or `start`), `orientation` and `color`, on Reka's Switch.
+- 5251b34: The pixel icon set gains `play`, the filled triangle of a player's play key, so a transport's Play button no longer has to borrow the `go` arrow.
+
+### Patch Changes
+
+- Updated dependencies [9649b34]
+- Updated dependencies [71c32e0]
+  - @frontpanel/css@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
