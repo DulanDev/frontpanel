@@ -2,7 +2,8 @@
  * Records the launch media from the docs site: the hero take as a GIF (for the README) and an MP4
  * (for posts), and the stills. It serves the built site, drives Chrome through a set take on the
  * home page's desk player and writes everything to media/ at the repo root, which git ignores:
- * commit or upload the files a README or post uses.
+ * commit or upload the files a README or post uses. The link preview also goes to public/og.png,
+ * since the site serves it; commit that one when it changes.
  *
  *   pnpm build
  *   pnpm --filter @frontpanel/docs record
@@ -166,7 +167,10 @@ function encode(list: string): void {
     say(`  The GIF is over GitHub's 5 MB: lower GIF_WIDTH or GIF_FPS.`)
 }
 
-/** The stills: the home page and the components page in both skins, the controls close up, the device row and the link preview. */
+/**
+ * The stills: the home page and the components page in both skins, the controls close up, the
+ * device row, and the link preview, which also goes to public/og.png.
+ */
 async function stills(browser: Browser, url: string): Promise<void> {
   const page1600 = { width: 1600, height: 1000 }
   for (const skin of ['silver', 'gunmetal'] as const) {
@@ -198,12 +202,17 @@ async function stills(browser: Browser, url: string): Promise<void> {
   await close.screenshot({ path: join(out, 'controls-closeup.png'), clip: { x, y, width: right - x, height: bottom - y } })
   await close.context().close()
 
-  // The link preview, at the size the sites ask for.
+  // The link preview, from its own page laid out at the size the sites ask for. It is the site's
+  // own file, so it goes in public/ as well, for the og:image tag. The player at the back skips a
+  // track, so the two show different titles.
   const og = await open(browser, 'silver', { width: 1200, height: 630 }, 1)
-  await og.goto(url)
-  await started(og)
-  await og.waitForTimeout(600)
-  await og.screenshot({ path: join(out, 'og.png') })
+  await og.goto(new URL('og', url).href)
+  await og.waitForFunction(() => [...document.querySelectorAll('.og [role="slider"]')].every(knob => knob.getAttribute('aria-valuenow') === '83'))
+  await og.locator('.og .back').getByRole('button', { name: 'Next track' }).click()
+  await og.mouse.move(0, 0)
+  await og.waitForTimeout(1200)
+  for (const path of [join(out, 'og.png'), join(docs, 'public/og.png')])
+    await og.screenshot({ path })
   await og.context().close()
 }
 
