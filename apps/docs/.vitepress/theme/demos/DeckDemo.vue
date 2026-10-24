@@ -21,6 +21,7 @@ import {
 } from '@frontpanel/vue'
 import { useData } from 'vitepress'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { intro } from './intro'
 import { bandsAt, clock, levelAt, marqueeFrame } from './player'
 
 // A desk media player built from the Vue components, drawn at 720 px (520 on a phone) and scaled to fit:
@@ -29,7 +30,7 @@ import { bandsAt, clock, levelAt, marqueeFrame } from './player'
 // lights every segment for a moment, Play runs the counter, the spectrum and the meters, a long
 // title steps across the glass, the caps pick an EQ preset and Eject opens the tray. It wears the
 // page's skin, which follows the appearance toggle. In the home page's hero it drops its backdrop,
-// since the page stands on one already, and gains a Skin button.
+// since the page stands on one already, gains a Skin button, and starts itself up on first load.
 
 const { hero = false } = defineProps<{ hero?: boolean }>()
 
@@ -60,7 +61,7 @@ const playing = ref(false)
 /** How far into the track play has run, in milliseconds. */
 const playMs = ref(0)
 const playlistOpen = ref(false)
-const volume = ref(70)
+const volume = ref(hero ? 0 : 70)
 
 const current = computed(() => tracks[track.value]!)
 const trackNumber = computed(() => String(track.value + 1).padStart(2, '0'))
@@ -95,7 +96,7 @@ onMounted(() => {
 // The rocker powers the deck. On, it lights every segment and LED for a moment, as a device checks
 // its display, then settles. Off, the glass shows only its ghost segments, the LEDs, meters and
 // readout go dark, play stops and the controls wait. The knob still turns, as a pot does.
-const power = ref(true)
+const power = ref(!hero)
 const booting = ref(false)
 const ready = computed(() => power.value && !booting.value)
 let bootTimer: ReturnType<typeof setTimeout> | undefined
@@ -131,6 +132,7 @@ function stopAll() {
   playMs.value = 0
 }
 
+// Synchronous, so a start-up can power on and settle the check straight after.
 watch(power, (on) => {
   clearTimeout(bootTimer)
   stopAll()
@@ -142,7 +144,7 @@ watch(power, (on) => {
       booting.value = false
     }, BOOT)
   }
-})
+}, { flush: 'sync' })
 
 function eject() {
   if (!trayOpen.value) {
@@ -265,6 +267,57 @@ const skinNames = {
 } as const
 const { isDark } = useData()
 
+// The hero's start-up, once per page load: the deck sits off for a moment, powers up through its
+// check, starts the first track and brings the volume up from nothing. Reduced motion skips to the
+// end, without the check; a press or a key on the deck stops it where it is.
+const INTRO_WAIT = 1000
+const INTRO_FADE = 1500
+const INTRO_VOLUME = 83
+let introTimer: ReturnType<typeof setTimeout> | undefined
+let introFrame: number | undefined
+
+function endIntro() {
+  clearTimeout(introTimer)
+  if (introFrame !== undefined)
+    cancelAnimationFrame(introFrame)
+  introTimer = introFrame = undefined
+}
+
+function fadeIn() {
+  const start = performance.now()
+  const frame = (now: number) => {
+    const done = Math.min(1, (now - start) / INTRO_FADE)
+    volume.value = Math.round(INTRO_VOLUME * (1 - (1 - done) ** 3))
+    introFrame = done < 1 ? requestAnimationFrame(frame) : undefined
+  }
+  introFrame = requestAnimationFrame(frame)
+}
+
+function startUp() {
+  const skip = intro.played || reducedMotion.value
+  intro.played = true
+  if (skip) {
+    power.value = true
+    clearTimeout(bootTimer)
+    booting.value = false
+    volume.value = INTRO_VOLUME
+    playing.value = true
+    return
+  }
+  introTimer = setTimeout(() => {
+    power.value = true
+    introTimer = setTimeout(() => {
+      playing.value = true
+      fadeIn()
+    }, BOOT)
+  }, INTRO_WAIT)
+}
+
+onMounted(() => {
+  if (hero)
+    startUp()
+})
+
 function nextSkin() {
   isDark.value = !isDark.value
   const skin = skinNames[isDark.value ? 'gunmetal' : 'silver']
@@ -276,13 +329,14 @@ onBeforeUnmount(() => {
   clearTimeout(bootTimer)
   clearTimeout(readTimer)
   clearInterval(clockTimer)
+  endIntro()
   motionQuery?.removeEventListener('change', onMotion)
   compactQuery?.removeEventListener('change', onCompact)
 })
 </script>
 
 <template>
-  <FpDevice fit="width" :width="compact ? 520 : 720" :backdrop="!hero" class="deck" :class="{ framed: !hero, compact }">
+  <FpDevice fit="width" :width="compact ? 520 : 720" :backdrop="!hero" class="deck" :class="{ framed: !hero, compact }" @pointerdown.capture="endIntro" @keydown.capture="endIntro">
     <div class="body">
       <header class="top">
         <div class="side">
