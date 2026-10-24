@@ -55,6 +55,22 @@
   --vp-font-family-base: var(--fp-font-ui);
 }
 
+/*
+ * The scrollbar's gutter stays when search or a menu locks the page's scrolling, so the fixed nav
+ * and sidebar don't slide into the space a vanished scrollbar leaves.
+ */
+html {
+  scrollbar-gutter: stable;
+}
+
+/*
+ * Search's dimmer stops at the gutter, so the gutter takes the same dim while search is open: the
+ * page colour under VitePress's backdrop, black at 60%. The gutter shows only a background colour.
+ */
+html:has(.VPLocalSearchBox) {
+  background-color: color-mix(in srgb, var(--vp-c-bg), black 60%);
+}
+
 /* Silkscreen type for the big headings and the site title, as on a faceplate. */
 .VPNavBarTitle .title,
 .VPHero .name,

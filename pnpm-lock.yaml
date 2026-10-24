@@ -35,6 +35,9 @@ importers:
       '@frontpanel/vue':
         specifier: workspace:^
         version: link:../../packages/vue
+      reka-ui:
+        specifier: ^2.11.0
+        version: 2.11.0(vue@3.5.43(typescript@6.0.3))
       vue:
         specifier: ^3.5.42
         version: 3.5.43(typescript@6.0.3)
