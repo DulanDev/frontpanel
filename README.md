@@ -1,8 +1,14 @@
-# Frontpanel
+<h1 align="center">Frontpanel</h1>
 
-An early-2000s hardware UI kit for building device front panels in the browser: liquid-chrome
-bezels, glossy gel buttons, molded caps, LCD readouts and LEDs, in plain CSS with Vue 3
-components on top. Two skins, Chrome Silver and Gunmetal Night, follow the system setting.
+<p align="center">
+  An early-2000s hardware UI kit for building device front panels in the browser: liquid-chrome
+  bezels, glossy gel buttons, molded caps, LCD readouts and LEDs, in plain CSS with Vue 3
+  components on top. Two skins, Chrome Silver and Gunmetal Night, follow the system setting.
+</p>
+
+<p align="center">
+  <a href="https://dulandev.github.io/frontpanel/"><img src="apps/docs/public/hero.gif" alt="A desk media player built with Frontpanel powers up, plays, picks an EQ preset, skips to a long title that scrolls across its LCD, and switches from the Silver skin to Gunmetal."></a>
+</p>
 
 The UI kit behind [WhatsTheNextChord](https://whatsthenextchord.com).
 

@@ -2,8 +2,9 @@
  * Records the launch media from the docs site: the hero take as a GIF (for the README) and an MP4
  * (for posts), and the stills. It serves the built site, drives Chrome through a set take on the
  * home page's desk player and writes everything to media/ at the repo root, which git ignores:
- * commit or upload the files a README or post uses. The link preview also goes to public/og.png,
- * since the site serves it; commit that one when it changes.
+ * commit or upload the files a README or post uses. The GIF and the link preview also go to
+ * public/ (hero.gif, which the README shows, and og.png, which every page names), since the site
+ * serves them; commit those when they change.
  *
  *   pnpm build
  *   pnpm --filter @frontpanel/docs record
@@ -16,7 +17,7 @@ import type { ChildProcess } from 'node:child_process'
 import type { Browser, Page } from 'playwright'
 import { Buffer } from 'node:buffer'
 import { execFileSync, spawn } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import process from 'node:process'
@@ -42,6 +43,12 @@ const MP4_WIDTH = 1200
 const MP4_FPS = 30
 /** How long the last frame holds, in seconds. */
 const HOLD = 0.8
+/**
+ * The longest a take may go between frames, in seconds, and how many takes to try for one that
+ * keeps to it: a stall, most often on a cold first run, would skip part of the start-up.
+ */
+const MAX_GAP = 0.4
+const TAKES = 3
 
 const { values: args } = parseArgs({ options: { url: { type: 'string' } } })
 
@@ -90,7 +97,7 @@ async function started(page: Page): Promise<void> {
  * (Chrome's screencast would be faster but sends CSS-sized frames). Each keeps the moment it was
  * taken, so the take plays back at its real pace.
  */
-async function recordHero(browser: Browser, url: string, frames: string): Promise<string> {
+async function recordHero(browser: Browser, url: string, frames: string): Promise<{ list: string, gap: number }> {
   const page = await open(browser, 'silver')
   await page.goto(url)
   const hero = page.locator('.VPHero .vp-raw')
@@ -148,8 +155,10 @@ async function recordHero(browser: Browser, url: string, frames: string): Promis
   const list = join(frames, 'list.txt')
   writeFileSync(list, `${lines.join('\n')}\n`)
   const seconds = shots.at(-1)!.at - shots[0]!.at + HOLD
-  say(`  ${shots.length} frames over ${seconds.toFixed(1)} s, ${clip.width * DENSITY} px wide`)
-  return list
+  const gaps = shots.slice(1).map((shot, index) => [shot.at - shots[index]!.at, shots[index]!.at - shots[0]!.at])
+  const [gap, at] = gaps.reduce((worst, next) => next[0]! > worst[0]! ? next : worst)
+  say(`  ${shots.length} frames over ${seconds.toFixed(1)} s, ${clip.width * DENSITY} px wide; longest gap ${(gap! * 1000).toFixed(0)} ms at ${at!.toFixed(1)} s`)
+  return { list, gap: gap! }
 }
 
 function encode(list: string): void {
@@ -165,6 +174,7 @@ function encode(list: string): void {
     say(`  ${file}: ${(statSync(file).size / 1024 / 1024).toFixed(2)} MB`)
   if (statSync(gif).size > GIF_LIMIT)
     say(`  The GIF is over GitHub's 5 MB: lower GIF_WIDTH or GIF_FPS.`)
+  copyFileSync(gif, join(docs, 'public/hero.gif'))
 }
 
 /**
@@ -224,7 +234,18 @@ const browser = await chromium.launch({ channel: 'chrome' })
 try {
   say(`Recording from ${url}`)
   say('Hero take')
-  encode(await recordHero(browser, url, frames))
+  for (let attempt = 1; ; attempt++) {
+    const take = await recordHero(browser, url, frames)
+    if (take.gap <= MAX_GAP || attempt === TAKES) {
+      if (take.gap > MAX_GAP)
+        say(`  Every take stalled; this one may skip part of the start-up.`)
+      encode(take.list)
+      break
+    }
+    say('  The take stalled; taking it again.')
+    rmSync(frames, { recursive: true, force: true })
+    mkdirSync(frames)
+  }
   say('Stills')
   await stills(browser, url)
   say(`Done: ${out}`)
