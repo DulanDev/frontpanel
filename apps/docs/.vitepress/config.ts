@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { sections } from './llms/build'
 import { llmsPlugin, writeLlmsFiles } from './llms/plugin'
-import { base, description, sidebar } from './site'
+import { base, description, sidebar, siteUrl } from './site'
 
 // The pages served as Markdown too (see llms/), by their path in the docs.
 const markdownPages = new Set(sections.flatMap(section => section.pages.map(page => page.path)))
@@ -23,6 +23,14 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }],
     ['script', {}, skinScript],
+    // The link preview, from og.md, which the record script screenshots.
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Frontpanel' }],
+    ['meta', { property: 'og:image', content: `${siteUrl}og.png` }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { property: 'og:image:alt', content: 'Frontpanel: a desk media player built with the kit, in its Silver and Gunmetal skins.' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
   markdown: {
     config(md) {
@@ -44,6 +52,15 @@ export default defineConfig({
     plugins: [llmsPlugin()],
   },
   buildEnd: writeLlmsFiles,
+  // Each page's own title, description and address for its link preview.
+  transformHead({ pageData, title, description: pageDescription }) {
+    const path = pageData.relativePath.replace(/(?:^|\/)index\.md$/, '').replace(/\.md$/, '')
+    return [
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: pageDescription }],
+      ['meta', { property: 'og:url', content: `${siteUrl}${path}` }],
+    ]
+  },
   // Each doc page names its Markdown in its head, so an agent that fetches the page finds it.
   transformPageData(pageData) {
     if (!markdownPages.has(pageData.relativePath))

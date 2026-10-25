@@ -10,6 +10,9 @@ Thumbs.db
 test-results/
 playwright-report/
 
+# Launch media the docs' record script writes
+/media/
+
 *.local.md
 
 # VitePress dev cache

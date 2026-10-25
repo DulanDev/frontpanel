@@ -6,5 +6,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": [".vitepress/**/*.ts", ".vitepress/**/*.vue", "reference/*.data.ts"]
+  "include": [".vitepress/**/*.ts", ".vitepress/**/*.vue", "reference/*.data.ts", "scripts/*.ts"]
 }
