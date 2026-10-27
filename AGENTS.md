@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 Frontpanel is an early-2000s hardware UI kit: liquid-chrome bezels, gel buttons, LCD readouts and
 LEDs, as plain CSS with Vue 3 components on top. MIT licence.
