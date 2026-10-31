@@ -252,6 +252,11 @@ html:has(.VPLocalSearchBox) {
   margin-inline-start: auto;
 }
 
+/* The nav bar's GitHub icon gives way to NavRepo, which carries the version in the same link. */
+.VPNavBar .content-body .VPNavBarSocialLinks {
+  display: none;
+}
+
 /*
  * A "New" tag after the newest components in the page outline: a small blue gel pill, glossy on
  * top, from the kit's gel button. The link keeps its ellipsis and gives way to the tag. Drop a
