@@ -3,6 +3,8 @@ import {
   FpButton,
   FpButtonGroup,
   FpCap,
+  FpCheckbox,
+  FpCheckboxGroup,
   FpGelButton,
   FpHousing,
   FpIcon,
@@ -15,6 +17,7 @@ import {
   FpMenuItem,
   FpMenuSeparator,
   FpMeter,
+  FpRadioGroup,
   FpReadout,
   FpScrew,
   FpSilk,
@@ -46,6 +49,32 @@ const seconds = ref(125)
 const lenses = ['flat', 'diffused', 'clear'] as const
 const sources = ['TAPE', 'TUNER', 'AUX'] as const
 const source = ref<string>('TAPE')
+const tapes = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'chrome', label: 'Chrome', color: 'amber' as const },
+  { value: 'metal', label: 'Metal', color: 'red' as const },
+]
+const tape = ref('chrome')
+const bands = [
+  { value: 'fm', label: 'FM' },
+  { value: 'am', label: 'AM' },
+  { value: 'sw', label: 'SW' },
+]
+const band = ref('fm')
+const speeds = [
+  { value: 'slow', label: 'Slow' },
+  { value: 'norm', label: 'Norm' },
+  { value: 'fast', label: 'Fast', disabled: true },
+]
+const speed = ref('norm')
+const inputs = [
+  { value: 'lowcut', label: 'Low cut' },
+  { value: 'pad', label: 'Pad', color: 'amber' as const },
+  { value: 'rec', label: 'Rec', color: 'red' as const },
+]
+const latched = ref(['lowcut'])
+const paused = ref(false)
+const muted = ref(true)
 </script>
 
 # Components
@@ -265,6 +294,78 @@ or an LED, as the readout here does.
 ```
 
 <ApiTable name="FpSwitch" />
+
+## FpRadioGroup
+
+A row of latching piano keys, after the key row on an old cassette deck: press a key and it latches
+down as the last one comes up, and the arrow keys move the latch along the row. Each option is
+`{ value, label, disabled?, color? }`; its `label` is printed over its key and names it, and `label`
+on the group goes under the well and names the group. The strip at each key's foot is an LED that
+lights while the key is latched, green unless `color`, or an option's own `color`, says otherwise.
+`led="above"` puts an LED over each label instead, and `led="none"` leaves the strips as plain
+plastic, so the latch alone shows the choice. `orientation="vertical"` lays the keys on their side,
+stacked, each label before its key.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <div class="fp-module demo-row demo-module">
+    <FpRadioGroup v-model="tape" :options="tapes" label="Tape" />
+    <FpRadioGroup v-model="band" :options="bands" label="Band" led="above" color="amber" />
+    <FpRadioGroup v-model="speed" :options="speeds" label="Speed" orientation="vertical" led="none" />
+  </div>
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="`${tape.toUpperCase()} ${band.toUpperCase()} ${speed.toUpperCase()}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+```vue
+<script setup lang="ts">
+const tapes = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'chrome', label: 'Chrome', color: 'amber' },
+  { value: 'metal', label: 'Metal', color: 'red' },
+]
+const tape = ref('chrome')
+</script>
+
+<FpRadioGroup v-model="tape" :options="tapes" label="Tape" />
+
+<FpRadioGroup v-model="band" :options="bands" label="Band" led="above" color="amber" />
+
+<FpRadioGroup v-model="speed" :options="speeds" label="Speed" orientation="vertical" led="none" />
+```
+
+<ApiTable name="FpRadioGroup" />
+
+## FpCheckbox and FpCheckboxGroup
+
+Piano keys that latch on their own, like a deck's pause key: press one to latch it down, press it
+again to let it up. `FpCheckbox` is one key in its own well, with a boolean `v-model` and its
+`label` over it. `FpCheckboxGroup` sets a row of them in one well: `v-model` holds the values of the
+latched options, and each key is still its own stop for Tab. The options, the LED and
+`orientation` work as on FpRadioGroup.
+
+<div class="vp-raw demo demo-surface demo-row">
+  <div class="fp-module demo-row demo-module">
+    <FpCheckboxGroup v-model="latched" :options="inputs" label="Input" />
+    <FpCheckbox v-model="paused" label="Pause" color="amber" />
+    <FpCheckbox v-model="muted" label="Mute" led="above" color="red" />
+  </div>
+  <FpLcd class="demo-lcd">
+    <FpLcdLine :text="paused ? 'PAUSED' : `IN ${latched.length ? latched.join(' ').toUpperCase() : 'FLAT'}${muted ? ' MUTE' : ''}`" class="demo-lcd-line" />
+  </FpLcd>
+</div>
+
+```vue
+<FpCheckboxGroup v-model="latched" :options="inputs" label="Input" />
+
+<FpCheckbox v-model="paused" label="Pause" color="amber" />
+
+<FpCheckbox v-model="muted" label="Mute" led="above" color="red" />
+```
+
+<ApiTable name="FpCheckbox" />
+
+<ApiTable name="FpCheckboxGroup" />
 
 ## FpMeter
 
