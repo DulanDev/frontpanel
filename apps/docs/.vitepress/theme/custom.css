@@ -147,6 +147,18 @@ html:has(.VPLocalSearchBox) {
   }
 }
 
+/*
+ * The feature cards as small panels of the device body, bevelled and edged, so they stand off
+ * the backdrop; the theme's well colour washed out on the light one.
+ */
+.VPFeatures .VPFeature {
+  border-color: var(--fp-color-edge);
+  background-color: var(--fp-color-shell);
+  box-shadow:
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    inset -1px -1px 0 var(--fp-color-bevel-lo),
+    1px 2px 0 var(--fp-color-cast);
+}
 
 /* A small demo surface: the device body's plastic, with the controls set on it. */
 .demo-surface {
@@ -161,6 +173,13 @@ html:has(.VPLocalSearchBox) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  gap: 10px;
+}
+
+/* A demo whose readout sits under its controls, wherever they wrap. */
+.demo-stack {
+  display: grid;
+  justify-items: start;
   gap: 10px;
 }
 
@@ -243,4 +262,44 @@ html:has(.VPLocalSearchBox) {
 
 .doc-title .copy-page {
   margin-inline-start: auto;
+}
+
+/* The nav bar's GitHub icon gives way to NavRepo, which carries the version in the same link. */
+.VPNavBar .content-body .VPNavBarSocialLinks {
+  display: none;
+}
+
+/*
+ * A "New" tag after the newest components in the page outline: a small blue gel pill, glossy on
+ * top, from the kit's gel button. The link keeps its ellipsis and gives way to the tag. Drop a
+ * component from the list once a later release brings newer ones.
+ */
+.VPDocOutlineItem li:has(> .outline-link:is([href="#fpradiogroup"], [href="#fpcheckbox-and-fpcheckboxgroup"])) {
+  display: flex;
+  align-items: center;
+}
+
+.VPDocOutlineItem li:has(> .outline-link:is([href="#fpradiogroup"], [href="#fpcheckbox-and-fpcheckboxgroup"]))::after {
+  content: "New";
+  flex: none;
+  margin-inline-start: 6px;
+  padding: 2px 6px;
+  /* Transparent, so forced colours, which drop the gel, still draw the pill's edge. */
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  color: var(--fp-color-gel-ink);
+  font-family: var(--fp-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 0.35);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.08) 90%, transparent 100%),
+    linear-gradient(180deg, var(--fp-color-gel-hi) 0%, var(--fp-color-gel) 48%, var(--fp-color-gel-lo) 100%);
+  background-origin: border-box;
+  box-shadow:
+    0 0 0 1px var(--fp-color-gel-lo),
+    inset 0 -2px 3px rgb(140 200 255 / 0.4);
 }

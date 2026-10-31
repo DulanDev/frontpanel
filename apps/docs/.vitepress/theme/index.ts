@@ -6,6 +6,7 @@ import { h, watch } from 'vue'
 import CopyPage from './CopyPage.vue'
 import DeckDemo from './demos/DeckDemo.vue'
 import HomeDevices from './demos/HomeDevices.vue'
+import NavRepo from './NavRepo.vue'
 import '@frontpanel/css/index.css'
 import '@frontpanel/css/fonts.css'
 import './custom.css'
@@ -14,12 +15,13 @@ export default {
   extends: DefaultTheme,
   // The live device sits beside the hero text on the home page, in the hero's image slot, with
   // vp-raw keeping VitePress's unlayered element resets off the kit's layered classes. The row of
-  // small devices follows the feature cards.
+  // small devices follows the feature cards. The GitHub link carries the released version.
   // scroll-body off: a menu that locks scrolling adds no padding for the scrollbar, since the page
   // keeps the scrollbar's gutter (custom.css) and padding on top would push the content left.
   Layout: () => h(ConfigProvider, { scrollBody: false }, () => h(DefaultTheme.Layout, null, {
     'home-hero-image': () => h('div', { class: 'vp-raw' }, h(DeckDemo, { hero: true })),
     'home-features-after': () => h(HomeDevices),
+    'nav-bar-content-after': () => h(NavRepo),
   })),
   enhanceApp({ app }) {
     // Placed under each doc page's title by the copy-page rule in the config's markdown setup.

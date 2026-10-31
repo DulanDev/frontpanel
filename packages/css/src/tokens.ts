@@ -48,6 +48,18 @@ export const tokens: Tokens = {
     'color-led-red': '#ff4a3d',
     'color-led-off': '#1f252e',
 
+    // Piano keys: knurled silver plastic in the slate well of the housing, its knurl a light and a
+    // dark line. The plain strip is cream; the focus ring round a key is pale, since it sits in the
+    // well, where the skin's dark-blue ring would vanish.
+    'color-key-hi': '#e8ecf2',
+    'color-key': '#b9c2cf',
+    'color-key-lo': '#7d8898',
+    'color-key-well': '#3a4250',
+    'color-key-knurl-hi': 'rgb(255 255 255 / 0.3)',
+    'color-key-knurl-lo': 'rgb(0 0 0 / 0.2)',
+    'color-key-strip': '#ece5d3',
+    'color-key-ring': '#8fbaff',
+
     // Molded caps: each colour travels with its label colour (see the fp-cap-* classes).
     'color-cap': '#f2f4f7',
     'color-cap-ink': '#2a303b',
@@ -118,6 +130,15 @@ export const tokens: Tokens = {
     'color-cap-graphite': '#5a6373',
 
     'color-focus-ring': '#4fd2ff',
+
+    // Piano keys: dark molded plastic in a black well.
+    'color-key-hi': '#5a5e65',
+    'color-key': '#34373c',
+    'color-key-lo': '#222428',
+    'color-key-well': '#0b0c0e',
+    'color-key-knurl-hi': 'rgb(255 255 255 / 0.11)',
+    'color-key-knurl-lo': 'rgb(0 0 0 / 0.45)',
+    'color-key-ring': '#4fd2ff',
     'color-select': '#e7eaf0',
     'color-error-text': '#ff8a80',
 

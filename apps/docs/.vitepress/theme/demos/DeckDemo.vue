@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { FpCapColor } from '@frontpanel/vue'
 import {
   FpButton,
-  FpCap,
   FpDevice,
   FpGelButton,
   FpHousing,
@@ -12,6 +10,7 @@ import {
   FpLcdLine,
   FpLed,
   FpMeter,
+  FpRadioGroup,
   FpReadout,
   FpScrew,
   FpSilk,
@@ -28,7 +27,7 @@ import { bandsAt, clock, levelAt, marqueeFrame } from './player'
 // speaker grilles either side, the display with its spectrum, the transport round a gel Play, the
 // volume and its meters, and a disc slot. Every control does what it would on the device: power-on
 // lights every segment for a moment, Play runs the counter, the spectrum and the meters, a long
-// title steps across the glass, the caps pick an EQ preset and Eject opens the tray. It wears the
+// title steps across the glass, the piano keys pick an EQ preset and Eject opens the tray. It wears the
 // page's skin, which follows the appearance toggle. In the home page's hero it drops its backdrop,
 // since the page stands on one already, gains a Skin button, and starts itself up on first load.
 
@@ -245,18 +244,21 @@ const levels = computed(() => {
   return ([0, 1] as const).map(channel => Math.min(100, Math.round(volume.value * 1.3 * levelAt(at, channel))))
 })
 
-const presets: { label: string, name: string, color: FpCapColor }[] = [
-  { label: 'A', name: 'Flat', color: 'white' },
-  { label: 'B', name: 'Bass', color: 'blue' },
-  { label: 'C', name: 'Vocal', color: 'amber' },
-  { label: 'D', name: 'Live', color: 'graphite' },
-  { label: 'E', name: 'Night', color: 'berry' },
+const presets = [
+  { value: 'flat', label: 'Flat' },
+  { value: 'bass', label: 'Bass' },
+  { value: 'vocal', label: 'Vocal' },
+  { value: 'live', label: 'Live' },
+  { value: 'night', label: 'Night' },
 ]
-const preset = ref('B')
+const preset = ref('bass')
 
-function pickPreset(choice: typeof presets[number]) {
-  preset.value = choice.label
-  showNotice('EQ', choice.name.toUpperCase(), `EQ preset: ${choice.name}`)
+function pickPreset(value: string | undefined) {
+  const choice = presets.find(option => option.value === value)
+  if (!choice)
+    return
+  preset.value = choice.value
+  showNotice('EQ', choice.label.toUpperCase(), `EQ preset: ${choice.label}`)
 }
 
 // The SKIN button steps the page's skin (VitePress's isDark, which the theme turns into
@@ -355,7 +357,7 @@ onBeforeUnmount(() => {
             <FpLed :lit="booting || (loaded && playing)" /> PLAY
           </FpHousing>
           <FpHousing>
-            <FpLed color="amber" :lit="booting || (loaded && preset !== 'A')" /> EQ
+            <FpLed color="amber" :lit="booting || (loaded && preset !== 'flat')" /> EQ
           </FpHousing>
           <FpScrew />
         </div>
@@ -402,21 +404,13 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="presets">
-            <FpSilk>EQ</FpSilk>
-            <div class="caps" role="group" aria-label="EQ preset">
-              <FpCap
-                v-for="choice in presets"
-                :key="choice.label"
-                :color="choice.color"
-                :pressed="preset === choice.label"
-                :aria-label="`${choice.label}, ${choice.name}`"
-                :disabled="!loaded"
-                class="cap"
-                @click="pickPreset(choice)"
-              >
-                {{ choice.label }}
-              </FpCap>
-            </div>
+            <FpRadioGroup
+              :model-value="preset"
+              :options="presets"
+              label="EQ"
+              :disabled="!loaded"
+              @update:model-value="pickPreset"
+            />
             <div class="extras">
               <FpButton :pressed="playlistOpen" @click="playlistOpen = !playlistOpen">
                 <FpIcon name="grid" /> List
@@ -565,7 +559,9 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 
+/* Wrapped under the keys, the buttons go back to a row. */
 .compact .extras {
+  flex-direction: row;
   margin-inline-start: 0;
 }
 
@@ -670,15 +666,6 @@ onBeforeUnmount(() => {
   gap: 0.625rem;
 }
 
-.caps {
-  display: flex;
-  gap: 0.375rem;
-}
-
-.cap {
-  min-width: 2.5rem;
-}
-
 /* The disc goes in here: a dark mouth with a lip of light under it; open, the disc's edge shows. */
 .slot {
   height: 10px;
@@ -723,8 +710,10 @@ onBeforeUnmount(() => {
   height: 4rem;
 }
 
+/* Stacked beside the EQ keys, which stand taller than a button and leave no room for a row. */
 .extras {
   display: flex;
+  flex-direction: column;
   gap: 0.375rem;
   margin-inline-start: auto;
 }

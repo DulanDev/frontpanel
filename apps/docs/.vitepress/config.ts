@@ -78,6 +78,7 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/DulanDev/frontpanel' }],
     footer: {
       message: 'MIT licensed. The UI kit behind <a href="https://whatsthenextchord.com">WhatsTheNextChord</a>.',
+      copyright: 'Copyright © 2026 <a href="https://dulan.me">Dulan K.</a>',
     },
   },
 })

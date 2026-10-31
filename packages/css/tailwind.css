@@ -32,6 +32,14 @@
   --color-fp-led-amber: var(--fp-color-led-amber);
   --color-fp-led-red: var(--fp-color-led-red);
   --color-fp-led-off: var(--fp-color-led-off);
+  --color-fp-key-hi: var(--fp-color-key-hi);
+  --color-fp-key: var(--fp-color-key);
+  --color-fp-key-lo: var(--fp-color-key-lo);
+  --color-fp-key-well: var(--fp-color-key-well);
+  --color-fp-key-knurl-hi: var(--fp-color-key-knurl-hi);
+  --color-fp-key-knurl-lo: var(--fp-color-key-knurl-lo);
+  --color-fp-key-strip: var(--fp-color-key-strip);
+  --color-fp-key-ring: var(--fp-color-key-ring);
   --color-fp-cap: var(--fp-color-cap);
   --color-fp-cap-ink: var(--fp-color-cap-ink);
   --color-fp-cap-blue: var(--fp-color-cap-blue);
@@ -1102,6 +1110,413 @@
   /* Forced colours: no lens or marks; the rocker's fill shows the state. */
   @media (forced-colors: active) {
     display: none;
+  }
+}
+
+/**
+ * A row of latching piano keys in a dark well, after the key row on an old cassette deck. Its
+ * children alternate: an fp-silk label printed over the key, then the fp-key. Give it
+ * `role="radiogroup"` round radio keys, or `role="group"` round checkbox keys, and a name; one
+ * checkbox key needs no role. With `data-orientation="vertical"` the keys lie on their side,
+ * stacked, each label before its key.
+ */
+@utility fp-keys {
+  display: inline-grid;
+  grid-auto-flow: column;
+
+  /* Every key in a row is one width: the widest label's, or the key's own. */
+  grid-auto-columns: 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 0.5rem;
+  justify-items: center;
+  align-items: end;
+
+  /* A label, with its LED over it when the light is above the key. */
+  & > .fp-silk {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    padding-inline: 0.25rem;
+    white-space: nowrap;
+  }
+
+  &[data-orientation="vertical"] {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-auto-rows: 1fr;
+    grid-template-columns: auto auto;
+    grid-template-rows: none;
+    column-gap: 0.75rem;
+    row-gap: 0;
+    justify-items: stretch;
+    align-items: center;
+
+    & > .fp-silk {
+      flex-direction: row;
+      justify-content: flex-end;
+      padding-inline: 0;
+    }
+  }
+}
+
+/**
+ * A piano key in an fp-keys row: knurled plastic, silver or dark by skin, with a strip at its foot,
+ * standing in its stretch of the well. Put it on a button with `role="radio"` or `role="checkbox"` and
+ * `aria-checked`; checked, it latches part way down, smaller and darker under the well's lip, and
+ * a press sinks it deeper. The strip is an LED in the key's `fp-led-*` colour (green), lit while
+ * latched; with `data-strip="plain"` it is cream plastic, for keys whose LED sits over the label,
+ * or that have none.
+ */
+@utility fp-key {
+  /* How far the key is shaded, latched or held down. */
+  --fp-key-shade: 0;
+
+  /* The well round the key: a narrow seam between keys, wider at the ends of the row. */
+  --fp-key-start: 2px;
+  --fp-key-end: 2px;
+
+  /* The well's edge, drawn on the outside of the row only, so neighbours show no seam. */
+  --fp-key-edge-start: 0 0 transparent;
+  --fp-key-edge-end: 0 0 transparent;
+  position: relative;
+  justify-self: stretch;
+  min-width: calc(3.5rem + 4px);
+  min-height: calc(4.75rem + 14px);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: var(--fp-color-key-well);
+  box-shadow:
+    inset 0 3px 5px rgb(0 0 0 / 0.8),
+    0 -1px 0 var(--fp-color-edge),
+    0 1px 0 var(--fp-color-edge),
+    0 2px 0 var(--fp-color-bevel-hi),
+    var(--fp-key-edge-start),
+    var(--fp-key-edge-end);
+
+  @media (pointer: fine) {
+    min-width: calc(3rem + 4px);
+    min-height: calc(4.125rem + 14px);
+  }
+
+  &:nth-child(1 of .fp-key) {
+    --fp-key-start: 4px;
+    --fp-key-edge-start: -1px 0 0 var(--fp-color-edge);
+    border-start-start-radius: 6px;
+    border-end-start-radius: 6px;
+  }
+
+  &:nth-last-child(1 of .fp-key) {
+    --fp-key-end: 4px;
+    --fp-key-edge-end: 1px 0 0 var(--fp-color-edge);
+    border-start-end-radius: 6px;
+    border-end-end-radius: 6px;
+  }
+
+  /*
+   * The key itself: a glossy frame lit from the top left, round a knurled face, a fine diamond grid
+   * light on one diagonal and shaded on the other. It stands 4px below the well's top, with room
+   * under it to travel down.
+   */
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: 4px 10px;
+    inset-inline: var(--fp-key-start) var(--fp-key-end);
+    border-radius: 5px;
+    background:
+      linear-gradient(var(--fp-color-key-knurl-lo), transparent 2px) 5px 5px / calc(100% - 10px) calc(100% - 20px) no-repeat,
+      repeating-linear-gradient(45deg, var(--fp-color-key-knurl-hi) 0 1px, transparent 1px 3.5px) 5px 5px / calc(100% - 10px) calc(100% - 20px) no-repeat,
+      repeating-linear-gradient(-45deg, var(--fp-color-key-knurl-lo) 0 1px, transparent 1px 3.5px) 5px 5px / calc(100% - 10px) calc(100% - 20px) no-repeat,
+      linear-gradient(var(--fp-color-key-hi), color-mix(in srgb, var(--fp-color-key-hi) 50%, var(--fp-color-key))) 5px 5px / calc(100% - 10px) calc(100% - 20px) no-repeat,
+      linear-gradient(160deg, var(--fp-color-key-hi) 0%, var(--fp-color-key) 35%, var(--fp-color-key-lo) 100%);
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 0.28),
+      inset -1px -1px 0 rgb(0 0 0 / 0.6),
+      inset 0 0 0 99px rgb(0 0 0 / var(--fp-key-shade)),
+      0 3px 0 rgb(0 0 0 / 0.9);
+    transform-origin: 50% 100%;
+    transition-property: translate, scale, filter, box-shadow;
+    transition-duration: 70ms;
+    transition-timing-function: linear;
+  }
+
+  /*
+   * The strip at the key's foot: an LED lens, dark in its colour until the key latches, set in a
+   * rim of the well's colour, so a lit strip stands out on a pale key too.
+   */
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block-end: 15px;
+    inset-inline: calc(var(--fp-key-start) + 5px) calc(var(--fp-key-end) + 5px);
+    height: 7px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 32%, black);
+    box-shadow:
+      inset 0 1px 1px rgb(0 0 0 / 0.6),
+      0 0 0 1.5px var(--fp-color-key-well);
+
+    /* It moves with the key: scaled from the key's foot, 5px below its own. */
+    transform-origin: 50% calc(100% + 5px);
+    transition-property: translate, scale, filter;
+    transition-duration: 70ms;
+    transition-timing-function: linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before,
+    &::after {
+      transition-duration: 0ms;
+    }
+  }
+
+  /* A plain strip: cream plastic, shaded with the key. */
+  &[data-strip="plain"]::after {
+    height: 8px;
+    border-radius: 1px;
+    background: linear-gradient(
+      color-mix(in srgb, var(--fp-color-key-strip) 80%, white),
+      var(--fp-color-key-strip) 60%,
+      color-mix(in srgb, var(--fp-color-key-strip) 80%, black)
+    );
+    box-shadow: 0 0 0 1.5px var(--fp-color-key-well);
+    filter: brightness(calc(1 - var(--fp-key-shade)));
+  }
+
+  &:hover:not(:disabled)::before {
+    filter: brightness(1.1);
+  }
+
+  /* Latched: well down, a little smaller and darker, the well's lip shading its top edge. */
+  &[aria-checked="true"] {
+    --fp-key-shade: 0.24;
+
+    &::before {
+      translate: 0 6px;
+      scale: 0.96;
+      box-shadow:
+        inset 0 6px 5px -2px rgb(0 0 0 / 0.9),
+        inset -1px -1px 0 rgb(0 0 0 / 0.6),
+        inset 0 0 0 99px rgb(0 0 0 / var(--fp-key-shade)),
+        0 0 0 transparent;
+    }
+
+    &::after {
+      translate: 0 6px;
+      scale: 0.96;
+    }
+  }
+
+  /* A latched LED strip lights, brightest in the middle, and spills its glow up over the face. */
+  &[aria-checked="true"]:not([data-strip="plain"])::after {
+    background: radial-gradient(
+      ellipse 60% 120% at 50% 50%,
+      color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, white),
+      var(--fp-led, var(--fp-color-led-on))
+    );
+    box-shadow:
+      0 0 0 1.5px var(--fp-color-key-well),
+      0 0 6px 1px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 70%, transparent),
+      0 -5px 12px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 35%, transparent);
+  }
+
+  /* Held under a finger: past the latch, deeper and darker still. */
+  &:active:not(:disabled) {
+    --fp-key-shade: 0.36;
+
+    &::before {
+      translate: 0 9px;
+      scale: 0.94;
+      box-shadow:
+        inset 0 7px 5px -2px rgb(0 0 0 / 0.95),
+        inset 0 0 0 99px rgb(0 0 0 / var(--fp-key-shade)),
+        0 0 0 transparent;
+    }
+
+    &::after {
+      translate: 0 9px;
+      scale: 0.94;
+    }
+  }
+
+  /*
+   * The ring goes round the key, in the dark well, where the skin's own ring could vanish: its
+   * own colour, with the usual glow outside it. Over its neighbours, not under them.
+   */
+  &:focus-visible {
+    z-index: 1;
+    outline: none;
+  }
+
+  &:focus-visible::before {
+    outline: 2px solid var(--fp-color-key-ring);
+    outline-offset: 2px;
+    filter: drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
+  /* The hover filter outranks the focus rule, so a hovered key keeps its glow here. */
+  &:focus-visible:hover:not(:disabled)::before {
+    filter: brightness(1.1) drop-shadow(0 0 3px var(--fp-color-focus));
+  }
+
+  /* Disabled, the key stays up and fades; its stretch of the well stays dark. */
+  &:disabled::before,
+  &:disabled::after {
+    opacity: 0.45;
+  }
+
+  /*
+   * On its side, in a vertical fp-keys: the well runs top to bottom, the strip is at the key's
+   * right end, and a latched key slides right, toward it, the well's left lip shading its near edge.
+   */
+  [data-orientation="vertical"] > & {
+    --fp-key-edge-start: 0 0 transparent;
+    --fp-key-edge-end: 0 0 transparent;
+    min-width: calc(4.75rem + 14px);
+    min-height: calc(3.5rem + 4px);
+    border-radius: 0;
+    box-shadow:
+      inset 3px 0 5px rgb(0 0 0 / 0.8),
+      -1px 0 0 var(--fp-color-edge),
+      1px 0 0 var(--fp-color-edge),
+      1px 1px 0 var(--fp-color-bevel-hi),
+      var(--fp-key-edge-start),
+      var(--fp-key-edge-end);
+
+    @media (pointer: fine) {
+      min-width: calc(4.125rem + 14px);
+      min-height: calc(3rem + 4px);
+    }
+
+    &:nth-child(1 of .fp-key) {
+      --fp-key-edge-start: 0 -1px 0 var(--fp-color-edge);
+      border-radius: 6px 6px 0 0;
+    }
+
+    &:nth-last-child(1 of .fp-key) {
+      --fp-key-edge-end: 0 1px 0 var(--fp-color-edge), 0 2px 0 var(--fp-color-bevel-hi);
+      border-radius: 0 0 6px 6px;
+    }
+
+    &:nth-child(1 of .fp-key):nth-last-child(1 of .fp-key) {
+      border-radius: 6px;
+    }
+
+    &::before {
+      inset: var(--fp-key-start) 10px var(--fp-key-end) 4px;
+      background:
+        linear-gradient(90deg, rgb(0 0 0 / 0.5), transparent 2px) 5px 5px / calc(100% - 20px) calc(100% - 10px) no-repeat,
+        repeating-linear-gradient(45deg, rgb(255 255 255 / 0.11) 0 1px, transparent 1px 3.5px) 5px 5px / calc(100% - 20px) calc(100% - 10px) no-repeat,
+        repeating-linear-gradient(-45deg, rgb(0 0 0 / 0.45) 0 1px, transparent 1px 3.5px) 5px 5px / calc(100% - 20px) calc(100% - 10px) no-repeat,
+        linear-gradient(var(--fp-color-key-hi), color-mix(in srgb, var(--fp-color-key-hi) 50%, var(--fp-color-key))) 5px 5px / calc(100% - 20px) calc(100% - 10px) no-repeat,
+        linear-gradient(160deg, var(--fp-color-key-hi) 0%, var(--fp-color-key) 35%, var(--fp-color-key-lo) 100%);
+      box-shadow:
+        inset 1px 1px 0 rgb(255 255 255 / 0.28),
+        inset -1px -1px 0 rgb(0 0 0 / 0.6),
+        inset 0 0 0 99px rgb(0 0 0 / var(--fp-key-shade)),
+        3px 0 0 rgb(0 0 0 / 0.9);
+      transform-origin: 100% 50%;
+    }
+
+    &::after {
+      inset: calc(var(--fp-key-start) + 5px) 15px calc(var(--fp-key-end) + 5px) auto;
+      width: 7px;
+      height: auto;
+      transform-origin: calc(100% + 5px) 50%;
+    }
+
+    &[data-strip="plain"]::after {
+      width: 8px;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--fp-color-key-strip) 80%, white),
+        var(--fp-color-key-strip) 60%,
+        color-mix(in srgb, var(--fp-color-key-strip) 80%, black)
+      );
+    }
+
+    &[aria-checked="true"] {
+      &::before {
+        translate: 6px 0;
+        box-shadow:
+          inset 6px 0 5px -2px rgb(0 0 0 / 0.9),
+          inset -1px -1px 0 rgb(0 0 0 / 0.6),
+          inset 0 0 0 99px rgb(0 0 0 / var(--fp-key-shade)),
+          0 0 0 transparent;
+      }
+
+      &::after {
+        translate: 6px 0;
+      }
+    }
+
+    &[aria-checked="true"]:not([data-strip="plain"])::after {
+      background: radial-gradient(
+        ellipse 120% 60% at 50% 50%,
+        color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 65%, white),
+        var(--fp-led, var(--fp-color-led-on))
+      );
+      box-shadow:
+        0 0 0 1.5px var(--fp-color-key-well),
+        0 0 6px 1px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 70%, transparent),
+        -5px 0 12px color-mix(in srgb, var(--fp-led, var(--fp-color-led-on)) 35%, transparent);
+    }
+
+    &:active:not(:disabled) {
+      &::before {
+        translate: 9px 0;
+        box-shadow:
+          inset 7px 0 5px -2px rgb(0 0 0 / 0.95),
+          inset 0 0 0 99px rgb(0 0 0 / var(--fp-key-shade)),
+          0 0 0 transparent;
+      }
+
+      &::after {
+        translate: 9px 0;
+      }
+    }
+  }
+
+  /*
+   * Forced colours drop the plastic, the well and the light: each key and its strip keep an outline,
+   * and a latched key opts out to fill in the system's selected colour, its strip in the selected
+   * text colour, so it reads apart from the rest by fill as well as by its travel. The selectors
+   * match the rules they override, the vertical ones too.
+   */
+  @media (forced-colors: active) {
+    &::before,
+    &::after {
+      outline: 1px solid ButtonText;
+    }
+
+    &[aria-checked="true"]::before,
+    [data-orientation="vertical"] > &[aria-checked="true"]::before {
+      forced-color-adjust: none;
+      background: SelectedItem;
+      box-shadow: none;
+    }
+
+    &[aria-checked="true"]::after,
+    &[aria-checked="true"]:not([data-strip="plain"])::after,
+    [data-orientation="vertical"] > &[aria-checked="true"]::after,
+    [data-orientation="vertical"] > &[aria-checked="true"]:not([data-strip="plain"])::after {
+      forced-color-adjust: none;
+      background: SelectedItemText;
+      box-shadow: none;
+      filter: none;
+    }
+
+    &:focus-visible::before {
+      outline: 2px solid CanvasText;
+    }
+
+    &:disabled::before,
+    &:disabled::after {
+      opacity: 1;
+      outline-color: GrayText;
+    }
   }
 }
 

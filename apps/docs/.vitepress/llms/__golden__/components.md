@@ -256,7 +256,7 @@ and `--fp-fader-length` sets how far it travels.
 | `min` | `number` | `0` | The lowest value, at the bottom (or the start, lying on its side). |
 | `max` | `number` | `100` | The highest value, at the top (or the end). |
 | `step` | `number` | `1` | The step values snap to. PageUp, PageDown and Shift with an arrow move ten steps. |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Stands up, like a mixer channel, or lies on its side. |
+| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | Stands up, like a mixer channel, or lies on its side. |
 | `label` | `string` |  | A silkscreen label under the fader, which also names it. Without one, give it an `aria-label`. |
 | `valueText` | `((value: number) => string)` |  | Turns the value into the words a screen reader says, such as `v => `${v} dB``. |
 | `disabled` | `boolean` |  |  |
@@ -289,10 +289,103 @@ or an LED, as the readout here does.
 | --- | --- | --- | --- |
 | `label` | `string` |  | A silkscreen label, which also names the switch. Without one, give it an `aria-label`. |
 | `labelPlacement` | `"start" \| "below"` | `"below"` | Where the label sits: under the switch, or level with it and before it in the line. |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Standing up, I at the top; or on its side, I on the right. |
+| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | Standing up, I at the top; or on its side, I on the right. |
 | `color` | `FpLedColor` | `"red"` | The colour its lamp lights in. |
 | `disabled` | `boolean` |  |  |
 | `modelValue` | `boolean` | `false` |  |
+
+| Event or slot | Description |
+| --- | --- |
+| `@update:modelValue` |  |
+
+## FpRadioGroup
+
+A row of latching piano keys, after the key row on an old cassette deck: press a key and it latches
+down as the last one comes up, and the arrow keys move the latch along the row. Each option is
+`{ value, label, disabled?, color? }`; its `label` is printed over its key and names it, and `label`
+on the group goes under the well and names the group. The strip at each key's foot is an LED that
+lights while the key is latched, green unless `color`, or an option's own `color`, says otherwise.
+`led="above"` puts an LED over each label instead, and `led="none"` leaves the strips as plain
+plastic, so the latch alone shows the choice. `orientation="vertical"` lays the keys on their side,
+stacked, each label before its key.
+
+```vue
+<script setup lang="ts">
+const tapes = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'chrome', label: 'Chrome', color: 'amber' },
+  { value: 'metal', label: 'Metal', color: 'red' },
+]
+const tape = ref('chrome')
+</script>
+
+<FpRadioGroup v-model="tape" :options="tapes" label="Tape" />
+
+<FpRadioGroup v-model="band" :options="bands" label="Band" led="above" color="amber" />
+
+<FpRadioGroup v-model="speed" :options="speeds" label="Speed" orientation="vertical" led="none" />
+```
+
+**`FpRadioGroup`**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `options` (required) | `FpKeyOption[]` |  | The keys, left to right or top to bottom. |
+| `label` | `string` |  | A silkscreen label under the keys, which also names the group. Without one, give it an `aria-label`. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Keys standing side by side, or on their side and stacked. |
+| `led` | `FpKeyLed` | `"strip"` | Where the light is: the strip at the foot of each key, an LED over each label, or none. |
+| `color` | `FpLedColor` | `"green"` | The colour the LEDs light in, unless an option sets its own. |
+| `disabled` | `boolean` |  |  |
+| `modelValue` | `string` |  |  |
+
+| Event or slot | Description |
+| --- | --- |
+| `@update:modelValue` |  |
+
+## FpCheckbox and FpCheckboxGroup
+
+Piano keys that latch on their own, like a deck's pause key: press one to latch it down, press it
+again to let it up. `FpCheckbox` is one key in its own well, with a boolean `v-model` and its
+`label` over it. The LED and `orientation` work as on FpRadioGroup.
+
+```vue
+<FpCheckboxGroup v-model="latched" :options="inputs" label="Input" />
+
+<FpCheckbox v-model="paused" label="Pause" color="amber" />
+
+<FpCheckbox v-model="muted" label="Mute" led="above" color="red" />
+```
+
+**`FpCheckbox`**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` |  | A silkscreen label over the key, which also names it. Without one, give it an `aria-label`. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Standing up, or on its side with the label before it. |
+| `led` | `FpKeyLed` | `"strip"` | Where the light is: the strip at the foot of the key, an LED over the label, or none. |
+| `color` | `FpLedColor` | `"green"` | The colour its LED lights in. |
+| `disabled` | `boolean` |  |  |
+| `modelValue` | `boolean` | `false` |  |
+
+| Event or slot | Description |
+| --- | --- |
+| `@update:modelValue` |  |
+
+`FpCheckboxGroup` sets a row of these keys in one well: `v-model` holds the values of the latched
+options, and each key is still its own stop for Tab. The options, the LED and `orientation` work as
+on FpRadioGroup.
+
+**`FpCheckboxGroup`**
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `options` (required) | `FpKeyOption[]` |  | The keys, left to right or top to bottom. |
+| `label` | `string` |  | A silkscreen label under the keys, which also names the group. Without one, give it an `aria-label`. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Keys standing side by side, or on their side and stacked. |
+| `led` | `FpKeyLed` | `"strip"` | Where the light is: the strip at the foot of each key, an LED over each label, or none. |
+| `color` | `FpLedColor` | `"green"` | The colour the LEDs light in, unless an option sets its own. |
+| `disabled` | `boolean` |  |  |
+| `modelValue` | `string[]` | `[]` |  |
 
 | Event or slot | Description |
 | --- | --- |
@@ -320,7 +413,7 @@ says the same.
 | `segments` | `number` | `12` | How many LED segments it has. A segment lights once the value reaches it. |
 | `amberAt` | `number` |  | Where amber begins, in the value's units. Defaults to 70 percent of the range. |
 | `redAt` | `number` |  | Where red begins, in the value's units. Defaults to 90 percent of the range. |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Stands up, like a channel's level, or lies on its side. |
+| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | Stands up, like a channel's level, or lies on its side. |
 | `lens` | `FpLens` |  | How its segments light. Unset, it takes the lens set around it (`fp-lens-*`), else diffused. |
 | `label` | `string` |  | A silkscreen label under the meter, which also names it. Without one, give it an `aria-label`. |
 | `valueText` | `((value: number) => string)` |  | Turns the value into the words a screen reader says, such as `v => `${v} dB``. |

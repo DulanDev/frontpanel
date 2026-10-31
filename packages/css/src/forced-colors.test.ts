@@ -38,6 +38,7 @@ const fineAsIs: Record<string, string> = {
   'fp-cap-berry': 'sets the colour only; fp-cap draws the shape',
   'fp-button-group': 'layout; its buttons draw themselves',
   'fp-unit': 'layout',
+  'fp-keys': 'layout; its keys draw the well',
   'fp-fader': 'layout; its slot and cap draw it',
   'fp-readout': 'its border is kept, in the system colour',
   'fp-readout-text': 'text for screen readers, never shown',
