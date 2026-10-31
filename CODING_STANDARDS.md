@@ -1,6 +1,6 @@
 # Coding standards
 
-What spans packages. Rules for one package live in that package's `AGENTS.md`.
+What spans packages.
 
 ## Device model
 
