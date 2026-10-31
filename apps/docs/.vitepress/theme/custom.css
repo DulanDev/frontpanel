@@ -147,6 +147,18 @@ html:has(.VPLocalSearchBox) {
   }
 }
 
+/*
+ * The feature cards as small panels of the device body, bevelled and edged, so they stand off
+ * the backdrop; the theme's well colour washed out on the light one.
+ */
+.VPFeatures .VPFeature {
+  border-color: var(--fp-color-edge);
+  background-color: var(--fp-color-shell);
+  box-shadow:
+    inset 1px 1px 0 var(--fp-color-bevel-hi),
+    inset -1px -1px 0 var(--fp-color-bevel-lo),
+    1px 2px 0 var(--fp-color-cast);
+}
 
 /* A small demo surface: the device body's plastic, with the controls set on it. */
 .demo-surface {
