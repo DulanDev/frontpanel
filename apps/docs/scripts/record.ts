@@ -91,8 +91,8 @@ async function started(page: Page): Promise<void> {
 
 /**
  * The hero take, under ten seconds: the player starts itself up (power, the display check, play,
- * the volume knob turning up), a cap picks an EQ preset, Next skips to a long title that steps
- * across the glass, and Skin switches Silver to Gunmetal. Frames are screenshots of the device
+ * the volume knob turning up), a piano key picks an EQ preset, Next skips to a long title that
+ * steps across the glass, and Skin switches Silver to Gunmetal. Frames are screenshots of the device
  * taken back to back at full density, about ten a second, which is as often as the player redraws
  * (Chrome's screencast would be faster but sends CSS-sized frames). Each keeps the moment it was
  * taken, so the take plays back at its real pace.
@@ -131,7 +131,7 @@ async function recordHero(browser: Browser, url: string, frames: string): Promis
   const deck = page.locator('.VPHero .deck')
   await started(page)
   await page.waitForTimeout(300)
-  await deck.getByRole('button', { name: 'C, Vocal' }).click()
+  await deck.getByRole('radio', { name: 'Vocal' }).click()
   await page.waitForTimeout(1300)
   for (let skip = 0; skip < 3; skip++) {
     await deck.getByRole('button', { name: 'Next track' }).click()
@@ -200,7 +200,7 @@ async function stills(browser: Browser, url: string): Promise<void> {
     await page.context().close()
   }
 
-  // The gel Play, the transport and the EQ caps, close up.
+  // The gel Play, the transport and the EQ keys, close up.
   const close = await open(browser, 'silver', VIEWPORT, 3)
   await close.goto(url)
   await started(close)
