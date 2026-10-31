@@ -340,11 +340,9 @@ const tape = ref('chrome')
 
 Piano keys that latch on their own, like a deck's pause key: press one to latch it down, press it
 again to let it up. `FpCheckbox` is one key in its own well, with a boolean `v-model` and its
-`label` over it. `FpCheckboxGroup` sets a row of them in one well: `v-model` holds the values of the
-latched options, and each key is still its own stop for Tab. The options, the LED and
-`orientation` work as on FpRadioGroup.
+`label` over it. The LED and `orientation` work as on FpRadioGroup.
 
-<div class="vp-raw demo demo-surface demo-row">
+<div class="vp-raw demo demo-surface demo-stack">
   <div class="fp-module demo-row demo-module">
     <FpCheckboxGroup v-model="latched" :options="inputs" label="Input" />
     <FpCheckbox v-model="paused" label="Pause" color="amber" />
@@ -364,6 +362,10 @@ latched options, and each key is still its own stop for Tab. The options, the LE
 ```
 
 <ApiTable name="FpCheckbox" />
+
+`FpCheckboxGroup` sets a row of these keys in one well: `v-model` holds the values of the latched
+options, and each key is still its own stop for Tab. The options, the LED and `orientation` work as
+on FpRadioGroup.
 
 <ApiTable name="FpCheckboxGroup" />
 
