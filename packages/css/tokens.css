@@ -32,6 +32,12 @@
     --fp-color-led-amber: #ffb000;
     --fp-color-led-red: #ff4a3d;
     --fp-color-led-off: #1f252e;
+    --fp-color-key-hi: #5a5e65;
+    --fp-color-key: #34373c;
+    --fp-color-key-lo: #222428;
+    --fp-color-key-well: #0b0c0e;
+    --fp-color-key-strip: #ece5d3;
+    --fp-color-key-ring: #8fbaff;
     --fp-color-cap: #f2f4f7;
     --fp-color-cap-ink: #2a303b;
     --fp-color-cap-blue: #2f6bc4;
@@ -89,6 +95,7 @@
       --fp-color-cap: #d5dae1;
       --fp-color-cap-graphite: #5a6373;
       --fp-color-focus-ring: #4fd2ff;
+      --fp-color-key-ring: #4fd2ff;
       --fp-color-select: #e7eaf0;
       --fp-color-error-text: #ff8a80;
       --fp-color-backdrop: #0d1016;
@@ -127,6 +134,7 @@
     --fp-color-cap: #d5dae1;
     --fp-color-cap-graphite: #5a6373;
     --fp-color-focus-ring: #4fd2ff;
+    --fp-color-key-ring: #4fd2ff;
     --fp-color-select: #e7eaf0;
     --fp-color-error-text: #ff8a80;
     --fp-color-backdrop: #0d1016;

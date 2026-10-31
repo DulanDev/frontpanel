@@ -26,6 +26,18 @@ const clock = [...'12:05']
 const power = ref(true)
 const monitor = ref(false)
 
+// Piano keys on plain classes: radio keys the arrows move between, as a radio group does, and one
+// checkbox key with a plain strip.
+const bands = ['FM', 'AM', 'SW']
+const band = ref('FM')
+const paused = ref(false)
+function stepBand(event: KeyboardEvent, by: number) {
+  const next = bands[(bands.indexOf(band.value) + by + bands.length) % bands.length]!
+  band.value = next
+  const keys = (event.currentTarget as HTMLElement).parentElement!.querySelectorAll<HTMLElement>('.fp-key')
+  keys[bands.indexOf(next)]!.focus()
+}
+
 const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscreen', '05 Backlight', '06 Two Blinks', '07 Rim Light', '08 Outro']
 </script>
 
@@ -170,6 +182,29 @@ const tracks = ['01 Intro', '02 Chrome Horizon', '03 Gel Pressure', '04 Silkscre
                     <span class="fp-switch-rocker"><span class="fp-switch-lamp" /><span class="fp-switch-face" /></span>
                   </button>
                   <span class="fp-silk" aria-hidden="true">Monitor</span>
+                </div>
+                <div class="fp-unit">
+                  <div class="fp-keys" role="radiogroup" :aria-labelledby="`${skin.id}-band`">
+                    <template v-for="choice in bands" :key="choice">
+                      <span :id="`${skin.id}-band-${choice}`" class="fp-silk">{{ choice }}</span>
+                      <button
+                        type="button"
+                        role="radio"
+                        class="fp-key fp-led-amber"
+                        :aria-checked="band === choice"
+                        :tabindex="band === choice ? 0 : -1"
+                        :aria-labelledby="`${skin.id}-band-${choice}`"
+                        @click="band = choice"
+                        @keydown.right.prevent="stepBand($event, 1)"
+                        @keydown.left.prevent="stepBand($event, -1)"
+                      />
+                    </template>
+                  </div>
+                  <span :id="`${skin.id}-band`" class="fp-silk">Band</span>
+                </div>
+                <div class="fp-keys">
+                  <span :id="`${skin.id}-pause`" class="fp-silk">Pause</span>
+                  <button type="button" role="checkbox" class="fp-key" data-strip="plain" :aria-checked="paused" :aria-labelledby="`${skin.id}-pause`" @click="paused = !paused" />
                 </div>
               </div>
             </div>
