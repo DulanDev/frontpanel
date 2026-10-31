@@ -1,7 +1,7 @@
 {
   "name": "@frontpanel/vue",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Vue 3 components for the Frontpanel early-2000s hardware skin: a scale-to-fit device frame, windows, chrome and gel buttons, caps, LCDs and LEDs, built on Reka UI.",
   "author": "Dulan Katukurundage",
   "license": "MIT",
