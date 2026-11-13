@@ -210,12 +210,17 @@ const fixtures: Fixture[] = [
 const mounted: VueWrapper[] = []
 afterEach(() => {
   mounted.splice(0).forEach(wrapper => wrapper.unmount())
+  // Leave nothing for the next fixture: the open menu's scroll lock sits on the body and the skin on the root.
   document.body.innerHTML = ''
+  document.body.removeAttribute('style')
+  document.body.removeAttribute('data-scroll-locked')
+  delete document.documentElement.dataset.fpSkin
 })
 
 describe('fixtures', () => {
   it('cover every component the package exports', () => {
-    const components = Object.keys(kit).filter(name => /^Fp[A-Z]/.test(name))
+    // Components are objects; the icon list and the glyph helper are not, whatever they are called.
+    const components = Object.entries(kit).filter(([name, value]) => /^Fp[A-Z]/.test(name) && typeof value === 'object').map(([name]) => name)
     const covered = new Set(fixtures.flatMap(fixture => fixture.covers))
     expect(components.filter(name => !covered.has(name))).toEqual([])
   })
