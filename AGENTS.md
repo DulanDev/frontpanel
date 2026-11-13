@@ -15,3 +15,5 @@ framework or a theme for ordinary websites. The device is the unit.
 - Done means `pnpm lint`, `pnpm build`, `pnpm typecheck` and `pnpm test` pass, in that order (the
   docs typecheck against the built `@frontpanel/vue`), with the regenerated CSS committed beside its
   source.
+  `pnpm test` also runs the axe scan in Chromium: on a fresh machine, run
+  `pnpm --filter @frontpanel/vue exec playwright install chromium` once first.
