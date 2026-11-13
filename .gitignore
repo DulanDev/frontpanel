@@ -20,3 +20,6 @@ playwright-report/
 
 # Working plans, kept local
 /plans/
+
+# Vitest browser mode failure screenshots
+.vitest/
