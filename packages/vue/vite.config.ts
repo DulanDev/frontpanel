@@ -17,6 +17,7 @@ export default defineConfig({
     },
   },
   test: {
+    passWithNoTests: true,
     projects: [
       {
         extends: true,
@@ -25,7 +26,6 @@ export default defineConfig({
           environment: 'happy-dom',
           include: ['src/**/*.test.ts'],
           exclude: ['src/**/*.a11y.test.ts'],
-          passWithNoTests: true,
         },
       },
       {
