@@ -91,8 +91,9 @@ Element components take Reka's `as` and `asChild`.
   that opened the window.
 - **`FpSilk` is a span.** Render it as a heading or `label` (`as="h3"`, `as="label"`) where it
   names something.
-- Every control shows a focus ring, every text colour pairing passes WCAG AA in both skins, and
-  each moving part respects `prefers-reduced-motion`.
+- Every control shows a focus ring, every text colour pairing passes WCAG AA in both skins, every
+  component is scanned with axe in both skins, and each moving part respects
+  `prefers-reduced-motion`.
 
 ## Licence
 

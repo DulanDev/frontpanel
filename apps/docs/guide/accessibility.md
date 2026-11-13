@@ -6,6 +6,9 @@ your markup. What the kit guarantees:
 - **Contrast.** Every text pairing passes WCAG AA (4.5:1) in both skins, and borders, rings and
   lit LEDs pass 3:1. A test checks the [pairs](../reference/tokens#checked-pairs) against the
   shipped stylesheet.
+- **Markup.** Every component is scanned with [axe](https://github.com/dequelabs/axe-core) in both
+  skins, against the WCAG 2.2 A and AA rules, in the states that change its ARIA or its name. A
+  violation fails the tests. The scan covers the components, not your own markup around them.
 - **Focus.** Every interactive class carries its own focus ring: a solid outline with a glow
   outside it, since a glow alone fails non-text contrast on light chrome. It shows on keyboard
   focus only, and stays while the control is hovered.

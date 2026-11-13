@@ -17,3 +17,9 @@ playwright-report/
 
 # VitePress dev cache
 **/.vitepress/cache/
+
+# Working plans, kept local
+/plans/
+
+# Vitest browser mode failure screenshots
+.vitest/
